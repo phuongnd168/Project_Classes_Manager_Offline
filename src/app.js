@@ -4,7 +4,6 @@ var express = require("express");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
-
 const studentsRouter = require("./routes/students/index");
 const teachersRouter = require("./routes/teacher/index");
 const adminRouter = require("./routes/admin/index");
