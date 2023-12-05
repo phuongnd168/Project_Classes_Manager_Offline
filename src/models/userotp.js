@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class UserOTP extends Model {
+  class user_otp extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      UserOTP.belongsTo(models.User)
+      user_otp.belongsTo(models.User)
     }
   }
-  UserOTP.init({
+  user_otp.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -21,10 +21,12 @@ module.exports = (sequelize, DataTypes) => {
     },
     otp: DataTypes.STRING,
     userId: DataTypes.INTEGER,
-    expire: DataTypes.DATE
+    expire: DataTypes.DATE,
+    
   }, {
     sequelize,
-    modelName: 'UserOTP',
+    modelName: 'user_otp',
+    freezeTableName: true,
   });
-  return UserOTP;
+  return user_otp;
 };

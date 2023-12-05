@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class LoginTokens extends Model {
+  class login_token extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      LoginTokens.belongsTo(models.User)
+      login_token.belongsTo(models.User)
     }
   }
-  LoginTokens.init({
+  login_token.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -23,7 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     token: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'LoginToken',
+    modelName: 'login_token',
   });
-  return LoginTokens;
+  return login_token;
 };
