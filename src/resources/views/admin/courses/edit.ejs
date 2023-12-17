@@ -1,0 +1,88 @@
+<% if(error?.length){ %>
+<label class="col-12 alert alert-danger"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label class="col-12 alert alert-success"><%= success %></label>
+<% } %>
+<h1>Sửa thông tin</h1>
+<form action="" method="post" novalidate>
+  <div class="col-md-10">
+    <label class="form-label">Tên khóa học</label>
+    <input
+      type="text"
+      class="form-control"
+      name="name"
+      placeholder="Tên khóa học..."
+      value="<%= course.name %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Giá khóa học</label>
+    <input
+      type="text"
+      class="form-control"
+      name="price"
+      placeholder="Giá khóa học..."
+      onkeypress="return isNumber(event)"
+      value="<%= course.price %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Giảng Viên</label>
+
+    <select class="form-control" name="teacher">
+      <option value="<%= course.id %>" selected><%= course.User.name %></option>
+      <% if(teachers.length){%> <% teachers.forEach(teacher => {%>
+
+      <option value="<%= teacher.id %>"><%= teacher.name %></option>
+      <%}) %> <% } %>
+    </select>
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Học thử</label>
+
+    <select class="form-control" name="tryLearn">
+      <option selected value="<%= course.tryLearn %>">
+        <%= course.tryLearn ? "Có" : "Không" %>
+      </option>
+      <option value="<%= !course.tryLearn %>">
+        <%= !course.tryLearn ? "Có" : "Không" %>
+      </option>
+    </select>
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Số lượng học viên</label>
+    <input
+      type="text"
+      class="form-control"
+      name="quantity"
+      placeholder="Số lượng học viên..."
+      onkeypress="return isNumber(event)"
+      value="<%= course.quantity %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Thời lượng học</label>
+    <input
+      type="text"
+      class="form-control"
+      name="duration"
+      placeholder="Thời lượng học..."
+      onkeypress="return isNumber(event)"
+      value="<%= course.duration %>"
+    />
+  </div>
+  <div class="col-10 mt-2">
+    <button class="btn btn-warning col-1" type="submit">Sửa</button>
+    <a href="/admin/manager/courses" class="btn btn-danger">Quay lại</a>
+  </div>
+</form>
+<script>
+  function isNumber(evt) {
+    evt = evt ? evt : window.event;
+    var charCode = evt.which ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+</script>

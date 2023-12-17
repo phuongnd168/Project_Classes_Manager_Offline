@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable("classes_teachers", {
       id: {
         allowNull: false,
@@ -14,19 +14,21 @@ module.exports = {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "users", 
+            tableName: "users",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "classes", 
+            tableName: "classes",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -39,7 +41,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("classes_teachers");
-  }
+  },
 };

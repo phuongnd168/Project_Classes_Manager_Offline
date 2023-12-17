@@ -1,49 +1,51 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('exercises_submit', {
+    await queryInterface.createTable("exercises_submit", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       exercisesId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "exercises", 
+            tableName: "exercises",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       studentId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "users", 
+            tableName: "users",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       content: {
-        type: Sequelize.TEXT
+        type: Sequelize.TEXT,
       },
       attachment: {
-        type: Sequelize.STRING(200)
+        type: Sequelize.STRING(200),
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('exercises_submit');
-  }
+    await queryInterface.dropTable("exercises_submit");
+  },
 };

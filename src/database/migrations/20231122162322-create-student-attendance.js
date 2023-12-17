@@ -1,49 +1,51 @@
-'use strict';
+"use strict";
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('students_attendance', {
+    await queryInterface.createTable("students_attendance", {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       dateLearning: {
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       studentId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "users", 
+            tableName: "users",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       classId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "classes", 
+            tableName: "classes",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       status: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('students_attendance');
-  }
+    await queryInterface.dropTable("students_attendance");
+  },
 };

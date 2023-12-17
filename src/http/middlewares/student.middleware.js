@@ -4,6 +4,7 @@ module.exports = async (req, res, next) => {
             res.redirect("/auth/login")
             return
         }
+      
     next()
 }
         

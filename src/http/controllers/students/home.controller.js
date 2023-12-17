@@ -73,5 +73,37 @@ module.exports = {
     req.flash("success", "Đổi mật khẩu thành công")
     res.redirect("/account/change-password")
     return
+  },
+  resetPassword: (req, res) => {
+    const success = req.flash("success")
+    const error = req.flash("error")
+    res.render("students/account/reset-password", {req, routerRoleRequest, error, success})
+  },
+  handleResetPassword: async (req, res) => {
+    const {newPassword, confirmNewPassword} = req.body
+    const {id} = req.user
+    if(!newPassword || !confirmNewPassword){
+      req.flash("error", "Vui lòng nhập đầy đủ thông tin")
+      res.redirect("/account/reset-password")
+      return
+    }
+    if(newPassword !== confirmNewPassword){
+      req.flash("error", "Mật khẩu nhập lại không trùng khớp")
+      res.redirect("/account/reset-password")
+      return
+    }
+    password = bcrypt.hashSync(newPassword, 10);
+    await User.update({
+      password,
+      firstLogin: 1
+    },
+    {
+      where: {
+        id
+      }
+    })
+    req.flash("success", "Đổi mật khẩu thành công")
+    res.redirect("/account/reset-password")
+    return
   }
 };

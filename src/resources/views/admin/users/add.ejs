@@ -1,0 +1,44 @@
+<% if(error?.length){ %>
+<label class="col-12 alert alert-danger"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label class="col-12 alert alert-success"><%= success %></label>
+<% } %>
+<h1>Thêm người dùng</h1>
+<form action="" method="post" novalidate>
+  <div class="col-md-10">
+    <label class="form-label">Email</label>
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      placeholder="Email..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Tên</label>
+    <input type="text" class="form-control" name="name" placeholder="Tên..." />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Số điện thoại</label>
+    <input
+      type="text"
+      class="form-control"
+      name="phone"
+      placeholder="Số điện thoại..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Địa chỉ</label>
+    <input
+      type="text"
+      class="form-control"
+      name="address"
+      placeholder="Địa chỉ..."
+    />
+  </div>
+
+  <div class="col-10 mt-2">
+    <button class="btn btn-success col-1" type="submit">Thêm</button>
+    <a href="/admin/manager/users" class="btn btn-danger">Quay lại</a>
+  </div>
+</form>

@@ -1,7 +1,5 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
+"use strict";
+const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class Class extends Model {
     /**
@@ -14,28 +12,31 @@ module.exports = (sequelize, DataTypes) => {
         through: "classes_teachers",
         foreignKey: "classId",
       });
-      Class.hasMany(models.TeacherCalendar, {foreignKey: "classId"})
-      Class.hasMany(models.StudentClass, {foreignKey: "classId"})
-      Class.hasMany(models.StudentAttendance, {foreignKey: "classId"})
-      Class.hasMany(models.Exercise, {foreignKey: "classId"})
-      Class.hasMany(models.Comment, {foreignKey: "classId"})
+      Class.hasMany(models.TeacherCalendar, { foreignKey: "classId" });
+      Class.hasMany(models.StudentClass, { foreignKey: "classId" });
+      Class.hasMany(models.StudentAttendance, { foreignKey: "classId" });
+      Class.hasMany(models.Exercise, { foreignKey: "classId" });
+      Class.hasMany(models.Comment, { foreignKey: "classId" });
     }
   }
-  Class.init({
-    id: {
-      type: DataTypes.INTEGER,
-      autoIncrement: true,
-      primaryKey: true
+  Class.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      name: DataTypes.STRING,
+      quantity: DataTypes.INTEGER,
+      startDate: DataTypes.DATEONLY,
+      endDate: DataTypes.DATEONLY,
+      schedule: DataTypes.BOOLEAN,
+      timeLearn: DataTypes.STRING,
     },
-    name: DataTypes.STRING,
-    quantity: DataTypes.INTEGER,
-    startDate: DataTypes.DATE,
-    endDate: DataTypes.DATE,
-    schedule: DataTypes.BOOLEAN,
-    timeLearn: DataTypes.STRING
-  }, {
-    sequelize,
-    modelName: 'Class',
-  });
+    {
+      sequelize,
+      modelName: "Class",
+    }
+  );
   return Class;
 };

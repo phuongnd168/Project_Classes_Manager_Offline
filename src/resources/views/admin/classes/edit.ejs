@@ -1,0 +1,93 @@
+<% if(error?.length){ %>
+<label class="col-12 alert alert-danger"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label class="col-12 alert alert-success"><%= success %></label>
+<% } %>
+<h1>Sửa thông tin</h1>
+<form action="" method="post" novalidate>
+  <div class="col-md-10">
+    <label class="form-label">Tên lớp học</label>
+    <input
+      type="text"
+      class="form-control"
+      name="name"
+      placeholder="Tên lớp học..."
+      value="<%= classInfo.name %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Số lượng học viên</label>
+    <input
+      type="text"
+      class="form-control"
+      name="quantity"
+      placeholder="Số lượng học viên..."
+      onkeypress="return isNumber(event)"
+      value="<%= classInfo.quantity %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Thời gian khai giảng</label>
+    <input
+      type="date"
+      class="form-control"
+      name="startDate"
+      value="<%= classInfo.startDate %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Thời gian bế giảng</label>
+    <input
+      type="date"
+      class="form-control"
+      name="endDate"
+      value="<%= classInfo.endDate %>"
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Lịch học</label>
+
+    <select class="form-control" name="schedule">
+      <option class="form-control" selected value="<%= classInfo.schedule %>">
+        <%= getDay(classInfo.schedule) %>
+      </option>
+      <% for(let i = 2; i<=8 ;i++){%> <% if(i === classInfo.schedule){%>
+      <%continue} %>
+      <option value="<%= i %>"><%= getDay(i) %></option>
+
+      <%} %>
+    </select>
+  </div>
+  <label class="form-label">Thời gian học</label>
+  <div class="col-md-10">
+    <span class="form-label">Bắt đầu</span>
+    <input
+      type="time"
+      class="form-control"
+      name="timeLearnStart"
+      value="<%= classInfo.timeLearn.slice(0,5) %>"
+    />
+    <span class="form-label">Kết thúc</span>
+    <input
+      type="time"
+      class="form-control"
+      name="timeLearnEnd"
+      value="<%= classInfo.timeLearn.slice(6,11) %>"
+    />
+  </div>
+
+  <div class="col-10 mt-2">
+    <button class="btn btn-warning col-1" type="submit">Sửa</button>
+    <a href="/admin/manager/classes" class="btn btn-danger">Quay lại</a>
+  </div>
+</form>
+<script>
+  function isNumber(evt) {
+    evt = evt ? evt : window.event;
+    var charCode = evt.which ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      return false;
+    }
+    return true;
+  }
+</script>

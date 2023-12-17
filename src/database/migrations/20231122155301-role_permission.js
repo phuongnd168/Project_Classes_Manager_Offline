@@ -1,8 +1,8 @@
-'use strict';
+"use strict";
 
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
-  async up (queryInterface, Sequelize) {
+  async up(queryInterface, Sequelize) {
     await queryInterface.createTable("role_permission", {
       id: {
         allowNull: false,
@@ -12,21 +12,23 @@ module.exports = {
       },
       roleId: {
         type: Sequelize.INTEGER,
-         references: {
+        references: {
           model: {
-            tableName: "roles", 
+            tableName: "roles",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       permissionId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
-            tableName: "permissions", 
+            tableName: "permissions",
           },
-          key: "id", 
+          key: "id",
         },
+        onDelete: "CASCADE",
       },
       createdAt: {
         allowNull: false,
@@ -39,7 +41,7 @@ module.exports = {
     });
   },
 
-  async down (queryInterface, Sequelize) {
+  async down(queryInterface, Sequelize) {
     await queryInterface.dropTable("role_permission");
-  }
+  },
 };

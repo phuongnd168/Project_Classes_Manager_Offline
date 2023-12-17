@@ -5,6 +5,8 @@
 <% if(success?.length){ %>
   <label class="col-12 alert alert-success"><%= success %></label>
 <% } %>
+
+
 <form action="/auth/login" method="post" novalidate>
   <div class="input-group mb-3">
     <input type="email" class="form-control" placeholder="Email" name="email">
