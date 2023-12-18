@@ -27,6 +27,17 @@
     />
   </div>
   <div class="col-md-10">
+    <label class="form-label">Giảng viên</label>
+    <select class="form-control" name="teacher">
+      <option value="<%= classInfo.Users['0']?.id ?? '' %>">
+        <%=classInfo.Users['0']?.name ?? "Chưa có giảng viên" %>
+      </option>
+      <% teachers.forEach(teacher => {%>
+      <option value="<%= teacher.id %>"><%= teacher.name %></option>
+      <% })%>
+    </select>
+  </div>
+  <div class="col-md-10">
     <label class="form-label">Thời gian khai giảng</label>
     <input
       type="date"

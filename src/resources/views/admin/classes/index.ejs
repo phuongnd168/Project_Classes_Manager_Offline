@@ -31,7 +31,9 @@
       <td><%= c.endDate %></td>
       <td><%= getDay(c.schedule)%></td>
       <td><%= c.timeLearn %></td>
-      <td><%= Object.assign({}, c.Users)['0'].name %></td>
+      <td>
+        <%= Object.assign({}, c.Users)['0']?.name ?? "Chưa có giảng viên" %>
+      </td>
       <td>
         <a
           href="/admin/manager/classes/edit/<%= c.id  %>"

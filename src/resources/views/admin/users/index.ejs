@@ -19,9 +19,12 @@
     </div>
   </div>
 </form>
+
 <table class="table table-bordered">
   <% if(users?.length){%>
+
   <a href="/admin/manager/users/add" class="btn btn-success mb-2">Thêm</a>
+
   <thead>
     <tr>
       <th scope="col">STT</th>
@@ -59,7 +62,9 @@
 
   <% } %>
 </table>
+
 <% if (totalPage > 1) { %>
+
 <nav class="d-flex justify-content-end mt-2">
   <ul class="pagination">
     <% if (page > 1) { %>

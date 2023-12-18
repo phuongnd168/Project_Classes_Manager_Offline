@@ -1,16 +1,15 @@
 const model = require("../../../models/index");
 const { getDay } = require("../../../utils/getDay");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
-
+const { Op } = require("sequelize");
 const Class = model.Class;
+const User = model.User;
 module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
     const classes = await Class.findAll({ include: model.User });
-    classes.forEach((c) => {
-      console.log(Object.assign({}, c.Users));
-    });
+
     res.render("admin/classes/index", {
       req,
       routerRoleRequest,
@@ -23,18 +22,25 @@ module.exports = {
   addClass: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+    const teachers = await User.findAll({
+      where: {
+        typeId: 2,
+      },
+    });
     res.render("admin/classes/add", {
       error,
       success,
       req,
       routerRoleRequest,
       getDay,
+      teachers,
     });
   },
   handleAddClass: async (req, res) => {
     const {
       name,
       quantity,
+      teacher,
       startDate,
       endDate,
       schedule,
@@ -56,7 +62,8 @@ module.exports = {
       return;
     }
     const timeLearn = timeLearnStart + "-" + timeLearnEnd;
-    await Class.create({
+
+    const newClass = await Class.create({
       name,
       quantity,
       startDate,
@@ -64,19 +71,28 @@ module.exports = {
       schedule,
       timeLearn,
     });
+    newClass.addUser(await User.findOne({ where: { id: teacher } }));
     req.flash("success", "Thêm thành công");
     res.redirect("/admin/manager/classes/add");
     return;
   },
   editClass: async (req, res) => {
     const { id } = req.params;
-    const classInfo = await Class.findOne({ where: { id } });
+    const classInfo = await Class.findOne({ where: { id }, include: User });
     if (!classInfo) {
       req.flash("error", "Không tồn tại");
       res.redirect("/admin/manager/classes");
       return;
     }
 
+    const teachers = await User.findAll({
+      where: {
+        [Op.and]: [
+          { typeId: 2 },
+          { id: { [Op.ne]: classInfo.Users["0"]?.id ?? "" } },
+        ],
+      },
+    });
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("admin/classes/edit", {
@@ -86,11 +102,13 @@ module.exports = {
       routerRoleRequest,
       classInfo,
       getDay,
+      teachers,
     });
   },
   handleEditClass: async (req, res) => {
     const { id } = req.params;
     const {
+      teacher,
       name,
       quantity,
       startDate,
@@ -99,7 +117,7 @@ module.exports = {
       timeLearnStart,
       timeLearnEnd,
     } = req.body;
-
+    console.log(req.body);
     if (
       !name ||
       !quantity ||
@@ -114,6 +132,8 @@ module.exports = {
       return;
     }
     const timeLearn = timeLearnStart + "-" + timeLearnEnd;
+    const classUpdate = await Class.findOne({ where: { id } });
+    classUpdate.setUsers(await User.findOne({ where: { id: teacher } }));
     await Class.update(
       {
         name,

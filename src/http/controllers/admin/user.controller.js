@@ -13,6 +13,7 @@ module.exports = {
     const error = req.flash("error");
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
+
     let filters = {
       [Op.and]: [
         { typeId: 1 },
@@ -168,6 +169,8 @@ module.exports = {
     const { id } = req.params;
     const { name, email, phone, address } = req.body;
     const isEmail = emailValidate(email);
+    const user = await User.findOne({ where: { id } });
+
     if (!name || !email || !phone || !address) {
       req.flash("error", "Vui lòng nhập đầy đủ thông tin");
       res.redirect("/admin/manager/users/edit");
@@ -178,7 +181,16 @@ module.exports = {
       res.redirect("/admin/manager/users/edit/" + id);
       return;
     }
-
+    const userEdit = await User.findOne({
+      where: {
+        [Op.and]: [{ email }, { email: { [Op.ne]: user.email } }],
+      },
+    });
+    if (userEdit) {
+      req.flash("error", "Email đã tồn tại");
+      res.redirect("/admin/manager/users/edit/" + id);
+      return;
+    }
     await User.update({ name, email, phone, address }, { where: { id } });
     req.flash("success", "Sửa thành công");
     res.redirect("/admin/manager/users/edit/" + id);
