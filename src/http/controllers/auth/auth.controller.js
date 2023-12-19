@@ -108,7 +108,11 @@ module.exports = {
       res.redirect("/auth/login");
       return;
     }
-
+    if (verify.expire < new Date().getTime()) {
+      req.flash("error", "Token đã hết hạn");
+      res.redirect("/auth/login");
+      return;
+    }
     res.render("auth/recover-password", { layout: false, error, success });
   },
   handleRecoverPassword: async (req, res) => {
@@ -154,6 +158,11 @@ module.exports = {
     });
     if (!isVerify) {
       req.flash("error", "Mã otp không chính xác");
+      res.redirect("/auth/otp");
+      return;
+    }
+    if (isVerify.expire < new Date().getTime()) {
+      req.flash("error", "Mã otp đã hết hạn");
       res.redirect("/auth/otp");
       return;
     }

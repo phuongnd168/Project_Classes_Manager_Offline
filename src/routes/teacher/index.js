@@ -6,47 +6,22 @@ const resetPasswordMiddleware = require("../../http/middlewares/reset.password.m
 
 var router = express.Router();
 
-router.get(
-  "/",
-  teacherMiddleware,
-  firstLoginMiddleware,
-  teacherController.index
-);
-router.get(
-  "/account",
-  teacherMiddleware,
-  firstLoginMiddleware,
-  teacherController.account
-);
-router.post(
-  "/account",
-  teacherMiddleware,
-  firstLoginMiddleware,
-  teacherController.updateInfo
-);
-router.get(
-  "/account/change-password",
-  teacherMiddleware,
-  firstLoginMiddleware,
-  teacherController.changePassword
-);
-router.post(
-  "/account/change-password",
-  teacherMiddleware,
-  firstLoginMiddleware,
-  teacherController.handleChangePassword
-);
+router.use(teacherMiddleware);
 router.get(
   "/account/reset-password",
-  teacherMiddleware,
   resetPasswordMiddleware,
   teacherController.resetPassword
 );
 router.post(
   "/account/reset-password",
-  teacherMiddleware,
   resetPasswordMiddleware,
   teacherController.handleResetPassword
 );
+router.use(firstLoginMiddleware);
+router.get("/", teacherController.index);
+router.get("/account", teacherController.account);
+router.post("/account", teacherController.updateInfo);
+router.get("/account/change-password", teacherController.changePassword);
+router.post("/account/change-password", teacherController.handleChangePassword);
 
 module.exports = router;

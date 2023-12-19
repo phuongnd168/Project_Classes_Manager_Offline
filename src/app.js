@@ -73,9 +73,9 @@ app.use(sendOtpMiddleware);
 app.use(loginTokenMiddleware);
 
 app.use("/role", roleMiddleware);
-app.use("/", studentsRouter);
-app.use("/teacher", teachersRouter);
 app.use("/admin", adminRouter);
+app.use("/teacher", teachersRouter);
+app.use("/", studentsRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {

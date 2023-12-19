@@ -5,47 +5,22 @@ const studentMiddleware = require("../../http/middlewares/student.middleware");
 const firstLoginMiddleware = require("../../http/middlewares/first.login.middleware");
 const resetPasswordMiddleware = require("../../http/middlewares/reset.password.middleware");
 
-router.get(
-  "/",
-  studentMiddleware,
-  firstLoginMiddleware,
-  studentController.index
-);
-router.get(
-  "/account",
-  studentMiddleware,
-  firstLoginMiddleware,
-  studentController.account
-);
-router.post(
-  "/account",
-  studentMiddleware,
-  firstLoginMiddleware,
-  studentController.updateInfo
-);
-router.get(
-  "/account/change-password",
-  studentMiddleware,
-  firstLoginMiddleware,
-  studentController.changePassword
-);
-router.post(
-  "/account/change-password",
-  studentMiddleware,
-  firstLoginMiddleware,
-  studentController.handleChangePassword
-);
+router.use(studentMiddleware);
 router.get(
   "/account/reset-password",
-  studentMiddleware,
   resetPasswordMiddleware,
   studentController.resetPassword
 );
 router.post(
   "/account/reset-password",
-  studentMiddleware,
   resetPasswordMiddleware,
   studentController.handleResetPassword
 );
+router.use(firstLoginMiddleware);
+router.get("/", studentController.index);
+router.get("/account", studentController.account);
+router.post("/account", studentController.updateInfo);
+router.get("/account/change-password", studentController.changePassword);
+router.post("/account/change-password", studentController.handleChangePassword);
 
 module.exports = router;

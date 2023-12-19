@@ -130,6 +130,7 @@ module.exports = {
         },
       }
     );
+    req.session.firstLogin = 1;
     req.flash("success", "Đổi mật khẩu thành công");
     res.redirect("/admin/account/reset-password");
     return;
