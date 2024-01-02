@@ -1,15 +1,17 @@
 const model = require("../../../models/index");
 const { getDay } = require("../../../utils/getDay");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
+const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const excel = require("excel4node");
 const addClassService = require("../../services/admin/classes/addClass.service");
 const destroyClassService = require("../../services/admin/classes/destroyClass.service");
 const updateClassService = require("../../services/admin/classes/updateClass.service");
 const getClassService = require("../../services/admin/classes/getClass.service");
-
+let c = null;
 const Class = model.Class;
 const User = model.User;
+const ClassSchedule = model.classes_schedule;
 module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
@@ -43,6 +45,7 @@ module.exports = {
     });
   },
   handleAddClass: async (req, res) => {
+    const errors = validationResult(req);
     const {
       name,
       quantity,
@@ -54,46 +57,30 @@ module.exports = {
       timeLearnEnd,
     } = req.body;
 
-    if (
-      !name ||
-      !quantity ||
-      !startDate ||
-      !endDate ||
-      !schedule ||
-      !timeLearnStart ||
-      !timeLearnEnd
-    ) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/admin/manager/classes/add");
-      return;
-    }
-
     const timeLearn = timeLearnStart + "-" + timeLearnEnd;
-    addClassService(
-      {
-        name,
-        quantity,
-        startDate,
-        endDate,
-        schedule,
-        timeLearn,
-      },
-      teacher
-    );
+    if (errors.isEmpty()) {
+      addClassService(
+        {
+          name,
+          quantity,
+          startDate,
+          endDate,
+          timeLearn,
+        },
+        teacher,
+        schedule
+      );
 
-    req.flash("success", "Thêm thành công");
+      req.flash("success", "Thêm thành công");
+    } else {
+      req.flash("error", errors.array());
+    }
     res.redirect("/admin/manager/classes/add");
-    return;
   },
   editClass: async (req, res) => {
     const { id } = req.params;
-    const classInfo = await Class.findOne({ where: { id }, include: User });
-    if (!classInfo) {
-      req.flash("error", "Không tồn tại");
-      res.redirect("/admin/manager/classes");
-      return;
-    }
-
+    const classInfo = await Class.findOne({ where: { id },  include: [{ model: User }, { model: ClassSchedule }]});
+ 
     const teachers = await User.findAll({
       where: {
         [Op.and]: [
@@ -115,6 +102,7 @@ module.exports = {
     });
   },
   handleEditClass: async (req, res) => {
+    const errors = validationResult(req);
     const { id } = req.params;
     const {
       teacher,
@@ -127,33 +115,24 @@ module.exports = {
       timeLearnEnd,
     } = req.body;
 
-    if (
-      !name ||
-      !quantity ||
-      !startDate ||
-      !endDate ||
-      !schedule ||
-      !timeLearnStart ||
-      !timeLearnEnd
-    ) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/admin/manager/classes/edit/" + id);
-      return;
-    }
     const timeLearn = timeLearnStart + "-" + timeLearnEnd;
-    updateClassService(
-      {
-        name,
-        quantity,
-        startDate,
-        endDate,
+    if (errors.isEmpty()) {
+      updateClassService(
+        {
+          name,
+          quantity,
+          startDate,
+          endDate,
+          timeLearn,
+        },
+        id,
+        teacher,
         schedule,
-        timeLearn,
-      },
-      id,
-      teacher
-    );
-    req.flash("success", "Sửa thành công");
+      );
+      req.flash("success", "Sửa thành công");
+    } else {
+      req.flash("error", errors.array());
+    }
     res.redirect("/admin/manager/classes/edit/" + id);
   },
   deleteClass: async (req, res) => {
@@ -211,7 +190,7 @@ module.exports = {
         .style(style);
       index++;
     });
-
+    
     workbook.write("Danh_sach_lop_hoc.xlsx", res);
     return;
   },

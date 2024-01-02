@@ -21,7 +21,6 @@ const authRouter = require("./routes/auth/index");
 const roleMiddleware = require("./http/middlewares/role.middleware");
 const authMiddleware = require("./http/middlewares/auth.middleware");
 const loginTokenMiddleware = require("./http/middlewares/login.token.middleware");
-const sendOtpMiddleware = require("./http/middlewares/send.otp.middleware");
 
 var app = express();
 
@@ -69,7 +68,7 @@ app.use(express.static(path.join(__dirname, "../public")));
 //Routes
 app.use("/auth", authRouter);
 app.use(authMiddleware);
-app.use(sendOtpMiddleware);
+
 app.use(loginTokenMiddleware);
 
 app.use("/role", roleMiddleware);

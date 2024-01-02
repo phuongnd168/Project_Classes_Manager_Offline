@@ -1,7 +1,7 @@
 <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<label id="error-toast"><%= error[0].msg %></label>
 <% } %> <% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <h1>Sửa thông tin</h1>
 <form action="" method="post" novalidate>
@@ -58,18 +58,31 @@
   </div>
   <div class="col-md-10">
     <label class="form-label">Lịch học</label>
+    <div>
+      <% let schedule = {} %>
+      <% if(classInfo.classes_schedules?.length){%>
+        <% classInfo.classes_schedules.forEach((e) => {%>
+          <% schedule[e.schedule] = e.schedule %>
+        <%}) %>
+      <%}%>
 
-    <select class="form-control" name="schedule">
-      <option class="form-control" selected value="<%= classInfo.schedule %>">
-        <%= getDay(classInfo.schedule) %>
-      </option>
-      <% for(let i = 2; i<=8 ;i++){%> <% if(i === classInfo.schedule){%>
-      <%continue} %>
-      <option value="<%= i %>"><%= getDay(i) %></option>
-
+      <% for(let i = 2; i<=8;i++){%>
+        <% if(schedule[i]){%>
+            <input value="<%= schedule[i] %>" type="checkbox" name="schedule" checked />
+            <span class="mr-4"><%= getDay(schedule[i]) %></span>
+            
+        <%}else{%>
+            <input value="<%= i %>" type="checkbox" name="schedule" />
+            <span class="mr-4"><%= getDay(i) %></span>
+        <%} %>
+      
+  
       <%} %>
-    </select>
+        
+     
+    </div>
   </div>
+
   <label class="form-label">Thời gian học</label>
   <div class="col-md-10">
     <span class="form-label">Bắt đầu</span>

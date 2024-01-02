@@ -1,0 +1,112 @@
+<% if(error?.length){ %>
+<label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
+<% } %>
+<form action="" class="mb-2">
+  <div class="row">
+    <div class="col-10">
+      <input
+        type="search"
+        name="keyword"
+        class="form-control"
+        placeholder="Từ khóa tìm kiếm..."
+        value="<%= req.query.keyword %>"
+      />
+    </div>
+    <div class="col-2 d-grid">
+      <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+    </div>
+  </div>
+</form>
+
+<table class="table table-bordered">
+  <% if(students?.length){%>
+
+  <a href="/admin/manager/students/add" class="btn btn-success mb-2">Thêm học viên</a>
+
+  <thead>
+    <tr>
+      <th scope="col">STT</th>
+      <th scope="col">Email</th>
+      <th scope="col">Tên</th>
+      <th scope="col">Số điện thoại</th>
+      <th width="10%" scope="col">Địa chỉ</th>
+      <th scope="col">Lớp học</th>
+      <th scope="col">Thêm lớp học</th>
+      <th scope="col">Sửa</th>
+      <th scope="col">Xóa</th>
+
+    </tr>
+  </thead>
+  <tbody>
+    <% students.forEach((student, index) => {%>
+    <tr>
+      <td><%= ++offset %></td>
+      <td><%= student.name %></td>
+      <td><%= student.email %></td>
+      <td><%= student.phone %></td>
+      <td><%= student.address %></td>
+      <% if(student.students_classes?.length){%>
+          <td width="20%"><%= className[student.id] %></td> 
+      <%}else{%>
+        <td>Chưa có lớp học</td>
+      <%} %>
+      <td>
+        <a
+          href="/admin/manager/students/<%= student.id  %>/addClass"
+          class="btn btn-success"
+          >Thêm</a
+        >
+      </td>
+      <td>
+        <a
+          href="/admin/manager/students/edit/<%= student.id  %>"
+          class="btn btn-warning edit"
+          >Sửa</a
+        >
+      </td>
+      <form action="/admin/manager/students/delete/<%= student.id  %>" method="post">
+        <td>
+          <button type="submit" class="btn btn-danger delete">Xóa</button>
+        </td>
+      </form>
+    </tr>
+    
+    <% }) %>
+  </tbody>
+
+  <% } %>
+</table>
+
+<% if (totalPage > 1) { %>
+
+<nav class="d-flex justify-content-end mt-2">
+  <ul class="pagination">
+    <% if (page > 1) { %>
+    <li class="page-item">
+      <a class="page-link" href="?page=<%= +page - 1 %>">Trước</a>
+    </li>
+    <% } %> <% for (let i = 1; i <= totalPage; i++) { %>
+    <li class="page-item <%= +page === +i ? 'active': '' %>">
+      <a class="page-link" href="?<%= getPaginateUrl(req, i) %>"><%= i %></a>
+    </li>
+    <% } %> <% if (page < totalPage) { %>
+    <li class="page-item">
+      <a class="page-link" href="?page=<%= +page + 1 %>">Sau</a>
+    </li>
+    <% } %>
+  </ul>
+</nav>
+<% } %>
+<script>
+  const btnDelete = document.querySelectorAll(".btn.btn-danger.delete");
+  btnDelete.forEach((btn) => {
+    btn.addEventListener("click", (e) => {
+      const value = confirm("Bạn có chắc chắn muốn xóa người dùng này?");
+      if (!value) {
+        e.preventDefault();
+      }
+    });
+  });
+</script>

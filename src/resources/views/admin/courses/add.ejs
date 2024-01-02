@@ -1,7 +1,7 @@
 <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<label id="error-toast"><%= error[0].msg %></label>
 <% } %> <% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <h1>Thêm Khóa Học</h1>
 <form action="" method="post" novalidate>

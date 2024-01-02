@@ -1,0 +1,65 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+    <label id="success-toast"><%= success %></label>
+<% } %>
+<form
+method="post"
+>
+    <table class="table table-bordered">
+      <% if(classData?.length){%> 
+      <thead>
+        <tr>
+          <th width="5%" scope="col">STT</th>
+          <th scope="col">Tên lớp học</th>
+          <th scope="col">Chọn</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% classData.forEach((c, index) => {%>
+        
+
+            <tr>
+              <td><%= index+1 %></td>
+              <td><%= c.name %></td>
+              <td>
+                <input class="classes" name="classes" value="<%= c.id %>" type="checkbox" />
+              </td> 
+            </tr>
+     
+        
+        <% }) %>
+      </tbody>
+    
+      <% } %>
+    </table>
+  
+      <button type="submit" style="display: none;" class="btn btn-success mt-2">Thêm</button>
+    </form>
+<script>
+
+   const checkbox = document.querySelectorAll(".classes");
+
+   checkbox.forEach((c) => {
+
+    c.addEventListener("click", (e) => {
+      let checked = false
+      checkbox.forEach((element, index) => {
+        if(element.checked){
+          checked = true
+        }
+      })
+      if(!checked){
+        document.getElementsByClassName("btn btn-success mt-2")[0].style.display = "none"
+      }
+      else{
+        document.getElementsByClassName("btn btn-success mt-2")[0].style.display = "block"
+      }
+    });
+
+   
+  });
+ 
+  
+</script>
+    

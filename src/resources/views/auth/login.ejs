@@ -1,15 +1,12 @@
 <p class="login-box-msg">Sign in to start your session</p>
 <% if(error?.length){ %>
-  <label class="col-12 alert alert-danger"><%= error %></label>
+<label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
 <% } %>
-<% if(success?.length){ %>
-  <label class="col-12 alert alert-success"><%= success %></label>
-<% } %>
-
-
 <form action="/auth/login" method="post" novalidate>
   <div class="input-group mb-3">
-    <input type="email" class="form-control" placeholder="Email" name="email">
+    <input type="email" class="form-control" placeholder="Email" name="email" />
     <div class="input-group-append">
       <div class="input-group-text">
         <span class="fas fa-envelope"></span>
@@ -17,7 +14,12 @@
     </div>
   </div>
   <div class="input-group mb-3">
-    <input type="password" class="form-control" placeholder="Password" name="password">
+    <input
+      type="password"
+      class="form-control"
+      placeholder="Password"
+      name="password"
+    />
     <div class="input-group-append">
       <div class="input-group-text">
         <span class="fas fa-lock"></span>
@@ -27,10 +29,8 @@
   <div class="row">
     <div class="col-8">
       <div class="icheck-primary">
-        <input type="checkbox" id="remember">
-        <label for="remember">
-          Remember Me
-        </label>
+        <input type="checkbox" id="remember" />
+        <label for="remember"> Remember Me </label>
       </div>
     </div>
     <!-- /.col -->
@@ -46,11 +46,11 @@
   <a href="/auth/facebook/redirect" class="btn btn-block btn-primary">
     <i class="fab fa-facebook mr-2"></i> Sign in using Facebook
   </a>
-  <a href="/auth/github/redirect" class="btn btn-block btn-dark">
+  <a href="/auth/github/redirect" class="btn btn-block btn-secondary">
     <i class="fab fa-github mr-2"></i> Sign in using Github
   </a>
-  <a href="/auth/google/redirect" class="btn btn-block btn-success">
-    <i class="fab fa-google-plus mr-2"></i> Sign in using Google+
+  <a href="/auth/google/redirect" class="btn btn-block btn-danger">
+    <i class="fab fa-google mr-2"></i> Sign in using Google
   </a>
 </div>
 <!-- /.social-auth-links -->

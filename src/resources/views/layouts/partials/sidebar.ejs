@@ -60,6 +60,45 @@
         </li>
         <li class="nav-item">
           <a
+            class="<%= req.originalUrl === '/admin/manager/students' ? 'nav-link active' : 'nav-link' %>"
+          >
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              Học viên
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/manager/students" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách</p>
+              </a>
+            </li>
+          </ul>
+         
+        </li>
+        <li class="nav-item">
+          <a
+            class="<%= req.originalUrl === '/admin/manager/users' ? 'nav-link active' : 'nav-link' %>"
+          >
+            <i class="nav-icon fas fa-user"></i>
+            <p>
+              Giảng viên
+              <i class="fas fa-angle-left right"></i>
+            </p>
+          </a>
+          <ul class="nav nav-treeview">
+            <li class="nav-item">
+              <a href="/admin/manager/users" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>Danh sách</p>
+              </a>
+            </li>
+          </ul>
+        </li>
+        <li class="nav-item">
+          <a
             href="#"
             class="<%= req.originalUrl === '/admin/manager/courses' ? 'nav-link active' : 'nav-link' %>"
           >

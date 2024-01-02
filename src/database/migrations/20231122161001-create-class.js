@@ -22,9 +22,6 @@ module.exports = {
       endDate: {
         type: Sequelize.DATEONLY,
       },
-      schedule: {
-        type: Sequelize.BOOLEAN,
-      },
       timeLearn: {
         type: Sequelize.STRING(50),
       },

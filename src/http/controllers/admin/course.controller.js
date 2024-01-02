@@ -1,7 +1,12 @@
 const model = require("../../../models/index");
 const { Op } = require("sequelize");
+const { validationResult } = require("express-validator");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
+const getCourseService = require("../../services/admin/courses/getCourse.service");
+const addCourseService = require("../../services/admin/courses/addCourse.service");
+const destroyCourseService = require("../../services/admin/courses/destroyCourse.service");
+const updateCourseService = require("../../services/admin/courses/updateCourse.service");
 const Course = model.Course;
 const User = model.User;
 module.exports = {
@@ -35,12 +40,7 @@ module.exports = {
     }
 
     const offset = (page - 1) * PER_PAGE;
-
-    const courses = await Course.findAll({
-      where: filters,
-      limit: +PER_PAGE,
-      offset: offset,
-    });
+    const courses = await getCourseService(filters, +PER_PAGE, offset);
 
     res.render("admin/courses/index", {
       req,
@@ -71,34 +71,28 @@ module.exports = {
     });
   },
   handleAddCourse: async (req, res) => {
+    const errors = validationResult(req);
     const { name, price, teacher, tryLearn, quantity, duration } = req.body;
+    if (errors.isEmpty()) {
+      addCourseService({
+        name,
+        price,
+        teacherId: teacher,
+        tryLearn,
+        quantity,
+        duration,
+      });
 
-    if (!name || !price || !quantity || !duration) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/admin/manager/courses/add");
-      return;
+      req.flash("success", "Thêm thành công");
+    } else {
+      req.flash("error", errors.array());
     }
-
-    await Course.create({
-      name,
-      price,
-      teacherId: teacher,
-      tryLearn,
-      quantity,
-      duration,
-    });
-    req.flash("success", "Thêm thành công");
     res.redirect("/admin/manager/courses/add");
-    return;
   },
   editCourse: async (req, res) => {
     const { id } = req.params;
     const course = await Course.findOne({ where: { id }, include: User });
-    if (!course) {
-      req.flash("error", "Không tồn tại");
-      res.redirect("/admin/manager/courses");
-      return;
-    }
+
     const teachers = await User.findAll({
       where: {
         [Op.and]: [
@@ -124,28 +118,26 @@ module.exports = {
     });
   },
   handleEditCourse: async (req, res) => {
+    const errors = validationResult(req);
     const { id } = req.params;
     const { name, price, teacher, tryLearn, quantity, duration } = req.body;
-    if (!name || !price || !quantity || !duration) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/admin/manager/courses/add");
-      return;
+    if (errors.isEmpty()) {
+      updateCourseService(
+        { name, price, teacherId: teacher, tryLearn, quantity, duration },
+        id
+      );
+
+      req.flash("success", "Sửa thành công");
+    } else {
+      req.flash("error", errors.array());
     }
-    await Course.update(
-      { name, price, teacherId: teacher, tryLearn, quantity, duration },
-      { where: { id } }
-    );
-    req.flash("success", "Sửa thành công");
     res.redirect("/admin/manager/courses/edit/" + id);
   },
+
   deleteCourse: async (req, res) => {
     const { id } = req.params;
+    destroyCourseService(id);
 
-    await Course.destroy({
-      where: {
-        id,
-      },
-    });
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/courses");
   },

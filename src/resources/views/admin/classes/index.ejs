@@ -1,7 +1,7 @@
-<% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
-<% } %> <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<% if(error?.length){ %>
+<label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
 <% } %>
 
 <table class="table table-bordered">
@@ -17,7 +17,7 @@
       <th scope="col">Sĩ số</th>
       <th width="10%" scope="col">Ngày khai giảng</th>
       <th scope="col">Ngày bế giảng</th>
-      <th width="10%" scope="col">Lịch học</th>
+      <th width="15%" scope="col">Lịch học</th>
       <th width="10%" scope="col">Thời gian học</th>
       <th width="10%" scope="col">Giảng viên</th>
       <th>Sửa</th>
@@ -32,7 +32,23 @@
       <td><%= c.quantity %></td>
       <td><%= c.startDate %></td>
       <td><%= c.endDate %></td>
-      <td><%= getDay(c.schedule)%></td>
+      
+      <%  if (c.classes_schedules?.length) {%>
+        <% let schedule = "" %>
+        <%  c.classes_schedules.forEach((e, index) => {%>
+            <% if(index===c.classes_schedules.length-1){%>
+              <% schedule += getDay(e.schedule)  %>
+              <% return %>
+            <%} %>
+            <% schedule += getDay(e.schedule) + ", " %>
+      
+            <%});%>
+            <td><%= schedule %></td>
+          <%}else{%>
+          <td><%= getDay(c.schedule) %></td>
+          <%}%>
+     
+
       <td><%= c.timeLearn %></td>
       <td>
         <%= Object.assign({}, c.Users)['0']?.name ?? "Chưa có giảng viên" %>

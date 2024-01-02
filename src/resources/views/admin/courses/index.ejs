@@ -1,7 +1,7 @@
-<% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
-<% } %> <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<% if(error?.length){ %>
+<label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <form action="" class="mb-2">
   <div class="row">
@@ -27,10 +27,10 @@
       <th scope="col">STT</th>
       <th scope="col">Tên khóa học</th>
       <th scope="col">Giá (VNĐ)</th>
-      <th width="10%" scope="col">Id Giảng viên</th>
-      <th scope="col">Học thử</th>
+      <th width="10%" scope="col">Giảng viên</th>
+      <th scope="col">Học thử (buổi)</th>
       <th width="10%" scope="col">Số lượng học viên (người)</th>
-      <th width="10%" scope="col">Thời lượng khóa học (tiếng)</th>
+      <th width="10%" scope="col">Thời lượng khóa học (buổi)</th>
       <th>Sửa</th>
       <th>Xóa</th>
     </tr>
@@ -41,6 +41,11 @@
       <td><%= ++offset %></td>
       <td><%= course.name %></td>
       <td><%= course.price%></td>
+      <% if(course?.User){%>
+        <td><%= course.User.name%></td>
+      <%}else{%>
+        <td>Chưa có giảng viên</td>
+      <%} %>
       <td><%= course.teacherId %></td>
       <td><%= course.tryLearn ? "Có" : "Không" %></td>
       <td><%= course.quantity %></td>

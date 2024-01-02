@@ -12,8 +12,9 @@ module.exports = (sequelize, DataTypes) => {
         through: "classes_teachers",
         foreignKey: "classId",
       });
+      Class.hasMany(models.classes_schedule, { foreignKey: "classId" });
       Class.hasMany(models.TeacherCalendar, { foreignKey: "classId" });
-      Class.hasMany(models.StudentClass, { foreignKey: "classId" });
+      Class.hasMany(models.students_class, { foreignKey: "classId" });
       Class.hasMany(models.StudentAttendance, { foreignKey: "classId" });
       Class.hasMany(models.Exercise, { foreignKey: "classId" });
       Class.hasMany(models.Comment, { foreignKey: "classId" });
@@ -30,7 +31,6 @@ module.exports = (sequelize, DataTypes) => {
       quantity: DataTypes.INTEGER,
       startDate: DataTypes.DATEONLY,
       endDate: DataTypes.DATEONLY,
-      schedule: DataTypes.BOOLEAN,
       timeLearn: DataTypes.STRING,
     },
     {

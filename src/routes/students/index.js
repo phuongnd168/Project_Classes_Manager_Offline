@@ -4,7 +4,9 @@ const studentController = require("../../http/controllers/students/home.controll
 const studentMiddleware = require("../../http/middlewares/student.middleware");
 const firstLoginMiddleware = require("../../http/middlewares/first.login.middleware");
 const resetPasswordMiddleware = require("../../http/middlewares/reset.password.middleware");
+const sendOtpMiddleware = require("../../http/middlewares/send.otp.middleware");
 
+router.use(sendOtpMiddleware);
 router.use(studentMiddleware);
 router.get(
   "/account/reset-password",

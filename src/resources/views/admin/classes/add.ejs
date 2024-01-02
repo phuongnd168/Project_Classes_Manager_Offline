@@ -1,7 +1,7 @@
 <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<label id="error-toast"><%= error[0].msg %></label>
 <% } %> <% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <h1>Thêm Lớp Học</h1>
 <form action="" method="post" novalidate>
@@ -42,12 +42,13 @@
   </div>
   <div class="col-md-10">
     <label class="form-label">Lịch học</label>
-    <select class="form-control" name="schedule">
+    <div>
       <% for(let i = 2; i<=8;i++){%>
-      <option value="<%= i %>"><%= getDay(i) %></option>
+      <input value="<%= i %>" type="checkbox" name="schedule" />
+      <span class="mr-4"><%= getDay(i) %></span>
 
       <%} %>
-    </select>
+    </div>
   </div>
   <label class="form-label">Thời gian học</label>
   <div class="col-md-10">

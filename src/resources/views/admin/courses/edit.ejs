@@ -1,7 +1,7 @@
 <% if(error?.length){ %>
-<label class="col-12 alert alert-danger"><%= error %></label>
+<label id="error-toast"><%= error[0].msg %></label>
 <% } %> <% if(success?.length){ %>
-<label class="col-12 alert alert-success"><%= success %></label>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <h1>Sửa thông tin</h1>
 <form action="" method="post" novalidate>
@@ -30,7 +30,9 @@
     <label class="form-label">Giảng Viên</label>
 
     <select class="form-control" name="teacher">
-      <option value="<%= course.id %>" selected><%= course.User.name %></option>
+      <option value="<%= course.User.id %>" selected>
+        <%= course.User.name %>
+      </option>
       <% if(teachers.length){%> <% teachers.forEach(teacher => {%>
 
       <option value="<%= teacher.id %>"><%= teacher.name %></option>

@@ -4,6 +4,10 @@ var router = express.Router();
 const passport = require("passport");
 const roleMiddleware = require("../../http/middlewares/role.middleware");
 const authMiddleware = require("../../http/middlewares/auth.middleware");
+const forgotPasswordMiddleware = require("../../http/middlewares/forgot.password.middleware");
+const handleRecoverPasswordMiddleware = require("../../http/middlewares/handle.recover.password.middleware");
+const recoverPasswordMiddleware = require("../../http/middlewares/recover.password.middleware");
+const handleOtpMiddleware = require("../../http/middlewares/handle.otp.middleware");
 
 router.get("/login", roleMiddleware, authController.login);
 router.post(
@@ -51,9 +55,26 @@ router.get(
 router.get("/logout", authController.logout);
 router.get("/cancel-connect", authController.cancelConnectSocial);
 router.get("/forgot-password", authController.forgotPassword);
-router.post("/forgot-password", authController.handleForgotPassword);
-router.get("/verify/:token", authController.recoverPassword);
-router.post("/verify/:token", authController.handleRecoverPassword);
+router.post(
+  "/forgot-password",
+  forgotPasswordMiddleware(),
+  authController.handleForgotPassword
+);
+router.get(
+  "/verify/:token",
+  recoverPasswordMiddleware,
+  authController.recoverPassword
+);
+router.post(
+  "/verify/:token",
+  handleRecoverPasswordMiddleware(),
+  authController.handleRecoverPassword
+);
 router.get("/otp", authMiddleware, authController.otp);
-router.post("/otp", authMiddleware, authController.handleOtp);
+router.post(
+  "/otp",
+  authMiddleware,
+  handleOtpMiddleware(),
+  authController.handleOtp
+);
 module.exports = router;

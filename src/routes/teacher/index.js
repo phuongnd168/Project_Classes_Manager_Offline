@@ -3,9 +3,10 @@ const teacherController = require("../../http/controllers/teacher/home.controlle
 const teacherMiddleware = require("../../http/middlewares/teacher.middleware");
 const firstLoginMiddleware = require("../../http/middlewares/first.login.middleware");
 const resetPasswordMiddleware = require("../../http/middlewares/reset.password.middleware");
-
+const sendOtpMiddleware = require("../../http/middlewares/send.otp.middleware");
 var router = express.Router();
 
+router.use(sendOtpMiddleware);
 router.use(teacherMiddleware);
 router.get(
   "/account/reset-password",

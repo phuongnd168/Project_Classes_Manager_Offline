@@ -1,129 +1,121 @@
-<link rel="stylesheet" href="../../../assets/css/connectSocial.css">
 <% if(error?.length){ %>
-    <label class="col-12 alert alert-danger"><%= error %></label>
-<% } %>
-<% if(success?.length){ %>
-    <label class="col-12 alert alert-success"><%= success %></label>
+<label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
 <% } %>
 <h1>Liên kết mạng xã hội</h1>
 
-    <div id="wrap-link-social">
-      <div class="mb-2">
-        <img src="../../../assets/img/google.png" alt="" style="height: 50px;">
-        <div class="col-3">
-          <label>Đăng nhập bằng google
-            <h6><%= userConnect.google ? "Đã kết nối" : 'Chưa kết nối' %></h6>
-          </label>
-        </div>
-        
-
-        <label class="toggle-switch" id="google">
-          <input type="checkbox" <%= userConnect.google ? "checked" : '' %>>
-          <div class="toggle-switch-background">
-            <div class="toggle-switch-handle"></div>
-          </div>
-        </label>
-        
-      </div>
-     
-      <div class="mb-2">
-        <img src="../../../assets/img/facebook.png" alt="" style="height: 50px;">
-        <div class="col-3">
-        <label>Đăng nhập bằng facebook
-          <h6><%= userConnect.facebook ? "Đã kết nối" : 'Chưa kết nối' %></h6>
-        </label>
-        </div>
-        <label class="toggle-switch" id="facebook">
-          <input type="checkbox" <%= userConnect.facebook ? "checked" : '' %>>
-          <div class="toggle-switch-background">
-            <div class="toggle-switch-handle"></div>
-          </div>
-        </label>
-        
-      </div>
-      
-      <div class="mb-2">
-        <img src="../../../assets/img/github.png" alt="" style="height: 50px;">
-        <div class="col-3">
-        <label>Đăng nhập bằng github
-          <h6><%= userConnect.github ? "Đã kết nối" : 'Chưa kết nối' %></h6>
-          
-        </label>
-        </div>
-        <label class="toggle-switch" id="github">
-          <input type="checkbox" <%= userConnect.github ? "checked" : '' %>>
-          <div class="toggle-switch-background">
-            <div class="toggle-switch-handle"></div>
-          </div>
-        </label>
-        
-      </div>
+<div id="wrap-link-social">
+  <div class="mb-2">
+    <img src="../../../assets/img/google.png" alt="" style="height: 50px" />
+    <div class="col-3">
+      <label
+        >Đăng nhập bằng google
+        <h6><%= userConnect.google ? "Đã kết nối" : 'Chưa kết nối' %></h6>
+      </label>
     </div>
 
-    <h1>Thông tin cá nhân</h1>
-    <form  action="" method="post">
-        <div class="col-md-10">
-          <label class="form-label">Email</label>
-          <input
-            type="email"
-            class="form-control"
-            name="email"
-            value="<%= user.email %>"
-            placeholder="Email..."
-            disabled
-         
-          />
-        </div>
-        <div class="col-md-10">
-          <label class="form-label">Tên</label>
-          <input
-            type="text"
-            class="form-control"
-            name="name"
-            value="<%= user.name %>"
-            placeholder="Tên..."
-        
-          />
-        </div>
-        <div class="col-md-10">
-            <label class="form-label">Số điện thoại</label>
-            <input
-              type="text"
-              class="form-control"
-              name="phone"
-              value="<%= user.phone %>"
-              placeholder="Số điện thoại..."
-            />
-          </div>
-          <div class="col-md-10">
-            <label class="form-label">Địa chỉ</label>
-            <input
-              type="text"
-              class="form-control"
-              name="address"
-              value="<%= user.address %>"
-              placeholder="Địa chỉ..."
-            />
-          </div>
+    <label class="toggle-switch" id="google">
+      <input type="checkbox" <%= userConnect.google ? "checked" : '' %>>
+      <div class="toggle-switch-background">
+        <div class="toggle-switch-handle"></div>
+      </div>
+    </label>
+  </div>
 
-        <div class="col-10 mt-2">
-          <button class="btn btn-primary" type="submit">Cập nhật thông tin cá nhân</button>
-        </div>
-      </form>
-      <script>
-         const wrapSocial = document.querySelector("#wrap-link-social")
-         wrapSocial.onclick = (e)=> {
-          const nameCheckboxSocial = e.target.parentElement.id
-          const nameSocial = ['google', 'facebook', 'github']
-          if (nameSocial.includes(nameCheckboxSocial)) {
-            if(e.target.checked) {
-            window.location.href = `/auth/${nameCheckboxSocial}/callback`
-            }else {
-            window.location.href = `/auth/cancel-connect?social=${nameCheckboxSocial}`
-            }
-          }
-       }
-      </script>
+  <div class="mb-2">
+    <img src="../../../assets/img/facebook.png" alt="" style="height: 50px" />
+    <div class="col-3">
+      <label
+        >Đăng nhập bằng facebook
+        <h6><%= userConnect.facebook ? "Đã kết nối" : 'Chưa kết nối' %></h6>
+      </label>
+    </div>
+    <label class="toggle-switch" id="facebook">
+      <input type="checkbox" <%= userConnect.facebook ? "checked" : '' %>>
+      <div class="toggle-switch-background">
+        <div class="toggle-switch-handle"></div>
+      </div>
+    </label>
+  </div>
 
+  <div class="mb-2">
+    <img src="../../../assets/img/github.png" alt="" style="height: 50px" />
+    <div class="col-3">
+      <label
+        >Đăng nhập bằng github
+        <h6><%= userConnect.github ? "Đã kết nối" : 'Chưa kết nối' %></h6>
+      </label>
+    </div>
+    <label class="toggle-switch" id="github">
+      <input type="checkbox" <%= userConnect.github ? "checked" : '' %>>
+      <div class="toggle-switch-background">
+        <div class="toggle-switch-handle"></div>
+      </div>
+    </label>
+  </div>
+</div>
 
+<h1>Thông tin cá nhân</h1>
+<form action="" method="post">
+  <div class="col-md-10">
+    <label class="form-label">Email</label>
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      value="<%= user.email %>"
+      placeholder="Email..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Tên</label>
+    <input
+      type="text"
+      class="form-control"
+      name="name"
+      value="<%= user.name %>"
+      placeholder="Tên..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Số điện thoại</label>
+    <input
+      type="text"
+      class="form-control"
+      name="phone"
+      value="<%= user.phone %>"
+      placeholder="Số điện thoại..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Địa chỉ</label>
+    <input
+      type="text"
+      class="form-control"
+      name="address"
+      value="<%= user.address %>"
+      placeholder="Địa chỉ..."
+    />
+  </div>
 
+  <div class="col-10 mt-2">
+    <button class="btn btn-primary" type="submit">
+      Cập nhật thông tin cá nhân
+    </button>
+  </div>
+</form>
+<script>
+  const wrapSocial = document.querySelector("#wrap-link-social");
+  wrapSocial.onclick = (e) => {
+    const nameCheckboxSocial = e.target.parentElement.id;
+    const nameSocial = ["google", "facebook", "github"];
+    if (nameSocial.includes(nameCheckboxSocial)) {
+      if (e.target.checked) {
+        window.location.href = `/auth/${nameCheckboxSocial}/callback`;
+      } else {
+        window.location.href = `/auth/cancel-connect?social=${nameCheckboxSocial}`;
+      }
+    }
+  };
+</script>
