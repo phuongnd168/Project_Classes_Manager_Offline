@@ -6,11 +6,13 @@ const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
 const sendMail = require("../../../utils/sendMail");
-const addUserService = require("../../services/admin/users/addUser.service");
-const updateUserService = require("../../services/admin/users/updateUser.service");
-const destroyUserService = require("../../services/admin/users/destroyUser.service");
-const getStudentService = require("../../services/admin/students/getStudent.service");
+
 const addClassStudentService = require("../../services/admin/students/addClass.student.service");
+const getTeacherService = require("../../services/admin/teachers/getTeacher.service");
+const addTeacherService = require("../../services/admin/teachers/addTeacher.service");
+const updateTeacherService = require("../../services/admin/teachers/updateTeacher.service");
+const destroyTeacherService = require("../../services/admin/teachers/destroyTeacher.service");
+const getTimetableService = require("../../services/admin/teachers/getTimetable.service");
 
 const User = model.User;
 const Class = model.Class;
@@ -24,13 +26,8 @@ module.exports = {
     const { PER_PAGE } = process.env;
 
     let filters = {
-      [Op.and]: [
-        { typeId: 3 },
-        {
-          id: {
-            [Op.ne]: req.user.id,
-          },
-        },
+      [Op.or]: [
+        { typeId: 2 } ,{ typeId: 4 },
       ],
     };
     if (keyword) {
@@ -53,7 +50,7 @@ module.exports = {
     });
 
     const totalCount = totalCountObj.count;
-
+    
     const totalPage = Math.ceil(totalCount / PER_PAGE);
 
     let { page } = req.query;
@@ -61,29 +58,14 @@ module.exports = {
       page = 1;
     }
     const offset = (page - 1) * PER_PAGE;
-    const students = await getStudentService(filters, +PER_PAGE, offset);
-    const className = {}
-    const courseName = {}
-    students.map(async (student) => {
-      if(student?.students_classes?.length){
-          student.students_classes.map(async(s) => {
-          
-            if(className.hasOwnProperty(s.studentId.toString())){   
-              
-              return className[s.studentId] =  [className[s.studentId], " "+ s.Class.name]
-            }
-      
-            return className[s.studentId] =  s.Class.name
-        })
-      }
-    })
-  
-    res.render("admin/students/index", {
+    
+    const teachers = await getTeacherService(filters, +PER_PAGE, offset);
+
+    res.render("admin/teachers/index", {
       req,
       routerRoleRequest,
-      className,
-      courseName,
-      students,
+
+      teachers,
       getPaginateUrl,
       success,
       error,
@@ -92,19 +74,19 @@ module.exports = {
       offset,
     });
   },
-  addStudent: async (req, res) => {
+  addTeacher: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
 
-    res.render("admin/students/add", {
+    res.render("admin/teachers/add", {
       error,
       success,
       req,
       routerRoleRequest,
     });
   },
-  handleAddStudent: async (req, res) => {
-    const { name, email, phone, address } = req.body;
+  handleAddTeacher: async (req, res) => {
+    const { name, email, phone, address, typeId } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
       const password = generator.generate({
@@ -119,12 +101,12 @@ module.exports = {
       const info = sendMail(email, subject, html);
 
       if (info) {
-        addUserService({
+        addTeacherService({
           name,
           email,
           phone,
           address,
-          typeId: 3,
+          typeId,
           password: hash,
         });
 
@@ -137,14 +119,14 @@ module.exports = {
       req.flash("error", errors.array());
     }
 
-    res.redirect("/admin/manager/students/add");
+    res.redirect("/admin/manager/teachers/add");
   },
-  editStudent: async (req, res) => {
+  editTeacher: async (req, res) => {
     const { id } = req.params;
     const user = await User.findOne({ where: { id } });
     const success = req.flash("success");
     const error = req.flash("error");
-    res.render("admin/students/edit", {
+    res.render("admin/teachers/edit", {
       error,
       success,
       req,
@@ -152,50 +134,39 @@ module.exports = {
       user,
     });
   },
-  handleEditStudent: async (req, res) => {
+  handleEditTeacher: async (req, res) => {
     const { id } = req.params;
-    const { name, email, phone, address } = req.body;
+    const { name, email, phone, address, typeId } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      updateUserService({ name, email, phone, address }, id);
+      updateTeacherService({ name, email, phone, address, typeId }, id);
 
       req.flash("success", "Sửa thành công");
     } else {
       req.flash("error", errors.array());
     }
-    res.redirect("/admin/manager/students/edit/" + id);
+    res.redirect("/admin/manager/teachers/edit/" + id);
   },
-  deleteStudent: async (req, res) => {
+  deleteTeacher: async (req, res) => {
     const { id } = req.params;
-    destroyUserService(id);
+    destroyTeacherService(id);
     req.flash("success", "Xóa thành công");
-    res.redirect("/admin/manager/students");
+    res.redirect("/admin/manager/teachers");
   },
-  addClass: async (req, res) => {
+  timetable: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-    const {id} = req.params
-    let classData = await Class.findAll({include:[{model: StudentClass, where: {studentId: +id}}] })
-    const addClass = classData.map(c => c.id);
-    classData = await Class.findAll({
-      where:{
-        id: {[Op.notIn]: addClass}
-      }
-    })
-    res.render("admin/students/add-class", { 
-      classData,
+    const { id } = req.params;
+  
+    const timetable = await getTimetableService(+id)
+
+    
+    res.render("admin/teachers/timetable", 
+    { error,
       success,
-      error,
-      id,
-      req, 
+      timetable,
+      req,
       routerRoleRequest
     })
-  },
-  handleAddClass: async (req, res) => {
-    const {id} = req.params
-    const {classes} = req.body
-    addClassStudentService(classes, id)
-    req.flash("success", "Thêm thành công");
-    res.redirect("/admin/manager/students")
   }
 };

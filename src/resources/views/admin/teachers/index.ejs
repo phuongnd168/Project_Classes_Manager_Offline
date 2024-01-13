@@ -3,7 +3,6 @@
 <% } %> <% if(success?.length){ %>
 <label id="success-toast"><%= success %></label>
 <% } %>
-
 <form action="" class="mb-2">
   <div class="row">
     <div class="col-10">
@@ -22,9 +21,9 @@
 </form>
 
 <table class="table table-bordered">
-  <% if(users?.length){%>
+  <% if(teachers?.length){%>
 
-  <a href="/admin/manager/users/add" class="btn btn-success mb-2">Thêm</a>
+  <a href="/admin/manager/teachers/add" class="btn btn-success mb-2">Thêm</a>
 
   <thead>
     <tr>
@@ -32,32 +31,65 @@
       <th scope="col">Email</th>
       <th scope="col">Tên</th>
       <th scope="col">Số điện thoại</th>
-      <th scope="col">Địa chỉ</th>
-      <th>Sửa</th>
-      <th>Xóa</th>
+      <th width="10%" scope="col">Địa chỉ</th>
+      <th scope="col">Lớp học đang dạy</th>
+      <th scope="col">Vai trò</th>
+      <th scope="col">Thời gian biểu</th>
+      <th scope="col">Sửa</th>
+      <th scope="col">Xóa</th>
+
     </tr>
-    
   </thead>
   <tbody>
-    <% users.forEach((user, index) => {%>
+    <% teachers.forEach((teacher, index) => {%>
     <tr>
       <td><%= ++offset %></td>
-      <td><%= user.email %></td>
-      <td><%= user.name %></td>
-      <td><%= user.phone %></td>
-      <td><%= user.address %></td>
+      <td><%= teacher.email %></td>
+      <td><%= teacher.name %></td>
+      <td><%= teacher.phone %></td>
+      <td><%= teacher.address %></td>
+      <% if(teacher.Classes.length){%>
+        <% let classes="" %>
+        <% teacher.Classes.forEach((element, index)=> {%>
+          <% if(index === teacher.Classes.length-1){%>
+            <% classes+= element.name %>
+            <% return %>
+          <%} %>
+          <% classes+= element.name + ", "%>
+        <%}); %>
+        <td><%= classes  %></td>
+      <% }else{ %>     
+        <td>Chưa có lớp dạy</td>
+      <%}%>
+      <% if(teacher.typeId === 2){%>
+        <td>Giảng viên</td>
+      <%}else{%>
+        <td>Trợ giảng</td>
+      <%} %>
       <td>
         <a
-          class="btn btn-warning"
-          href="/admin/manager/users/edit/<%= user.id  %>"
-          > <svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
-            <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
-            <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+          href="/admin/manager/teachers/timetable/<%= teacher.id  %>"
+          class="btn btn-secondary"
+          >
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-calendar" viewBox="0 0 16 16">
+            <path d="M3.5 0a.5.5 0 0 1 .5.5V1h8V.5a.5.5 0 0 1 1 0V1h1a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2h1V.5a.5.5 0 0 1 .5-.5M1 4v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V4z"/>
           </svg>
-        </a>   
+        </a
+        >
       </td>
-      
-      <form action="/admin/manager/users/delete/<%= user.id  %>" method="post">
+      <td>
+        <a
+        href="/admin/manager/teachers/edit/<%= teacher.id  %>"
+        class="btn btn-warning edit"
+        ><svg  xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-pencil-square" viewBox="0 0 16 16">
+          <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+          <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5z"/>
+         </svg>
+        </a>  
+       
+      </td>
+     
+      <form action="/admin/manager/teachers/delete/<%= teacher.id  %>" method="post">
         <td>
           <button type="submit" class="btn btn-danger delete">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
@@ -68,6 +100,7 @@
         </td>
       </form>
     </tr>
+    
     <% }) %>
   </tbody>
 

@@ -2,25 +2,25 @@ module.exports = {
   getDay: (schedule) => {
     let result = "";
     switch (schedule) {
-      case 2:
+      case 1:
         result = "Thứ hai";
         break;
-      case 3:
+      case 2:
         result = "Thứ ba";
         break;
-      case 4:
+      case 3:
         result = "Thứ tư";
         break;
-      case 5:
+      case 4:
         result = "Thứ năm";
         break;
-      case 6:
+      case 5:
         result = "Thứ sáu";
         break;
-      case 7:
+      case 6:
         result = "Thứ bảy";
         break;
-      case 8:
+      case 0:
         result = "Chủ nhật";
         break;
       default:

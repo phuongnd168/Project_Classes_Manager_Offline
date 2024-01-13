@@ -1,0 +1,50 @@
+<% if(error?.length){ %>
+<label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
+<% } %>
+<h1>Thêm giảng viên/trợ giảng</h1>
+<form action="" method="post" novalidate>
+  <div class="col-md-10">
+    <label class="form-label">Email</label>
+    <input
+      type="email"
+      class="form-control"
+      name="email"
+      placeholder="Email..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Tên</label>
+    <input type="text" class="form-control" name="name" placeholder="Tên..." />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Số điện thoại</label>
+    <input
+      type="text"
+      class="form-control"
+      name="phone"
+      placeholder="Số điện thoại..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Địa chỉ</label>
+    <input
+      type="text"
+      class="form-control"
+      name="address"
+      placeholder="Địa chỉ..."
+    />
+  </div>
+  <div class="col-md-10">
+    <label class="form-label">Vai trò</label>
+    <select class="form-control" name="typeId">
+      <option value="2">Giảng viên</option>
+      <option value="4">Trợ giảng</option>
+    </select>
+  </div>
+  <div class="col-10 mt-2">
+    <button class="btn btn-success col-1" type="submit">Thêm</button>
+    <a href="/admin/manager/teachers" class="btn btn-danger">Quay lại</a>
+  </div>
+</form>

@@ -24,6 +24,7 @@ const handleChangePasswordMiddleware = require("../../http/middlewares/account/h
 const handleResetPasswordMiddleware = require("../../http/middlewares/account/handle.reset.password.middleware");
 const sendOtpMiddleware = require("../../http/middlewares/send.otp.middleware");
 const studentController = require("../../http/controllers/admin/student.controller");
+const teacherController = require("../../http/controllers/admin/teacher.controller");
 
 router.use(sendOtpMiddleware);
 router.use(adminMiddleware);
@@ -107,6 +108,35 @@ router.post(
   "/manager/students/:id/addClass",
   studentController.handleAddClass
 );
+
+router.get("/manager/teachers", teacherController.index);
+router.get("/manager/teachers/add", teacherController.addTeacher);
+router.post(
+  "/manager/teachers/add",
+  addUserMiddleware(),
+  teacherController.handleAddTeacher
+);
+router.get(
+  "/manager/teachers/edit/:id",
+  editUserMiddleware,
+  teacherController.editTeacher
+);
+router.post(
+  "/manager/teachers/edit/:id",
+  handleEditUserMiddleware(),
+  teacherController.handleEditTeacher
+);
+router.post(
+  "/manager/teachers/delete/:id",
+  destroyUserMiddleware,
+  teacherController.deleteTeacher
+);
+router.get(
+  "/manager/teachers/timetable/:id",
+  teacherController.timetable
+);
+
+
 router.get("/manager/courses", courseController.index);
 router.get("/manager/courses/add", courseController.addCourse);
 router.post(

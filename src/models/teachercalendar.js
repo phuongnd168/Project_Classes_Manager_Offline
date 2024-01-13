@@ -3,18 +3,18 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class TeacherCalendar extends Model {
+  class teacher_calendar extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      TeacherCalendar.belongsTo(models.User)
-      TeacherCalendar.belongsTo(models.Class)
+      teacher_calendar.belongsTo(models.User, {foreignKey: "teacherId"})
+      teacher_calendar.belongsTo(models.Class, {foreignKey: "classId"})
     }
   }
-  TeacherCalendar.init({
+  teacher_calendar.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -25,7 +25,8 @@ module.exports = (sequelize, DataTypes) => {
     scheduleDate: DataTypes.DATE
   }, {
     sequelize,
-    modelName: 'TeacherCalendar',
+    freezeTableName: true,
+    modelName: 'teacher_calendar',
   });
-  return TeacherCalendar;
+  return teacher_calendar;
 };

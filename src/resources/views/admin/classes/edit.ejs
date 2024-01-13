@@ -38,6 +38,17 @@
     </select>
   </div>
   <div class="col-md-10">
+    <label class="form-label">Khóa học</label>
+    <select class="form-control" name="course">
+      <option value="<%= classInfo?.Course?.id ?? '' %>">
+        <%=classInfo?.Course?.name ?? "Chưa có khoá học" %>
+      </option>
+      <% course.forEach(c => {%>
+          <option value="<%= c.id %>"><%= c.name %></option>
+      <% })%>
+    </select>
+  </div>
+  <div class="col-md-10">
     <label class="form-label">Thời gian khai giảng</label>
     <input
       type="date"
@@ -66,8 +77,8 @@
         <%}) %>
       <%}%>
 
-      <% for(let i = 2; i<=8;i++){%>
-        <% if(schedule[i]){%>
+      <% for(let i = 0; i<=6;i++){%>
+        <% if(schedule[i] || schedule[i] === 0){%>
             <input value="<%= schedule[i] %>" type="checkbox" name="schedule" checked />
             <span class="mr-4"><%= getDay(schedule[i]) %></span>
             

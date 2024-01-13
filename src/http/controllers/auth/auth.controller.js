@@ -1,10 +1,11 @@
 const model = require("../../../models/index");
-const nodemailer = require("nodemailer");
+
 const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const sendMail = require("../../../utils/sendMail");
+
 var TokenGenerator = require("token-generator")({
   salt: "F8-Project-Classes-Manager",
   timestampMap: "F8-Backend",
@@ -21,6 +22,7 @@ module.exports = {
     if (error[0] === "Missing credentials") {
       error[0] = "Vui lòng điền đầy đủ thông tin";
     }
+ 
 
     res.render("auth/login", {
       layout: "layouts/auth.layout.ejs",

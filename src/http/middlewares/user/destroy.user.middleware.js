@@ -16,6 +16,11 @@ module.exports = async (req, res, next) => {
     res.redirect("/admin/manager/students");
     return;
   }
+  if (!user && url.includes("teachers")) {
+    req.flash("error", "Không tồn tại");
+    res.redirect("/admin/manager/teachers");
+    return;
+  }
   if (+id === req.user.id) {
     req.flash("error", "Không thể xóa");
     res.redirect("/admin/manager/students");

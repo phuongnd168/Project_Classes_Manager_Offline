@@ -15,5 +15,10 @@ module.exports = async (req, res, next) => {
     res.redirect("/admin/manager/students");
     return;
   }
+  if (!user && url.includes("teachers")) {
+    req.flash("error", "Không tồn tại");
+    res.redirect("/admin/manager/teachers");
+    return;
+  }
   next();
 };

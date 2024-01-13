@@ -31,10 +31,15 @@ method="post"
         <% }) %>
       </tbody>
     
-      <% } %>
+      <% }else{%>
+        <h1>Không có lớp học</h1>
+      <%} %>
     </table>
-  
-      <button type="submit" style="display: none;" class="btn btn-success mt-2">Thêm</button>
+    <div class="d-flex">
+      <button type="submit" style="display: none;" class="btn btn-success mr-2">Thêm</button>
+      <a href="/admin/manager/students" class="btn btn-danger">Quay lại</a>
+    </div>
+ 
     </form>
 <script>
 
@@ -50,10 +55,10 @@ method="post"
         }
       })
       if(!checked){
-        document.getElementsByClassName("btn btn-success mt-2")[0].style.display = "none"
+        document.getElementsByClassName("btn btn-success")[0].style.display = "none"
       }
       else{
-        document.getElementsByClassName("btn btn-success mt-2")[0].style.display = "block"
+        document.getElementsByClassName("btn btn-success")[0].style.display = "block"
       }
     });
 

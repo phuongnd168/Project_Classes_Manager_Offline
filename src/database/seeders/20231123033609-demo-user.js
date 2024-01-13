@@ -13,7 +13,7 @@ module.exports = {
         password: password,
         phone: "0123456789",
         address: "Hà Nội",
-        typeId: Math.floor(Math.random() * 3) + 1,
+        typeId: Math.floor(Math.random() * 4) + 1,
         createdAt: new Date(),
         updatedAt: new Date(),
       });

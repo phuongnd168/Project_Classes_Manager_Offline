@@ -33,6 +33,14 @@
     </select>
   </div>
   <div class="col-md-10">
+    <label class="form-label">Khoá học</label>
+    <select class="form-control" name="course">
+      <% courses.forEach(course => {%>
+      <option value="<%= course.id %>"><%= course.name %></option>
+      <% })%>
+    </select>
+  </div>
+  <div class="col-md-10">
     <label class="form-label">Thời gian khai giảng</label>
     <input type="date" class="form-control" name="startDate" />
   </div>
@@ -43,7 +51,7 @@
   <div class="col-md-10">
     <label class="form-label">Lịch học</label>
     <div>
-      <% for(let i = 2; i<=8;i++){%>
+      <% for(let i = 0; i<=6;i++){%>
       <input value="<%= i %>" type="checkbox" name="schedule" />
       <span class="mr-4"><%= getDay(i) %></span>
 

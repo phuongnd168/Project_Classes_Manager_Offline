@@ -25,6 +25,16 @@ module.exports = {
       timeLearn: {
         type: Sequelize.STRING(50),
       },
+      courseId: {
+        type: Sequelize.INTEGER,
+        references: {
+          model: {
+            tableName: "courses",
+          },
+          key: "id",
+        },
+        onDelete: "CASCADE"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

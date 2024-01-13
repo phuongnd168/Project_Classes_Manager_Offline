@@ -11,6 +11,7 @@ const getClassService = require("../../services/admin/classes/getClass.service")
 let c = null;
 const Class = model.Class;
 const User = model.User;
+const Course = model.Course;
 const ClassSchedule = model.classes_schedule;
 module.exports = {
   index: async (req, res) => {
@@ -18,6 +19,7 @@ module.exports = {
     const error = req.flash("error");
     const classes = await getClassService();
 
+  
     res.render("admin/classes/index", {
       req,
       routerRoleRequest,
@@ -35,7 +37,9 @@ module.exports = {
         typeId: 2,
       },
     });
+    const courses = await Course.findAll()
     res.render("admin/classes/add", {
+      courses,
       error,
       success,
       req,
@@ -55,8 +59,9 @@ module.exports = {
       schedule,
       timeLearnStart,
       timeLearnEnd,
+      course
     } = req.body;
-
+  
     const timeLearn = timeLearnStart + "-" + timeLearnEnd;
     if (errors.isEmpty()) {
       addClassService(
@@ -66,9 +71,13 @@ module.exports = {
           startDate,
           endDate,
           timeLearn,
+          courseId: course
         },
         teacher,
-        schedule
+        schedule,
+        startDate,
+        endDate,
+        timeLearnStart
       );
 
       req.flash("success", "Thêm thành công");
@@ -79,8 +88,11 @@ module.exports = {
   },
   editClass: async (req, res) => {
     const { id } = req.params;
-    const classInfo = await Class.findOne({ where: { id },  include: [{ model: User }, { model: ClassSchedule }]});
- 
+    const classInfo = await Class.findOne({ where: { id },  include: [{ model: User }, { model: ClassSchedule }, {model: Course}]});
+    const course = await Course.findAll({
+      where: {
+         id: { [Op.ne]: classInfo?.Course?.id ?? "" } 
+    },})
     const teachers = await User.findAll({
       where: {
         [Op.and]: [
@@ -89,12 +101,14 @@ module.exports = {
         ],
       },
     });
+   
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("admin/classes/edit", {
       error,
       success,
       req,
+      course,
       routerRoleRequest,
       classInfo,
       getDay,
@@ -111,6 +125,7 @@ module.exports = {
       startDate,
       endDate,
       schedule,
+      course,
       timeLearnStart,
       timeLearnEnd,
     } = req.body;
@@ -124,10 +139,14 @@ module.exports = {
           startDate,
           endDate,
           timeLearn,
+          courseId: course
         },
         id,
         teacher,
         schedule,
+        startDate,
+        endDate,
+        timeLearnStart
       );
       req.flash("success", "Sửa thành công");
     } else {
