@@ -53,13 +53,19 @@
           <% let course = "" %>
           <% student.students_classes.forEach((element, index) =>{ %>
               <% if(index === student.students_classes.length-1){%>
-                <% if(course === ""){%>
-                  <% course += element?.Class?.Course?.name ?? "Chưa có khóa học" %>
-                  <% return %>
-                <%} if(course.includes(element.Class.Course.name)){%>
+                
+                <%if(course.includes(element?.Class?.Course?.name)){%>
+                  <% course = course.slice(0, course.length-2) %>
                   <% return %>
                 <%} %>
-                <% course += element?.Class?.Course?.name ?? "" %>
+                
+                <% if(!course){%>
+                  <% course += element?.Class?.Course?.name ?? "Chưa có khóa học" %>
+                  <% return %>
+       
+                <%} %>
+                <% course += element?.Class?.Course?.name %>
+                 
               <%}else{%>
                 <% if(!element?.Class?.Course?.name){%>
                   <% course +=  "" %>

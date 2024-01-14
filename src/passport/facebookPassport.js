@@ -22,7 +22,7 @@ module.exports = new FacebookStrategy(
       });
       if(!req?.user){
         if(!userFacebook){
-          return done(null, false, {message: "Tài khoản này chưa được liên kết tới người dùng nào"})
+          return done(null, false, {message: "Tài khoản này chưa được liên kết"})
         }
         return done(null, userFacebook);
       }

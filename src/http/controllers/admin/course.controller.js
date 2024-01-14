@@ -7,6 +7,7 @@ const getCourseService = require("../../services/admin/courses/getCourse.service
 const addCourseService = require("../../services/admin/courses/addCourse.service");
 const destroyCourseService = require("../../services/admin/courses/destroyCourse.service");
 const updateCourseService = require("../../services/admin/courses/updateCourse.service");
+const filterCourseService = require("../../services/admin/courses/filterCourse.service");
 const Course = model.Course;
 const User = model.User;
 module.exports = {
@@ -15,17 +16,8 @@ module.exports = {
     const error = req.flash("error");
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
-    let filters = {};
-    if (keyword) {
-      filters = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
-
+    
+    const filters = await filterCourseService(keyword)
     const totalCountObj = await Course.findAndCountAll({
       where: filters,
     });
@@ -72,13 +64,13 @@ module.exports = {
   },
   handleAddCourse: async (req, res) => {
     const errors = validationResult(req);
-    const { name, price, teacher, tryLearn, quantity, duration } = req.body;
+    const { name, price, teacher, quantity, duration, numberOfSessions } = req.body;
     if (errors.isEmpty()) {
       addCourseService({
         name,
         price,
         teacherId: teacher,
-        tryLearn,
+        tryLearn: numberOfSessions ? numberOfSessions : 0,
         quantity,
         duration,
       });
@@ -120,10 +112,11 @@ module.exports = {
   handleEditCourse: async (req, res) => {
     const errors = validationResult(req);
     const { id } = req.params;
-    const { name, price, teacher, tryLearn, quantity, duration } = req.body;
+    const { name, price, teacher, tryLearn, numberOfSessions, quantity, duration } = req.body;
+    
     if (errors.isEmpty()) {
       updateCourseService(
-        { name, price, teacherId: teacher, tryLearn, quantity, duration },
+        { name, price, teacherId: teacher, tryLearn: +tryLearn ? numberOfSessions : 0, quantity, duration },
         id
       );
 

@@ -37,10 +37,21 @@
   <div class="col-md-10">
     <label class="form-label">Học thử</label>
 
-    <select class="form-control" name="tryLearn">
-      <option value="0">Không</option>
+    <select class="form-control" name="tryLearn" id="select">
+      <option selected value="0">Không</option>
       <option value="1">Có</option>
     </select>
+  </div>
+  <div id="tryLearn" class="col-md-10" style="display: none;">
+    <label class="form-label">Số buổi</label>
+    <input
+    type="text"
+    class="form-control"
+    name="numberOfSessions"
+    placeholder="Số buổi..."
+    onkeypress="return isNumber(event)"
+
+  />
   </div>
   <div class="col-md-10">
     <label class="form-label">Số lượng học viên</label>
@@ -77,4 +88,18 @@
     }
     return true;
   }
+  const select = document.querySelector("#select");
+ 
+  select.addEventListener('change', (e) => {
+  let selected = false
+  if(+select.value){
+    selected = true
+  }
+  if(selected){
+    document.querySelector("#tryLearn").style.display = "block"
+  }
+  else{
+    document.querySelector("#tryLearn").style.display = "none"
+  }
+  })
 </script>

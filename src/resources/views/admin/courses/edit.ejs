@@ -41,15 +41,49 @@
   </div>
   <div class="col-md-10">
     <label class="form-label">Học thử</label>
-
-    <select class="form-control" name="tryLearn">
-      <option selected value="<%= course.tryLearn %>">
-        <%= course.tryLearn ? "Có" : "Không" %>
-      </option>
-      <option value="<%= !course.tryLearn %>">
-        <%= !course.tryLearn ? "Có" : "Không" %>
-      </option>
+    <% if(course.tryLearn){%>
+    <select class="form-control" name="tryLearn" id="select">
+        <option selected value="1">
+          Có
+        </option>  
+        <option value="0">
+          Không
+        </option>  
     </select>
+    <div class="tryLearn">
+      <label class="form-label">Số buổi</label>
+      <input
+      type="text"
+      class="form-control"
+      name="numberOfSessions"
+      placeholder="Số buổi..."
+      value="<%= course.tryLearn %>"
+      onkeypress="return isNumber(event)"
+  
+    />
+    </div>
+    <%}else{%>
+      <select class="form-control" name="tryLearn" id="select">
+        <option value="1">
+          Có
+        </option>  
+        <option selected value="0">
+          Không
+        </option>  
+    </select>
+    <div class="tryLearn" style="display: none;">
+      <label class="form-label">Số buổi</label>
+      <input
+      type="text"
+      class="form-control"
+      name="numberOfSessions"
+      placeholder="Số buổi..."
+      onkeypress="return isNumber(event)"
+  
+    />
+    </div>
+    <%} %>
+   
   </div>
   <div class="col-md-10">
     <label class="form-label">Số lượng học viên</label>
@@ -79,6 +113,7 @@
   </div>
 </form>
 <script>
+
   function isNumber(evt) {
     evt = evt ? evt : window.event;
     var charCode = evt.which ? evt.which : evt.keyCode;
@@ -87,4 +122,21 @@
     }
     return true;
   }
+  const select = document.querySelector("#select");
+ 
+  select.addEventListener('change', (e) => {
+  let selected = false
+  if(+select.value){
+    selected = true
+  }
+
+  if(selected){
+    
+    document.querySelector(".tryLearn").style.display = "block"
+  }
+  else{
+    document.querySelector(".tryLearn").style.display = "none"
+  }
+  })
+  
 </script>

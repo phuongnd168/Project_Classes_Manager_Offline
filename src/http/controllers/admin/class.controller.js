@@ -3,11 +3,13 @@ const { getDay } = require("../../../utils/getDay");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
+const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
 const excel = require("excel4node");
 const addClassService = require("../../services/admin/classes/addClass.service");
 const destroyClassService = require("../../services/admin/classes/destroyClass.service");
 const updateClassService = require("../../services/admin/classes/updateClass.service");
 const getClassService = require("../../services/admin/classes/getClass.service");
+const filterClassService = require("../../services/admin/classes/filterClass.service");
 let c = null;
 const Class = model.Class;
 const User = model.User;
@@ -17,8 +19,25 @@ module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-    const classes = await getClassService();
+    const { keyword } = req.query;
+    const { PER_PAGE } = process.env;
+    const filters = await filterClassService(keyword)
 
+    const totalCountObj = await Class.findAndCountAll({
+      where: filters,
+    });
+
+    const totalCount = totalCountObj.count;
+
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+
+    let { page } = req.query;
+    if (!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+
+    const offset = (page - 1) * PER_PAGE;
+    const classes = await getClassService(filters, +PER_PAGE, offset);
   
     res.render("admin/classes/index", {
       req,
@@ -26,6 +45,10 @@ module.exports = {
       classes,
       success,
       error,
+      getPaginateUrl,
+      totalPage,
+      page,
+      offset,
       getDay,
     });
   },

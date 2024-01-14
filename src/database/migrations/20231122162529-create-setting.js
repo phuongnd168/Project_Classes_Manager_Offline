@@ -9,10 +9,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      otpKey: {
+      optKey: {
         type: Sequelize.STRING(200)
       },
-      otpValue: {
+      optValue: {
         type: Sequelize.TEXT
       },
       createdAt: {

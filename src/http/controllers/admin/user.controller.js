@@ -1,6 +1,6 @@
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const model = require("../../../models/index");
-const { Op } = require("sequelize");
+
 const { validationResult } = require("express-validator");
 
 const bcrypt = require("bcrypt");
@@ -12,6 +12,7 @@ const addUserService = require("../../services/admin/users/addUser.service");
 const updateUserService = require("../../services/admin/users/updateUser.service");
 const destroyUserService = require("../../services/admin/users/destroyUser.service");
 const getUserService = require("../../services/admin/users/getUser.service");
+const filterUserService = require("../../services/admin/users/filterUser.service");
 const User = model.User;
 module.exports = {
   index: async (req, res) => {
@@ -19,31 +20,7 @@ module.exports = {
     const error = req.flash("error");
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
-
-    let filters = {
-      [Op.and]: [
-        { typeId: 1 },
-        {
-          id: {
-            [Op.ne]: req.user.id,
-          },
-        },
-      ],
-    };
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
+    const filters = await filterUserService(keyword, req)
 
     const totalCountObj = await User.findAndCountAll({
       where: filters,

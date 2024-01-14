@@ -20,7 +20,7 @@ module.exports = new GitHubStrategy({
     });
     if(!req?.user){
       if(!userGithub){
-        return done(null, false, {message: "Tài khoản này chưa được liên kết tới người dùng nào"})
+        return done(null, false, {message: "Tài khoản này chưa được liên kết"})
       }
       return done(null, userGithub);
     }

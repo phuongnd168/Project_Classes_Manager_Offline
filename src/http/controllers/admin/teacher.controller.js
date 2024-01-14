@@ -13,6 +13,7 @@ const addTeacherService = require("../../services/admin/teachers/addTeacher.serv
 const updateTeacherService = require("../../services/admin/teachers/updateTeacher.service");
 const destroyTeacherService = require("../../services/admin/teachers/destroyTeacher.service");
 const getTimetableService = require("../../services/admin/teachers/getTimetable.service");
+const filterTeacherService = require("../../services/admin/teachers/filterTeacher.service");
 
 const User = model.User;
 const Class = model.Class;
@@ -25,26 +26,7 @@ module.exports = {
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
 
-    let filters = {
-      [Op.or]: [
-        { typeId: 2 } ,{ typeId: 4 },
-      ],
-    };
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
-
+    const filters = await filterTeacherService(keyword)
     const totalCountObj = await User.findAndCountAll({
       where: filters,
     });

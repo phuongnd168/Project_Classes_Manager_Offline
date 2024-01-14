@@ -11,6 +11,7 @@ const updateUserService = require("../../services/admin/users/updateUser.service
 const destroyUserService = require("../../services/admin/users/destroyUser.service");
 const getStudentService = require("../../services/admin/students/getStudent.service");
 const addClassStudentService = require("../../services/admin/students/addClass.student.service");
+const filterStudentService = require("../../services/admin/students/filterStudent.service");
 
 const User = model.User;
 const Class = model.Class;
@@ -23,31 +24,8 @@ module.exports = {
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
 
-    let filters = {
-      [Op.and]: [
-        { typeId: 3 },
-        {
-          id: {
-            [Op.ne]: req.user.id,
-          },
-        },
-      ],
-    };
-    if (keyword) {
-      filters[Op.or] = [
-        {
-          name: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-        {
-          email: {
-            [Op.like]: `%${keyword}%`,
-          },
-        },
-      ];
-    }
-
+  
+    const filters = await filterStudentService(keyword)
     const totalCountObj = await User.findAndCountAll({
       where: filters,
     });

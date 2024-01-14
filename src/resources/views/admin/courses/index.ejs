@@ -46,8 +46,8 @@
       <%}else{%>
         <td>Chưa có giảng viên</td>
       <%} %>
-     
-      <td><%= course.tryLearn ? "Có" : "Không" %></td>
+      <% let tryLearn = 0 %>
+      <td><%= course.tryLearn ? tryLearn + course.tryLearn : 0 %></td>
       <td><%= course.quantity %></td>
       <td><%= course.duration%></td>
 
