@@ -6,7 +6,6 @@ module.exports = () => {
     check("name", "Tên lớp học bắt buộc phải nhập").notEmpty(),
     check("quantity", "Sĩ số bắt buộc phải nhập").notEmpty(),
     check("startDate", "Ngày khai giảng bắt buộc phải chọn").notEmpty(),
-    check("endDate", "Ngày bế giảng bắt buộc phải chọn").notEmpty(),
     check("schedule", "Lịch học bắt buộc phải chọn").notEmpty(),
     check(
       "timeLearnStart",
@@ -17,6 +16,7 @@ module.exports = () => {
       "Thời gian kết thúc học bắt buộc phải chọn"
     ).notEmpty(),
     check("name").custom(async (nameValue, { req }) => {
+      const {quantity} = req.body
       const classInfo = await Class.findOne({
         where: {
           name: nameValue,
@@ -24,6 +24,9 @@ module.exports = () => {
       });
       if (classInfo) {
         throw new Error("Tên lớp học đã tồn tại");
+      }
+      if(+quantity > 16){
+        throw new Error("Số học viên 1 lớp không quá 16 người");
       }
     }),
   ];

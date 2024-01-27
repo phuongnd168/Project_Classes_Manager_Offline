@@ -40,13 +40,16 @@ module.exports = {
         onDelete: "CASCADE",
       },
       completed: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
       },
       dropDate: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
       },
       recover: {
-        type: Sequelize.DATE,
+        type: Sequelize.DATEONLY,
+      },
+      reason: {
+        type: Sequelize.TEXT,
       },
       createdAt: {
         allowNull: false,

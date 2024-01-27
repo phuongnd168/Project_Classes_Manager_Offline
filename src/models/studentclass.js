@@ -12,7 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       students_class.belongsTo(models.User, { foreignKey: "studentId" })
       students_class.belongsTo(models.Class)
-      students_class.belongsTo(models.LearningStatus, { foreignKey: "statusId" })
+      students_class.belongsTo(models.learning_status, { foreignKey: "statusId" })
     }
   }
   students_class.init({
@@ -24,9 +24,10 @@ module.exports = (sequelize, DataTypes) => {
     studentId: DataTypes.INTEGER,
     classId: DataTypes.INTEGER,
     statusId: DataTypes.INTEGER,
-    completed: DataTypes.DATE,
-    dropDate: DataTypes.DATE,
-    recover: DataTypes.DATE
+    completed: DataTypes.DATEONLY,
+    dropDate: DataTypes.DATEONLY,
+    recover: DataTypes.DATEONLY,
+    reason: DataTypes.TEXT
   }, {
     sequelize,
     modelName: 'students_class',

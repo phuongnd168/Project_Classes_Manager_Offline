@@ -3,17 +3,17 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class UserColumn extends Model {
+  class user_column extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      UserColumn.belongsTo(models.User)
+      user_column.belongsTo(models.User, { foreignKey: "userId" })
     }
   }
-  UserColumn.init({
+  user_column.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -25,7 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     position: DataTypes.INTEGER
   }, {
     sequelize,
-    modelName: 'UserColumn',
+    modelName: 'user_column',
   });
-  return UserColumn;
+  return user_column;
 };

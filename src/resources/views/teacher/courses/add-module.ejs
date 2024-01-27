@@ -1,0 +1,22 @@
+<% if(error?.length){ %>
+<label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
+<% } %>
+<h1>Thêm Tài Liệu</h1>
+<form action="" method="post" novalidate>
+  <div class="col-md-10">
+    <label class="form-label">Tên chương</label>
+    <input
+      type="text"
+      class="form-control"
+      name="chapter"
+      placeholder="Tên chương..."
+    />
+  </div>
+
+  <div class="col-10 mt-2">
+    <button class="btn btn-success mr-2" type="submit">Thêm</button>
+    <a href="/teacher/manager/courses/<%= id  %>/module" class="btn btn-danger">Quay lại</a>
+  </div>
+</form>

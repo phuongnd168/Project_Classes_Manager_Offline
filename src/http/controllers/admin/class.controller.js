@@ -4,14 +4,18 @@ const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const { validationResult } = require("express-validator");
 const { Op } = require("sequelize");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
-const excel = require("excel4node");
+const Excel = require('exceljs');
 const addClassService = require("../../services/admin/classes/addClass.service");
 const destroyClassService = require("../../services/admin/classes/destroyClass.service");
 const updateClassService = require("../../services/admin/classes/updateClass.service");
 const getClassService = require("../../services/admin/classes/getClass.service");
 const filterClassService = require("../../services/admin/classes/filterClass.service");
-let c = null;
+const addStudentService = require("../../services/admin/classes/addStudent.service");
+const exportExcel = require("../../../utils/exportExcel");
+const removeStudentService = require("../../services/admin/classes/removeStudent.service");
+let data = null;
 const Class = model.Class;
+const StudentClass = model.students_class;
 const User = model.User;
 const Course = model.Course;
 const ClassSchedule = model.classes_schedule;
@@ -38,7 +42,7 @@ module.exports = {
 
     const offset = (page - 1) * PER_PAGE;
     const classes = await getClassService(filters, +PER_PAGE, offset);
-  
+    data = classes
     res.render("admin/classes/index", {
       req,
       routerRoleRequest,
@@ -55,11 +59,6 @@ module.exports = {
   addClass: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-    const teachers = await User.findAll({
-      where: {
-        typeId: 2,
-      },
-    });
     const courses = await Course.findAll()
     res.render("admin/classes/add", {
       courses,
@@ -68,7 +67,6 @@ module.exports = {
       req,
       routerRoleRequest,
       getDay,
-      teachers,
     });
   },
   handleAddClass: async (req, res) => {
@@ -76,9 +74,7 @@ module.exports = {
     const {
       name,
       quantity,
-      teacher,
       startDate,
-      endDate,
       schedule,
       timeLearnStart,
       timeLearnEnd,
@@ -92,14 +88,11 @@ module.exports = {
           name,
           quantity,
           startDate,
-          endDate,
           timeLearn,
           courseId: course
         },
-        teacher,
         schedule,
         startDate,
-        endDate,
         timeLearnStart
       );
 
@@ -111,19 +104,11 @@ module.exports = {
   },
   editClass: async (req, res) => {
     const { id } = req.params;
-    const classInfo = await Class.findOne({ where: { id },  include: [{ model: User }, { model: ClassSchedule }, {model: Course}]});
+    const classInfo = await Class.findOne({ where: { id },  include: [ { model: ClassSchedule }, {model: Course}]});
     const course = await Course.findAll({
       where: {
          id: { [Op.ne]: classInfo?.Course?.id ?? "" } 
     },})
-    const teachers = await User.findAll({
-      where: {
-        [Op.and]: [
-          { typeId: 2 },
-          { id: { [Op.ne]: classInfo.Users["0"]?.id ?? "" } },
-        ],
-      },
-    });
    
     const success = req.flash("success");
     const error = req.flash("error");
@@ -135,18 +120,15 @@ module.exports = {
       routerRoleRequest,
       classInfo,
       getDay,
-      teachers,
     });
   },
   handleEditClass: async (req, res) => {
     const errors = validationResult(req);
     const { id } = req.params;
     const {
-      teacher,
       name,
       quantity,
       startDate,
-      endDate,
       schedule,
       course,
       timeLearnStart,
@@ -160,15 +142,12 @@ module.exports = {
           name,
           quantity,
           startDate,
-          endDate,
           timeLearn,
           courseId: course
         },
         id,
-        teacher,
         schedule,
         startDate,
-        endDate,
         timeLearnStart
       );
       req.flash("success", "Sửa thành công");
@@ -177,6 +156,105 @@ module.exports = {
     }
     res.redirect("/admin/manager/classes/edit/" + id);
   },
+  students: async(req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
+    const { keyword } = req.query;
+    const { PER_PAGE } = process.env;
+    const filters = await filterClassService(keyword)
+
+    const totalCountObj = await Class.findAndCountAll({
+      where: filters,
+    });
+
+    const totalCount = totalCountObj.count;
+
+    const totalPage = Math.ceil(totalCount / PER_PAGE);
+
+    let { page } = req.query;
+    if (!page || page < 1 || page > totalPage) {
+      page = 1;
+    }
+
+    const offset = (page - 1) * PER_PAGE;
+    const classes = await getClassService(filters, +PER_PAGE, offset);
+    res.render("admin/classes/student", {
+      req,
+      routerRoleRequest,
+      getPaginateUrl,
+      classes,
+      success,
+      error,
+      totalPage,
+      page,
+      offset,
+    });
+  },
+  addStudent: async (req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
+    const {id} = req.params
+    let students = await User.findAll({include:[{model: StudentClass, where: {classId: +id}}] })
+
+    const addStudent = students.map(student => student.id);
+    students = await User.findAll({
+      where:{
+        [Op.and]: [{typeId: 3}, {id: {[Op.notIn]: addStudent}}]
+ 
+      }
+    })
+    res.render("admin/classes/student/add", { 
+      students,
+      success,
+      error,
+      id,
+      req, 
+      routerRoleRequest
+    })
+  },
+  handleAddStudent: async (req, res) => {
+    const {id} = req.params
+    const {student} = req.body
+    const errors = validationResult(req);
+    if (errors.isEmpty()) {
+      addStudentService(student, id)
+      req.flash("success", "Thêm thành công");
+    }else{
+      req.flash("error", errors.array());
+    }
+
+
+    res.redirect("/admin/manager/classes/students")
+  },
+  removeStudent: async (req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
+    const {id} = req.params
+    let students = await User.findAll({include:[{model: StudentClass, where: {classId: +id}}] })
+
+    const removeStudent = students.map(student => student.id);
+    students = await User.findAll({
+      where:{
+        [Op.and]: [{typeId: 3}, {id: {[Op.in]: removeStudent}}]
+ 
+      }
+    })
+    res.render("admin/classes/student/remove", { 
+      students,
+      success,
+      error,
+      id,
+      req, 
+      routerRoleRequest
+    })
+  },
+  handleRemoveStudent: async (req, res) => {
+    const {id} = req.params
+    const {student} = req.body
+    removeStudentService(student, id)
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/classes/students")
+  },
   deleteClass: async (req, res) => {
     const { id } = req.params;
     destroyClassService(id);
@@ -184,56 +262,73 @@ module.exports = {
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/classes");
   },
-  exportClass: async (req, res) => {
-    const workbook = new excel.Workbook();
-    var worksheet = workbook.addWorksheet("Sheet 1");
-    const classes = await Class.findAll({ include: User });
-    var style = workbook.createStyle({
-      font: {
-        color: "#000101",
-        size: 12,
-      },
+  deleteAll: async(req, res) => {
+    const {id} = req.body
+    const data = id.split(",")
+    data.forEach((id) => {
+      destroyClassService(id)
     });
-    worksheet.cell(1, 1).string("Tên lớp học").style(style);
-    worksheet.cell(1, 2).string("Sĩ số").style(style);
-    worksheet.cell(1, 3).string("Ngày khai giảng").style(style);
-    worksheet.cell(1, 4).string("Ngày bế giảng").style(style);
-    worksheet.cell(1, 5).string("Lịch học").style(style);
-    worksheet.cell(1, 6).string("Thời gian học").style(style);
-    worksheet.cell(1, 7).string("Giảng viên").style(style);
-    classes.forEach((c, index) => {
-      worksheet
-        .cell(index + 2, 1)
-        .string(c.name)
-        .style(style);
-      worksheet
-        .cell(index + 2, 2)
-        .number(c.quantity)
-        .style(style);
-      worksheet
-        .cell(index + 2, 3)
-        .string(c.startDate)
-        .style(style);
-      worksheet
-        .cell(index + 2, 4)
-        .string(c.endDate)
-        .style(style);
-      worksheet
-        .cell(index + 2, 5)
-        .string(getDay(c.schedule))
-        .style(style);
-      worksheet
-        .cell(index + 2, 6)
-        .string(c.timeLearn)
-        .style(style);
-      worksheet
-        .cell(index + 2, 7)
-        .string(Object.assign({}, c.Users)["0"]?.name)
-        .style(style);
-      index++;
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/classes");
+  },
+  importExcel: async(req, res) => {
+  
+    const workbook = new Excel.Workbook();
+    const files = req.files['myFiles']
+
+    files.forEach(file => {
+      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+      .then(function() {
+        ws = workbook.getWorksheet(1)
+        ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
+          if(rowNumber !== 1){
+            const [empty, name, quantity, startDate, schedule, timeLearn, courseId] = row.values;
+            const data = { name, quantity, startDate, schedule, timeLearn, courseId};
+  
+            try {
+          
+                addClassService(data, schedule.toString(), startDate, timeLearn.slice(0, 5))
+                req.flash("success", "Thành công")
+              
+              
+
+            } catch (error) { 
+              req.flash("error", "Thất bại")
+            }
+          }
+        
+        });
+        
+      });
     });
-    
-    workbook.write("Danh_sach_lop_hoc.xlsx", res);
-    return;
+    res.redirect("/admin/manager/classes")
+  },
+  exportExcel: async(req, res) => {
+    const columns = 
+    ["Tên lớp", "Sĩ số", "Ngày khai giảng", "Ngày bế giảng", "Lịch học", "Thời gian học", "Giảng viên", "Khóa học"]
+    const values = ["name", "quantity", "startDate", "endDate", "schedule", "timeLearn", "teacher", "course"]
+    data.forEach(element => {
+        if (element.classes_schedules?.length) {
+         let schedule = "" 
+          element.classes_schedules.forEach((e, index) => {
+             if(index===element.classes_schedules.length-1){
+               schedule += getDay(e.schedule)  
+               return 
+            } 
+             schedule += getDay(e.schedule) + ", " 
+      
+            });
+            element.dataValues.schedule = schedule 
+          }else{
+            element.dataValues.schedule = getDay(element.schedule) 
+          }
+
+        element.dataValues.teacher = element?.Course?.User?.name ?? "Chưa có giảng viên" 
+        element.dataValues.course = element?.Course?.name ?? "Chưa có khóa học"
+   
+    });
+
+    exportExcel(data, columns, values, res)
+  
   },
 };

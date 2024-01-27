@@ -1,0 +1,89 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error[0].msg %></label>
+    <% } %> <% if(success?.length){ %>
+    <label id="success-toast"><%= success %></label>
+    <% } %>
+   
+    <form action="" class="mb-2">
+      <div class="row">
+        <div class="col-10">
+          <input
+            type="search"
+            name="keyword"
+            class="form-control"
+            placeholder="Từ khóa tìm kiếm..."
+            value="<%= req.query.keyword %>"
+          />
+        </div>
+        <div class="col-2 d-grid">
+          <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+        </div>
+      </div>
+    </form>
+    <table class="table table-bordered">
+      <% if(classes?.length){%>
+      
+      <thead>
+        <tr>
+          <th scope="col">STT</th>
+          <th scope="col">Tên lớp</th>
+          <th>Thêm học viên</th>
+          <th>Xóa học viên</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% classes.forEach((c, index) => {%>
+        <tr>
+          <td><%= ++offset %></td>
+          <td><%= c.name %></td>
+
+          <td>
+            <a
+              href="/admin/manager/classes/students/add/<%= c.id  %>"
+              class="btn btn-success"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
+                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
+                <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
+              </svg>
+            </a
+            >
+          </td>
+          <td>
+            <a
+              href="/admin/manager/classes/students/remove/<%= c.id  %>"
+              class="btn btn-danger"
+            > <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-dash" viewBox="0 0 16 16">
+                <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7M11 12h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1 0-1m0-7a3 3 0 1 1-6 0 3 3 0 0 1 6 0M8 7a2 2 0 1 0 0-4 2 2 0 0 0 0 4"/>
+                <path d="M8.256 14a4.5 4.5 0 0 1-.229-1.004H3c.001-.246.154-.986.832-1.664C4.484 10.68 5.711 10 8 10q.39 0 .74.025c.226-.341.496-.65.804-.918Q8.844 9.002 8 9c-5 0-6 3-6 4s1 1 1 1z"/>
+              </svg>
+            </a>   
+            
+          </td>
+        </tr>
+        <% }) %>
+      </tbody>
+    
+      <% } %>
+    </table>
+    
+    <% if (totalPage > 1) { %>
+      <nav class="d-flex justify-content-end mt-2 ml-auto">
+        <ul class="pagination">
+          <% if (page > 1) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= +page - 1 %>">Trước</a>
+          </li>
+          <% } %> <% for (let i = 1; i <= totalPage; i++) { %>
+          <li class="page-item <%= +page === +i ? 'active': '' %>">
+            <a class="page-link" href="?<%= getPaginateUrl(req, i) %>"><%= i %></a>
+          </li>
+          <% } %> <% if (page < totalPage) { %>
+          <li class="page-item">
+            <a class="page-link" href="?page=<%= +page + 1 %>">Sau</a>
+          </li>
+          <% } %>
+        </ul>
+      </nav>
+      <% } %>
+

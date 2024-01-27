@@ -7,23 +7,23 @@
 method="post"
 >
     <table class="table table-bordered">
-      <% if(classData?.length){%> 
+      <% if(students?.length){%> 
       <thead>
         <tr>
           <th width="5%" scope="col">STT</th>
-          <th scope="col">Tên lớp học</th>
+          <th scope="col">Tên học viên</th>
           <th scope="col">Chọn</th>
         </tr>
       </thead>
       <tbody>
-        <% classData.forEach((c, index) => {%>
+        <% students.forEach((student, index) => {%>
         
 
             <tr>
               <td><%= index+1 %></td>
-              <td><%= c.name %></td>
+              <td><%= student.name %></td>
               <td>
-                <input class="classes" name="classes" value="<%= c.id %>" type="checkbox" />
+                <input class="students" name="student" value="<%= student.id %>" type="checkbox" />
               </td> 
             </tr>
      
@@ -32,18 +32,18 @@ method="post"
       </tbody>
     
       <% }else{%>
-        <h1>Không có lớp học</h1>
+        <h1>Không có học viên</h1>
       <%} %>
     </table>
     <div class="d-flex">
       <button type="submit" style="display: none;" class="btn btn-success mr-2">Thêm</button>
-      <a href="/admin/manager/students" class="btn btn-danger">Quay lại</a>
+      <a href="/admin/manager/classes/students" class="btn btn-danger">Quay lại</a>
     </div>
  
     </form>
 <script>
 
-   const checkbox = document.querySelectorAll(".classes");
+   const checkbox = document.querySelectorAll(".students");
 
    checkbox.forEach((c) => {
 

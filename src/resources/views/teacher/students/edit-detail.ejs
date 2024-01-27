@@ -1,0 +1,102 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error[0].msg %></label>
+    <% } %> <% if(success?.length){ %>
+    <label id="success-toast"><%= success %></label>
+<% } %>
+<form action="" method="post" novalidate>
+            <div class="col-md-10">
+                <h2 class="form-label">Lớp học: <%= studentClass.Class["name"]  %></h2>
+            </div>
+            <div class="col-md-10">
+                <label class="form-label">Trạng thái học viên</label>
+            
+                <select class="form-control" name="status" id="select">
+                  <option value="<%= studentClass.learning_status["id"] %>" selected>
+                    <%= studentClass.learning_status["name"] %>
+                  </option>
+                  <% status.forEach(s => {%>
+                    <option value="<%= s.dataValues.id %>"><%= s.dataValues.name %></option>
+                  <%}) %> 
+                </select>
+                <% if(studentClass.learning_status["id"]!==1){%>
+                  <div class='time'>
+                    <label class="form-label">Thời gian</label>
+                    <input
+                      type="date"
+                      class="form-control"
+                      name="time"
+                      <% if(studentClass.learning_status["id"]===2){%>
+                        value="<%= studentClass.recover  %>"
+                      <%}else if(studentClass.learning_status["id"]===3){%>
+                        value="<%= studentClass.dropDate  %>"
+                      <%}else{%>
+                        value="<%= studentClass.completed  %>"
+                      <%} %>
+              
+                    />
+                  </div>  
+                  <div class="reason">
+                    <label class="form-label">Lý do</label>
+                    <input
+                      type="text"
+                      class="form-control"
+                      name="reason"
+                      value="<%= studentClass.reason  %>"
+                    />
+                  </div>   
+                <%}else{%>
+                  <div class='time' style="display: none">
+                  <label class="form-label">Thời gian</label>
+                  <input
+                    type="date"
+                    class="form-control"
+                    name="time"
+                    
+                  />
+                </div>  
+                <div class="reason" style="display: none">
+                  <label class="form-label">Lý do</label>
+                  <input
+                    type="text"
+                    class="form-control"
+                    name="reason"
+                   
+                  />
+                </div>   
+                <%} %>
+             
+                
+         
+                           
+              </div>
+    
+
+    
+    <div class="col-10 mt-2">
+      <button class="btn btn-warning mr-2" type="submit">Sửa</button>
+      <a href="/teacher/manager/students/edit/<%= id  %>" class="btn btn-danger">Quay lại</a>
+    </div>
+</form>
+  
+
+<script>
+  const select = document.querySelector("#select");
+ 
+ select.addEventListener('change', (e) => {
+ let selected = false
+ if(+select.value!==1){
+   selected = true
+ }
+
+ if(selected){
+   
+   document.querySelector(".time").style.display = "block"
+   document.querySelector(".reason").style.display = "block"
+ }
+ else{
+   document.querySelector(".time").style.display = "none"
+   document.querySelector(".reason").style.display = "none"
+ }
+ })
+ 
+</script>

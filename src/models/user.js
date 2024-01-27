@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.students_class, { foreignKey: "studentId" });
       User.hasMany(models.ExerciseSubmit, { foreignKey: "studentId" });
       User.hasMany(models.Comment, { foreignKey: "studentId" });
-      User.hasOne(models.UserColumn, { foreignKey: "userId" });
+      User.hasMany(models.user_column, { foreignKey: "userId" });
+      User.hasMany(models.students_attendance, {foreignKey: "studentId"})
     }
   }
   User.init(

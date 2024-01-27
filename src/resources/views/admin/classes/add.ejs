@@ -24,14 +24,7 @@
       onkeypress="return isNumber(event)"
     />
   </div>
-  <div class="col-md-10">
-    <label class="form-label">Giảng viên</label>
-    <select class="form-control" name="teacher">
-      <% teachers.forEach(teacher => {%>
-      <option value="<%= teacher.id %>"><%= teacher.name %></option>
-      <% })%>
-    </select>
-  </div>
+
   <div class="col-md-10">
     <label class="form-label">Khoá học</label>
     <select class="form-control" name="course">
@@ -44,10 +37,7 @@
     <label class="form-label">Thời gian khai giảng</label>
     <input type="date" class="form-control" name="startDate" />
   </div>
-  <div class="col-md-10">
-    <label class="form-label">Thời gian bế giảng</label>
-    <input type="date" class="form-control" name="endDate" />
-  </div>
+
   <div class="col-md-10">
     <label class="form-label">Lịch học</label>
     <div>

@@ -23,10 +23,18 @@
 <table class="table table-bordered">
   <% if(students?.length){%>
 
-  <a href="/admin/manager/students/add" class="btn btn-success mb-2">Thêm học viên</a>
+  <a href="/admin/manager/students/add" class="btn btn-success mb-2 mr-2">Thêm</a>
+  <form action="/admin/manager/students/import-excel" enctype="multipart/form-data"  method="POST" id="form">
+      
+    <input type="file" name="myFiles" id="files" hidden multiple/>
+    <label for="files" class="btn btn-secondary">Import Excel</label>
 
+  </form>
+  <a href="/admin/manager/students/export-excel" class="btn btn-secondary mb-2 ml-2"
+  ><b>Export Excel</b></a>
   <thead>
     <tr>
+      <th><input type="checkbox" id="deleteAll"/> </th>
       <th scope="col" width="2%">STT</th>
       <th scope="col" width="10%">Email</th>
       <th scope="col" width="10%">Tên</th>
@@ -34,7 +42,6 @@
       <th scope="col" width="10%">Địa chỉ</th>
       <th scope="col" width="20%">Lớp học</th>
       <th scope="col" width="20%">Khoá học</th>
-      <th scope="col">Thêm lớp học</th>
       <th scope="col">Sửa</th>
       <th scope="col">Xóa</th>
 
@@ -43,6 +50,7 @@
   <tbody>
     <% students.forEach((student, index) => {%>
     <tr>
+      <th><input type="checkbox" class="deleteCheck" value="<%= student.id %>"/> </th>
       <td><%= ++offset %></td>
       <td><%= student.email %></td>
       <td><%= student.name %></td>
@@ -84,18 +92,7 @@
         <td>Chưa có khóa học</td>
       <%} %>
     
-      <td>
-        <a
-          href="/admin/manager/students/<%= student.id  %>/addClass"
-          class="btn btn-success"
-          >
-          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-add" viewBox="0 0 16 16">
-            <path d="M12.5 16a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7m.5-5v1h1a.5.5 0 0 1 0 1h-1v1a.5.5 0 0 1-1 0v-1h-1a.5.5 0 0 1 0-1h1v-1a.5.5 0 0 1 1 0m-2-6a3 3 0 1 1-6 0 3 3 0 0 1 6 0"/>
-            <path d="M2 13c0 1 1 1 1 1h5.256A4.5 4.5 0 0 1 8 12.5a4.5 4.5 0 0 1 1.544-3.393Q8.844 9.002 8 9c-5 0-6 3-6 4"/>
-          </svg>
-        </a
-        >
-      </td>
+
       <td>
         <a
         href="/admin/manager/students/edit/<%= student.id  %>"
@@ -124,9 +121,23 @@
   <% } %>
 </table>
 
+<div class="d-flex justify-content-between">
+
+  <form
+  id="deleteButton"
+  action="/admin/manager/students/deleteAll"
+  method="post"
+  style="display: none;" 
+  >
+  <input hidden value="" class="data" name="id"/>
+
+  <button type="submit" class="btn btn-danger mt-2">
+      Xóa đã chọn
+  </button>
+</form>
 <% if (totalPage > 1) { %>
 
-<nav class="d-flex justify-content-end mt-2">
+<nav class="d-flex justify-content-end mt-2 ml-auto">
   <ul class="pagination">
     <% if (page > 1) { %>
     <li class="page-item">
@@ -144,14 +155,89 @@
   </ul>
 </nav>
 <% } %>
+</div>
 <script>
   const btnDelete = document.querySelectorAll(".btn.btn-danger.delete");
   btnDelete.forEach((btn) => {
     btn.addEventListener("click", (e) => {
-      const value = confirm("Bạn có chắc chắn muốn xóa người dùng này?");
+      const value = confirm("Bạn có chắc chắn muốn xóa học viên này?");
       if (!value) {
         e.preventDefault();
       }
     });
   });
+  document.querySelector("#deleteButton").addEventListener("click", (e) => {
+    const value = confirm("Bạn có chắc chắn muốn xóa những học viên này này?");
+    if (!value) {
+        e.preventDefault();
+      }
+  })
+
+  const checkAll = document.querySelector("#deleteAll")
+  const check = document.querySelectorAll(".deleteCheck")
+
+  check.forEach((element, index) => {
+    element.addEventListener('click', (e) => {
+    let data = 0
+    const id = []
+    check.forEach((e)=>{
+  
+      if(e.checked){
+        data+=1
+        id.push(e.value)
+      }
+    })
+
+    document.querySelector(".data").value = id
+
+   
+    if(data >0){
+      document.querySelector("#deleteButton").style.display = "block"
+    }
+    if(data < 1 ){
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+    const length = '<%= students.length %>'
+  
+    if(+length<5){
+      if(data === +length ){
+        checkAll.checked = true
+      }
+      if(data<+length){
+        checkAll.checked = false
+      }
+    }else{
+      if(data === 5 ){
+        checkAll.checked = true
+      }
+      if(data<5){
+        checkAll.checked = false
+    }
+    }
+    
+   
+    })
+  });
+
+  checkAll.addEventListener('click', (e) => {
+    let checked = false
+    if(checkAll.checked){
+      checked = true
+    }
+    if(checked){
+      check.forEach(element => {
+        element.checked = true
+      });
+      document.querySelector("#deleteButton").style.display = "block"
+    }else{
+    
+      check.forEach(element => {
+        element.checked = false
+      });
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+  })
+  document.getElementById("files").onchange = function() {
+    document.getElementById("form").submit();
+  };
 </script>

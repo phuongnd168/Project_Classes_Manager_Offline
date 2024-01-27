@@ -1,0 +1,24 @@
+<% if(error?.length){ %>
+  <label id="error-toast"><%= error[0].msg %></label>
+  <% } %> <% if(success?.length){ %>
+  <label id="success-toast"><%= success %></label>
+  <% } %>
+<form action="" method="post" novalidate>
+        <label class="form-label">Đường dẫn tài liệu</label>
+            <div class="col-md-10">
+                <input
+                  type="text"
+                  class="form-control mb-2"
+                  name="link"
+                  placeholder="Đường dẫn tài liệu..."
+                  value=<%= moduleDocument.pathName  %>
+                />
+            </div>
+   
+    
+    <div class="col-10 mt-2">
+      <button class="btn btn-warning mr-2" type="submit">Sửa</button>
+      <a href="/teacher/manager/courses/<%= id  %>/module" class="btn btn-danger">Quay lại</a>
+    </div>
+  </form>
+  

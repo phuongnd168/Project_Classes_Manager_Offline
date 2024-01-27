@@ -1,0 +1,23 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error %></label>
+<% } %> <% if(success?.length){ %>
+    <label id="success-toast"><%= success %></label>
+<% } %>
+
+
+<% if(modules?.length){%>
+  <% modules.forEach((e, i) => {%>
+    <h2><%= i+1 + ". "  %><%= e.name  %></h2>
+    <% if(e.module_documents.length){%>
+      <% e.module_documents.forEach((element, index) => {%>
+        <p class="mx-4"><%= i+1 + "."+ ++index + ". "   %><%= element.pathName %></p>
+      <%}); %>
+    <% } %>
+  <%}); %>
+
+<%}else{%>
+  <h3>Chưa có tài liệu</h3>
+<%} %>
+<div class="col-10 mt-2">
+  <a href="/admin/manager/courses" class="btn btn-danger">Quay lại</a>
+</div>

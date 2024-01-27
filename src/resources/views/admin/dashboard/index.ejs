@@ -3,4 +3,109 @@
 <% } %> <% if(success?.length){ %>
 <label id="success-toast"><%= success %></label>
 <% } %>
+<script
+src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js">
+</script>
+      <div class="container-fluid">
+        <!-- Info boxes -->
+        <div class="row">
+          
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-danger elevation-1"><i class="fa fa-book"></i></span>
 
+              <div class="info-box-content">
+                <span class="info-box-text">Số lượng khóa học</span>
+                <span class="info-box-number"><%= countCourse %></span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+
+          <!-- fix for small devices only -->
+          <div class="clearfix hidden-md-up"></div>
+
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-success elevation-1"><i class="fa fa-graduation-cap"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Số lượng lớp học</span>
+                <span class="info-box-number"><%= countClass  %></span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-secondary elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Số lượng giảng viên</span>
+                <span class="info-box-number"><%= countTeacher  %></span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box mb-3">
+              <span class="info-box-icon bg-warning elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Số lượng trợ giảng</span>
+                <span class="info-box-number"><%=countTutor  %></span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <div class="col-12 col-sm-6 col-md-3">
+            <div class="info-box">
+              <span class="info-box-icon bg-info elevation-1"><i class="fas fa-users"></i></span>
+
+              <div class="info-box-content">
+                <span class="info-box-text">Số lượng học viên</span>
+                <span class="info-box-number">
+                  <%= countStudent  %>
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+            <!-- /.info-box -->
+          </div>
+          <!-- /.col -->
+        </div>
+        <!-- /.row -->
+        <h1 class="text-center">Biểu đồ tăng trưởng học viên, lớp học năm 2024</h1>
+    <canvas id="myChart"></canvas>
+<script>
+const xValues = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const dataUser = "<%= dataUser %>"
+const dataClass = "<%= dataClass %>"
+new Chart("myChart", {
+  type: "line",
+  data: {
+    labels: xValues,
+    datasets: [{
+      label: "Lớp học",
+      data: dataClass.split(","),
+      borderColor: "blue",
+      fill: false
+    },{
+      label: "Học viên",
+      data: dataUser.split(","),
+      borderColor: "green",
+      fill: false
+    }]
+  },
+  options: {
+    legend: {display: true}
+  }
+});
+</script>

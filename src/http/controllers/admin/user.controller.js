@@ -1,8 +1,7 @@
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const model = require("../../../models/index");
-
 const { validationResult } = require("express-validator");
-
+const Excel = require('exceljs');
 const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 
@@ -13,7 +12,10 @@ const updateUserService = require("../../services/admin/users/updateUser.service
 const destroyUserService = require("../../services/admin/users/destroyUser.service");
 const getUserService = require("../../services/admin/users/getUser.service");
 const filterUserService = require("../../services/admin/users/filterUser.service");
+const exportExcel = require("../../../utils/exportExcel");
+
 const User = model.User;
+let data = null
 module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
@@ -37,7 +39,7 @@ module.exports = {
 
     const offset = (page - 1) * PER_PAGE;
     const users = await getUserService(filters, +PER_PAGE, offset);
-
+    data = users
     res.render("admin/users/index", {
       req,
       routerRoleRequest,
@@ -130,4 +132,64 @@ module.exports = {
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/users");
   },
-};
+  deleteAll: async(req, res) => {
+    const {id} = req.body
+    const data = id.split(",")
+    data.forEach((id) => {
+      destroyUserService(id)
+    });
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/users");
+  },
+  importExcel: async(req, res) => {
+  
+    const workbook = new Excel.Workbook();
+    const files = req.files['myFiles']
+
+    files.forEach(file => {
+      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+      .then(function() {
+        ws = workbook.getWorksheet(1)
+        ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
+          if(rowNumber !== 1){
+            const [empty, email, name, phone, address] = row.values;
+            const data = { email: email.text, name, phone, address };
+    
+            try {
+              const password = generator.generate({
+                length: 10,
+                numbers: true,
+              });
+        
+              const hash = bcrypt.hashSync(password, 10);
+              const subject = "Mật khẩu người dùng";
+              const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
+        
+              const info = sendMail(data.email, subject, html);
+              data.password = hash
+              data.typeId = 1
+              if(info){
+                addUserService(data)
+                req.flash("success", "Thành công")
+              }
+              
+           
+            } catch (error) { 
+              req.flash("error", "Thất bại")
+            }
+          }
+        
+        });
+        
+      });
+    });
+    res.redirect("/admin/manager/users")
+  },
+  exportExcel: async(req, res) => {
+    const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ"]
+    const values = ["email", "name", "phone", "address"]
+    exportExcel(data, columns, values, res)
+  
+  }
+}
+

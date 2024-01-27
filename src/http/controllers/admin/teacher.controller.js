@@ -6,15 +6,15 @@ const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
 const sendMail = require("../../../utils/sendMail");
-
-const addClassStudentService = require("../../services/admin/students/addClass.student.service");
+const Excel = require('exceljs');
 const getTeacherService = require("../../services/admin/teachers/getTeacher.service");
 const addTeacherService = require("../../services/admin/teachers/addTeacher.service");
 const updateTeacherService = require("../../services/admin/teachers/updateTeacher.service");
 const destroyTeacherService = require("../../services/admin/teachers/destroyTeacher.service");
 const getTimetableService = require("../../services/admin/teachers/getTimetable.service");
 const filterTeacherService = require("../../services/admin/teachers/filterTeacher.service");
-
+const exportExcel = require("../../../utils/exportExcel");
+let data = null
 const User = model.User;
 const Class = model.Class;
 const Course = model.Course;
@@ -42,7 +42,7 @@ module.exports = {
     const offset = (page - 1) * PER_PAGE;
     
     const teachers = await getTeacherService(filters, +PER_PAGE, offset);
-
+    data = teachers
     res.render("admin/teachers/index", {
       req,
       routerRoleRequest,
@@ -150,5 +150,86 @@ module.exports = {
       req,
       routerRoleRequest
     })
+  },
+  deleteAll: async(req, res) => {
+    const {id} = req.body
+    const data = id.split(",")
+    data.forEach((id) => {
+      destroyTeacherService(id)
+    });
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/teachers");
+  },
+  importExcel: async(req, res) => {
+  
+    const workbook = new Excel.Workbook();
+    const files = req.files['myFiles']
+
+    files.forEach(file => {
+      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+      .then(function() {
+        ws = workbook.getWorksheet(1)
+        ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
+          if(rowNumber !== 1){
+            const [empty, email, name, phone, address, typeId] = row.values;
+            const data = { email: email.text, name, phone, address, typeId };
+    
+            try {
+              const password = generator.generate({
+                length: 10,
+                numbers: true,
+              });
+        
+              const hash = bcrypt.hashSync(password, 10);
+              const subject = "Mật khẩu người dùng";
+              const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
+        
+              const info = sendMail(data.email, subject, html);
+              data.password = hash
+              if(info){
+                addTeacherService(data)
+                req.flash("success", "Thành công")
+              }
+              
+           
+            } catch (error) { 
+              req.flash("error", "Thất bại")
+            }
+          }
+        
+        });
+        
+      });
+    });
+    res.redirect("/admin/manager/teachers")
+  },
+  exportExcel: async(req, res) => {
+    const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ", "Lớp học đang dạy", "Vai trò"]
+    const values = ["email", "name", "phone", "address", "classes", "role"]
+    data.forEach(e => {
+      if(e.Classes.length){
+        let classes=""
+        e.Classes.forEach((element, index)=> {
+        if(index === e.Classes.length-1){
+            classes+= element.name 
+            return 
+        } 
+        classes+= element.name + ", "
+      }); 
+      e.dataValues.classes = classes
+      }
+      else{
+        e.dataValues.classes = "Chưa có lớp dạy"
+      }
+      if(e.typeId === 2){
+        e.dataValues.role = "Giảng viên"
+      }
+      else{
+        e.dataValues.role = "Trợ giảng"
+      }
+    });
+
+    exportExcel(data, columns, values, res)
+  
   }
 };

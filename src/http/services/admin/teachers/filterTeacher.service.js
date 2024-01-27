@@ -1,12 +1,14 @@
 const { Op } = require("sequelize");
 module.exports = async (keyword) => {
   let filters = {
-    [Op.or]: [
+    [Op.and] : [{  [Op.or]: [
       { typeId: 2 } ,{ typeId: 4 },
-    ],
+    ],}]
+  
   };
   if (keyword) {
-    filters[Op.or] = [
+
+    filters[Op.and].push({[Op.or]: [
       {
         name: {
           [Op.like]: `%${keyword}%`,
@@ -17,7 +19,7 @@ module.exports = async (keyword) => {
           [Op.like]: `%${keyword}%`,
         },
       },
-    ];
+    ]});
   }
       return filters
 };

@@ -6,13 +6,15 @@ const bcrypt = require("bcrypt");
 const generator = require("generate-password");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
 const sendMail = require("../../../utils/sendMail");
-const addUserService = require("../../services/admin/users/addUser.service");
-const updateUserService = require("../../services/admin/users/updateUser.service");
-const destroyUserService = require("../../services/admin/users/destroyUser.service");
 const getStudentService = require("../../services/admin/students/getStudent.service");
-const addClassStudentService = require("../../services/admin/students/addClass.student.service");
+const Excel = require('exceljs');
 const filterStudentService = require("../../services/admin/students/filterStudent.service");
-
+const destroyStudentService = require("../../services/admin/students/destroyStudent.service");
+const updateStudentService = require("../../services/admin/students/updateStudent.service");
+const addStudentService = require("../../services/admin/students/addStudent.service");
+const exportExcel = require("../../../utils/exportExcel");
+const getClassName = require("../../../utils/getClassName");
+let data = null
 const User = model.User;
 const Class = model.Class;
 const Course = model.Course;
@@ -40,27 +42,13 @@ module.exports = {
     }
     const offset = (page - 1) * PER_PAGE;
     const students = await getStudentService(filters, +PER_PAGE, offset);
-    const className = {}
-    const courseName = {}
-    students.map(async (student) => {
-      if(student?.students_classes?.length){
-          student.students_classes.map(async(s) => {
-          
-            if(className.hasOwnProperty(s.studentId.toString())){   
-              
-              return className[s.studentId] =  [className[s.studentId], " "+ s.Class.name]
-            }
-      
-            return className[s.studentId] =  s.Class.name
-        })
-      }
-    })
-  
+    const className = getClassName(students)
+    data = students
+
     res.render("admin/students/index", {
       req,
       routerRoleRequest,
       className,
-      courseName,
       students,
       getPaginateUrl,
       success,
@@ -97,7 +85,7 @@ module.exports = {
       const info = sendMail(email, subject, html);
 
       if (info) {
-        addUserService({
+        addStudentService({
           name,
           email,
           phone,
@@ -135,7 +123,7 @@ module.exports = {
     const { name, email, phone, address } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      updateUserService({ name, email, phone, address }, id);
+      updateStudentService({ name, email, phone, address }, id);
 
       req.flash("success", "Sửa thành công");
     } else {
@@ -145,35 +133,103 @@ module.exports = {
   },
   deleteStudent: async (req, res) => {
     const { id } = req.params;
-    destroyUserService(id);
+    destroyStudentService(id);
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/students");
   },
-  addClass: async (req, res) => {
-    const success = req.flash("success");
-    const error = req.flash("error");
-    const {id} = req.params
-    let classData = await Class.findAll({include:[{model: StudentClass, where: {studentId: +id}}] })
-    const addClass = classData.map(c => c.id);
-    classData = await Class.findAll({
-      where:{
-        id: {[Op.notIn]: addClass}
-      }
-    })
-    res.render("admin/students/add-class", { 
-      classData,
-      success,
-      error,
-      id,
-      req, 
-      routerRoleRequest
-    })
+
+  deleteAll: async(req, res) => {
+    const {id} = req.body
+    const data = id.split(",")
+    data.forEach((id) => {
+      destroyStudentService(id)
+    });
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/students");
   },
-  handleAddClass: async (req, res) => {
-    const {id} = req.params
-    const {classes} = req.body
-    addClassStudentService(classes, id)
-    req.flash("success", "Thêm thành công");
+  importExcel: async(req, res) => {
+  
+    const workbook = new Excel.Workbook();
+    const files = req.files['myFiles']
+
+    files.forEach(file => {
+      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+      .then(function() {
+        ws = workbook.getWorksheet(1)
+        ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
+          if(rowNumber !== 1){
+            const [empty, email, name, phone, address] = row.values;
+            const data = { email: email.text, name, phone, address };
+    
+            try {
+              const password = generator.generate({
+                length: 10,
+                numbers: true,
+              });
+        
+              const hash = bcrypt.hashSync(password, 10);
+              const subject = "Mật khẩu người dùng";
+              const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
+        
+              const info = sendMail(data.email, subject, html);
+              data.password = hash
+              data.typeId = 3
+              if(info){
+                addStudentService(data)
+                req.flash("success", "Thành công")
+              }
+              
+           
+            } catch (error) { 
+              req.flash("error", "Thất bại")
+            }
+          }
+        
+        });
+        
+      });
+    });
     res.redirect("/admin/manager/students")
-  }
+  },
+  exportExcel: async(req, res) => {
+    const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ", "Lớp học", "Khóa học"]
+    const values = ["email", "name", "phone", "address", "classes", "courses"]
+    const className = getClassName(data)
+    data.forEach(student => {
+       if(student.students_classes?.length){
+         student.dataValues.classes = className[student.id].toString()
+         let course = "" 
+         student.students_classes.forEach((element, index) =>{ 
+             if(index === student.students_classes.length-1){
+              if(course.includes(element?.Class?.Course?.name)){
+                 course = course.slice(0, course.length-2) 
+                 return 
+              } 
+               if(!course){
+                 course += element?.Class?.Course?.name ?? "Chưa có khóa học" 
+                 return 
+              } 
+               course += element?.Class?.Course?.name 
+            }else{
+               if(!element?.Class?.Course?.name){
+                 course +=  "" 
+                 return 
+              }if(course.includes(element.Class.Course.name)){
+                 return 
+              }
+                 course += element?.Class?.Course?.name + ", " 
+            } 
+          
+        }); 
+        student.dataValues.courses = course
+    }else{
+      student.dataValues.classes = "Chưa có lớp học"
+      student.dataValues.courses = "Chưa có khóa học"
+
+    } 
+    });
+
+    exportExcel(data, columns, values, res)
+  
+  },
 };

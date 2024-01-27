@@ -33,7 +33,7 @@ module.exports = new FacebookStrategy(
           provider: provider,
           providerId: id
         })
-        return done(null, userFacebook, {message: "Liên kết thành công"});
+        return done(null, userFacebook,  req.flash("success", "Liên kết thành công"));
       }
 
       return done(null, false, {message: "Tài khoản đã được liên kết với người dùng khác"});

@@ -1,10 +1,12 @@
-const {Op} = require("sequelize")
+
 const model = require("../models/index")
 const TeacherCalendar = model.teacher_calendar;
 module.exports = async (startDate, endDate, day, classId, teacherId, timeLearnStart) => {
+
     const start = new Date(startDate)
     const end = new Date(endDate)
-    await TeacherCalendar.destroy({where: { [Op.and]: [{ teacherId}, { classId }]}})
+    await TeacherCalendar.destroy({where: {  classId }})
+
     async function create(){
       
     if(start.getTime() > end.getTime()){

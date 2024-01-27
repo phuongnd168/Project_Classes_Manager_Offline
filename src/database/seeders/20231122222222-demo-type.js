@@ -20,7 +20,7 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        name: "Teaching assistant",
+        name: "Tutor",
         createdAt: new Date(),
         updatedAt: new Date(),
       },

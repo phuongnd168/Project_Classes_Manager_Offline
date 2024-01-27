@@ -31,7 +31,7 @@ module.exports = new GitHubStrategy({
         provider: provider,
         providerId: id
       })
-      return done(null, userGithub, {message: "Liên kết thành công"});
+      return done(null, userGithub,  req.flash("success", "Liên kết thành công"));
     }
     return done(null, false, {message: "Tài khoản đã được liên kết với người dùng khác"});
     

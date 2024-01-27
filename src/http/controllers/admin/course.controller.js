@@ -3,13 +3,19 @@ const { Op } = require("sequelize");
 const { validationResult } = require("express-validator");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const { getPaginateUrl } = require("../../../utils/getPaginateUrl");
+const Excel = require('exceljs');
 const getCourseService = require("../../services/admin/courses/getCourse.service");
 const addCourseService = require("../../services/admin/courses/addCourse.service");
 const destroyCourseService = require("../../services/admin/courses/destroyCourse.service");
 const updateCourseService = require("../../services/admin/courses/updateCourse.service");
 const filterCourseService = require("../../services/admin/courses/filterCourse.service");
+const exportExcel = require("../../../utils/exportExcel");
+let data = null
 const Course = model.Course;
 const User = model.User;
+const CourseModule = model.course_module;
+const ModuleDocument = model.module_document;
+
 module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
@@ -33,7 +39,8 @@ module.exports = {
 
     const offset = (page - 1) * PER_PAGE;
     const courses = await getCourseService(filters, +PER_PAGE, offset);
-
+    data = courses
+    
     res.render("admin/courses/index", {
       req,
       getPaginateUrl,
@@ -133,5 +140,78 @@ module.exports = {
 
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/courses");
+  },
+  module: async(req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
+    const {id} = req.params
+    const modules = await CourseModule.findAll({where: {
+        courseId: id
+      },
+        include: ModuleDocument
+    })
+
+    res.render("admin/courses/module", {
+      modules,
+      error,
+      success,
+      req,
+      routerRoleRequest,
+    })
+  },
+  deleteAll: async(req, res) => {
+    const {id} = req.body
+    const data = id.split(",")
+    data.forEach((id) => {
+      destroyCourseService(id)
+    });
+    req.flash("success", "Xóa thành công");
+    res.redirect("/admin/manager/courses");
+  },
+  importExcel: async(req, res) => {
+  
+    const workbook = new Excel.Workbook();
+    const files = req.files['myFiles']
+
+    files.forEach(file => {
+      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+      .then(function() {
+        ws = workbook.getWorksheet(1)
+        ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
+          if(rowNumber !== 1){
+            const [empty, name, price, teacherId, tryLearn, quantity, duration] = row.values;
+            const data = { name, price, teacherId, tryLearn, quantity, duration };
+    
+            try {
+                addCourseService(data)
+                req.flash("success", "Thành công")          
+          
+            } catch (error) { 
+              req.flash("error", "Thất bại")
+            }
+          }
+        
+        });
+        
+      });
+    });
+    res.redirect("/admin/manager/courses")
+  },
+  exportExcel: async(req, res) => {
+    const columns = 
+    ["Tên khóa học", "Giá(VNĐ)", "Giảng viên", "Học thử(buổi)", "Số lượng học viên(người)", "Thời lượng khóa học(buổi)"]
+    const values = ["name", "price", "teacher", "try_learn", "quantity", "duration"]
+    data.forEach(course => {
+       if(course?.User){
+          course.dataValues.teacher = course.User.name
+      }else{
+          course.dataValues.teacher = "Chưa có giảng viên"
+      } 
+       let tryLearn = 0 
+       course.dataValues.try_learn =  course.tryLearn ? tryLearn + course.tryLearn : 0 
+    });
+    
+    exportExcel(data, columns, values, res)
+  
   },
 };

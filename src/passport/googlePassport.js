@@ -24,7 +24,7 @@ module.exports = new GoogleStrategy(
       if (!userGoogle) {
         return done(null, false, {
           message:
-            "Tài khoản mạng xã hội này chưa được liên kết",
+            "Tài khoản này chưa được liên kết",
         });
       }
       return done(null, userGoogle);

@@ -1,14 +1,45 @@
 const checkConnectSocial = require("../../../utils/checkConnectSocial");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const { validationResult } = require("express-validator");
+const {Op} = require("sequelize")
 const model = require("../../../models");
 const bcrypt = require("bcrypt");
+const getDataChartUser = require("../../../utils/getDataChartUser");
+const getDataChartClass = require("../../../utils/getDataChartClass");
 const User = model.User;
+const Course = model.Course;
+const Class = model.Class;
 module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+    const {count: countStudent} = await User.findAndCountAll({
+      where: {
+        typeId: 3
+      }
+    })
+    const {count: countTeacher} = await User.findAndCountAll({
+      where: {
+        typeId: 2
+      }
+    })
+    const {count: countTutor} = await User.findAndCountAll({
+      where: {
+        typeId: 4
+      }
+    })
+    const {count: countCourse} = await Course.findAndCountAll()
+    const {count: countClass} = await Class.findAndCountAll()
+    const dataUser = await getDataChartUser()
+    const dataClass = await getDataChartClass()
     res.render("admin/dashboard/index", {
+      dataUser,
+      dataClass,
+      countStudent,
+      countCourse,
+      countClass,
+      countTeacher,
+      countTutor,
       req,
       routerRoleRequest,
       success,
@@ -42,12 +73,12 @@ module.exports = {
   },
   updateInfo: async (req, res) => {
     const errors = validationResult(req);
-    const { email, name, phone, address } = req.body;
+    const { name, phone, address } = req.body;
     const { id } = req.user;
     if (errors.isEmpty()) {
       await User.update(
         {
-          email,
+
           name,
           phone,
           address,
@@ -112,7 +143,7 @@ module.exports = {
     const errors = validationResult(req);
     const { newPassword } = req.body;
     const { id } = req.user;
-
+   
     password = bcrypt.hashSync(newPassword, 10);
     if (errors.isEmpty()) {
       await User.update(

@@ -22,12 +22,19 @@
 </form>
 <table class="table table-bordered">
   <% if(classes?.length){%>
-  <a href="/admin/manager/classes/add" class="btn btn-success mb-2">Thêm</a>
-  <a href="/admin/manager/classes/export" class="btn btn-secondary mb-2 ml-2"
-    >Export file(xlsx)</a
-  >
+  <a href="/admin/manager/classes/add" class="btn btn-success mb-2 mr-2">Thêm</a>
+  <form action="/admin/manager/classes/import-excel" enctype="multipart/form-data"  method="POST" id="form">
+      
+    <input type="file" name="myFiles" id="files" hidden multiple/>
+    <label for="files" class="btn btn-secondary">Import Excel</label>
+
+  </form>
+  <a href="/admin/manager/classes/export-excel" class="btn btn-secondary mb-2 ml-2"
+  ><b>Export Excel</b></a>
+  
   <thead>
     <tr>
+      <th><input type="checkbox" id="deleteAll"/> </th>
       <th scope="col">STT</th>
       <th scope="col">Tên lớp</th>
       <th scope="col">Sĩ số</th>
@@ -44,6 +51,7 @@
   <tbody>
     <% classes.forEach((c, index) => {%>
     <tr>
+      <th><input type="checkbox" class="deleteCheck" value="<%= c.id %>"/> </th>
       <td><%= ++offset %></td>
       <td><%= c.name %></td>
       <td><%= c.quantity %></td>
@@ -69,14 +77,10 @@
       <td><%= c.timeLearn %></td>
      
       <td>
-        <%= Object.assign({}, c.Users)['0']?.name ?? "Chưa có giảng viên" %>
+        <%= c?.Course?.User?.name ?? "Chưa có giảng viên" %>
       </td>
-      <% if(c.Course){%>
-        <td><%= c.Course.name %></td>
-      <%}else{%>
-        <td>Chưa có khóa học</td>
-      <%} %>
-    
+      <td><%= c?.Course?.name ?? "Chưa có khóa học" %></td>
+   
       <td>
         <a
           href="/admin/manager/classes/edit/<%= c.id  %>"
@@ -104,8 +108,22 @@
 
   <% } %>
 </table>
+<div class="d-flex justify-content-between">
+
+  <form
+  id="deleteButton"
+  action="/admin/manager/classes/deleteAll"
+  method="post"
+  style="display: none;" 
+  >
+  <input hidden value="" class="data" name="id"/>
+
+  <button type="submit" class="btn btn-danger mt-2">
+      Xóa đã chọn
+  </button>
+</form>
 <% if (totalPage > 1) { %>
-  <nav class="d-flex justify-content-end mt-2">
+  <nav class="d-flex justify-content-end mt-2 ml-auto">
     <ul class="pagination">
       <% if (page > 1) { %>
       <li class="page-item">
@@ -123,6 +141,7 @@
     </ul>
   </nav>
   <% } %>
+</div>
 <script>
   const btnDelete = document.querySelectorAll(".btn.btn-danger.delete");
   btnDelete.forEach((btn) => {
@@ -133,4 +152,78 @@
       }
     });
   });
+  document.querySelector("#deleteButton").addEventListener("click", (e) => {
+    const value = confirm("Bạn có chắc chắn muốn xóa những lớp học này?");
+    if (!value) {
+        e.preventDefault();
+      }
+  })
+
+  const checkAll = document.querySelector("#deleteAll")
+  const check = document.querySelectorAll(".deleteCheck")
+
+  check.forEach((element, index) => {
+    element.addEventListener('click', (e) => {
+    let data = 0
+    const id = []
+    check.forEach((e)=>{
+  
+      if(e.checked){
+        data+=1
+        id.push(e.value)
+      }
+    })
+
+    document.querySelector(".data").value = id
+
+   
+    if(data >0){
+      document.querySelector("#deleteButton").style.display = "block"
+    }
+    if(data < 1 ){
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+    const length = '<%= classes.length %>'
+  
+    if(+length<5){
+      if(data === +length ){
+        checkAll.checked = true
+      }
+      if(data<+length){
+        checkAll.checked = false
+      }
+    }else{
+      if(data === 5 ){
+        checkAll.checked = true
+      }
+      if(data<5){
+        checkAll.checked = false
+    }
+    }
+    
+   
+    })
+  });
+
+  checkAll.addEventListener('click', (e) => {
+    let checked = false
+    if(checkAll.checked){
+      checked = true
+    }
+    if(checked){
+      check.forEach(element => {
+        element.checked = true
+      });
+      document.querySelector("#deleteButton").style.display = "block"
+    }else{
+    
+      check.forEach(element => {
+        element.checked = false
+      });
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+  })
+  document.getElementById("files").onchange = function() {
+    document.getElementById("form").submit();
+  };
 </script>

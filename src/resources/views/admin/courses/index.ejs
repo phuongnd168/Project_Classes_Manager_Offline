@@ -21,10 +21,19 @@
 </form>
 <table class="table table-bordered">
   <% if(courses?.length){%>
-  <a href="/admin/manager/courses/add" class="btn btn-success mb-2">Thêm</a>
+  <a href="/admin/manager/courses/add" class="btn btn-success mb-2 mr-2">Thêm</a>
+  <form action="/admin/manager/courses/import-excel" enctype="multipart/form-data"  method="POST" id="form">
+      
+    <input type="file" name="myFiles" id="files" hidden multiple/>
+    <label for="files" class="btn btn-secondary">Import Excel</label>
+
+  </form>
+  <a href="/admin/manager/courses/export-excel" class="btn btn-secondary mb-2 ml-2"
+  ><b>Export Excel</b></a>
   <thead>
     <tr>
-      <th scope="col">STT</th>
+      <th><input type="checkbox" id="deleteAll"/> </th>
+      <th scope="col">STT</th> 
       <th scope="col">Tên khóa học</th>
       <th scope="col">Giá (VNĐ)</th>
       <th width="10%" scope="col">Giảng viên</th>
@@ -33,12 +42,18 @@
       <th width="10%" scope="col">Thời lượng khóa học (buổi)</th>
       <th>Sửa</th>
       <th>Xóa</th>
+      <th>Tài liệu</th>
     </tr>
   </thead>
   <tbody>
+
     <% courses.forEach((course, index) => {%>
+      
     <tr>
-      <td><%= ++offset %></td>
+      <th><input type="checkbox" class="deleteCheck" value="<%= course.id %>"/> </th>
+      <td><%= ++offset  %></td>
+  
+
       <td><%= course.name %></td>
       <td><%= course.price%></td>
       <% if(course?.User){%>
@@ -75,31 +90,56 @@
           </button>
         </td>
       </form>
+      <td>
+        <a
+        href="/admin/manager/courses/module/<%= course.id  %>"
+        class="btn btn-secondary"
+        ><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-clipboard-fill" viewBox="0 0 16 16">
+          <path fill-rule="evenodd" d="M10 1.5a.5.5 0 0 0-.5-.5h-3a.5.5 0 0 0-.5.5v1a.5.5 0 0 0 .5.5h3a.5.5 0 0 0 .5-.5zm-5 0A1.5 1.5 0 0 1 6.5 0h3A1.5 1.5 0 0 1 11 1.5v1A1.5 1.5 0 0 1 9.5 4h-3A1.5 1.5 0 0 1 5 2.5zm-2 0h1v1A2.5 2.5 0 0 0 6.5 5h3A2.5 2.5 0 0 0 12 2.5v-1h1a2 2 0 0 1 2 2V14a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V3.5a2 2 0 0 1 2-2"/>
+        </svg>
+        </a>  
+      </td>
     </tr>
     <% }) %>
   </tbody>
-
   <% } %>
 </table>
+
+<div class="d-flex justify-content-between">
+
+  <form
+  id="deleteButton"
+  action="/admin/manager/courses/deleteAll"
+  method="post"
+  style="display: none;" 
+  >
+  <input hidden value="" class="data" name="id"/>
+
+  <button type="submit" class="btn btn-danger mt-2">
+      Xóa đã chọn
+  </button>
+</form>
 <% if (totalPage > 1) { %>
-<nav class="d-flex justify-content-end mt-2">
-  <ul class="pagination">
-    <% if (page > 1) { %>
-    <li class="page-item">
-      <a class="page-link" href="?page=<%= +page - 1 %>">Trước</a>
-    </li>
-    <% } %> <% for (let i = 1; i <= totalPage; i++) { %>
-    <li class="page-item <%= +page === +i ? 'active': '' %>">
-      <a class="page-link" href="?<%= getPaginateUrl(req, i) %>"><%= i %></a>
-    </li>
-    <% } %> <% if (page < totalPage) { %>
-    <li class="page-item">
-      <a class="page-link" href="?page=<%= +page + 1 %>">Sau</a>
-    </li>
-    <% } %>
-  </ul>
-</nav>
-<% } %>
+  <nav class="d-flex justify-content-end mt-2 ml-auto">
+    <ul class="pagination">
+      <% if (page > 1) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= +page - 1 %>">Trước</a>
+      </li>
+      <% } %> <% for (let i = 1; i <= totalPage; i++) { %>
+      <li class="page-item <%= +page === +i ? 'active': '' %>">
+        <a class="page-link" href="?<%= getPaginateUrl(req, i) %>"><%= i %></a>
+      </li>
+      <% } %> <% if (page < totalPage) { %>
+      <li class="page-item">
+        <a class="page-link" href="?page=<%= +page + 1 %>">Sau</a>
+      </li>
+      <% } %>
+    </ul>
+  </nav>
+  <% } %>
+</div>
+
 <script>
   const btnDelete = document.querySelectorAll(".btn.btn-danger.delete");
   btnDelete.forEach((btn) => {
@@ -110,4 +150,78 @@
       }
     });
   });
+  document.querySelector("#deleteButton").addEventListener("click", (e) => {
+    const value = confirm("Bạn có chắc chắn muốn xóa những khóa học này?");
+    if (!value) {
+        e.preventDefault();
+      }
+  })
+
+  const checkAll = document.querySelector("#deleteAll")
+  const check = document.querySelectorAll(".deleteCheck")
+
+  check.forEach((element, index) => {
+    element.addEventListener('click', (e) => {
+    let data = 0
+    const id = []
+    check.forEach((e)=>{
+  
+      if(e.checked){
+        data+=1
+        id.push(e.value)
+      }
+    })
+
+    document.querySelector(".data").value = id
+
+   
+    if(data >0){
+      document.querySelector("#deleteButton").style.display = "block"
+    }
+    if(data < 1 ){
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+    const length = '<%= courses.length %>'
+  
+    if(+length<5){
+      if(data === +length ){
+        checkAll.checked = true
+      }
+      if(data<+length){
+        checkAll.checked = false
+      }
+    }else{
+      if(data === 5 ){
+        checkAll.checked = true
+      }
+      if(data<5){
+        checkAll.checked = false
+    }
+    }
+    
+   
+    })
+  });
+
+  checkAll.addEventListener('click', (e) => {
+    let checked = false
+    if(checkAll.checked){
+      checked = true
+    }
+    if(checked){
+      check.forEach(element => {
+        element.checked = true
+      });
+      document.querySelector("#deleteButton").style.display = "block"
+    }else{
+    
+      check.forEach(element => {
+        element.checked = false
+      });
+      document.querySelector("#deleteButton").style.display = "none"
+    }
+  })
+  document.getElementById("files").onchange = function() {
+    document.getElementById("form").submit();
+  };
 </script>

@@ -1,5 +1,6 @@
 var express = require("express");
 var router = express.Router();
+
 const DashboardController = require("../../http/controllers/admin/dashboard.controller");
 const adminMiddleware = require("../../http/middlewares/admin.middleware");
 const firstLoginMiddleware = require("../../http/middlewares/first.login.middleware");
@@ -25,6 +26,8 @@ const handleResetPasswordMiddleware = require("../../http/middlewares/account/ha
 const sendOtpMiddleware = require("../../http/middlewares/send.otp.middleware");
 const studentController = require("../../http/controllers/admin/student.controller");
 const teacherController = require("../../http/controllers/admin/teacher.controller");
+const uploadFile = require("../../utils/uploadFile");
+const addStudentMiddleware = require("../../http/middlewares/class/add.student.middleware");
 
 router.use(sendOtpMiddleware);
 router.use(adminMiddleware);
@@ -76,7 +79,19 @@ router.post(
   destroyUserMiddleware,
   userController.deleteUser
 );
-
+router.post(
+  "/manager/users/deleteAll",
+  userController.deleteAll
+);
+router.post(
+  "/manager/users/import-excel",
+  uploadFile,
+  userController.importExcel
+);
+router.get(
+  "/manager/users/export-excel",
+  userController.exportExcel
+);
 
 router.get("/manager/students", studentController.index);
 router.get("/manager/students/add", studentController.addStudent);
@@ -100,14 +115,21 @@ router.post(
   destroyUserMiddleware,
   studentController.deleteStudent
 );
-router.get(
-  "/manager/students/:id/addClass",
-  studentController.addClass
+
+router.post(
+  "/manager/students/deleteAll",
+  studentController.deleteAll
 );
 router.post(
-  "/manager/students/:id/addClass",
-  studentController.handleAddClass
+  "/manager/students/import-excel",
+  uploadFile,
+  studentController.importExcel
 );
+router.get(
+  "/manager/students/export-excel",
+  studentController.exportExcel
+);
+
 
 router.get("/manager/teachers", teacherController.index);
 router.get("/manager/teachers/add", teacherController.addTeacher);
@@ -135,7 +157,19 @@ router.get(
   "/manager/teachers/timetable/:id",
   teacherController.timetable
 );
-
+router.post(
+  "/manager/teachers/deleteAll",
+  teacherController.deleteAll
+);
+router.post(
+  "/manager/teachers/import-excel",
+  uploadFile,
+  teacherController.importExcel
+);
+router.get(
+  "/manager/teachers/export-excel",
+  teacherController.exportExcel
+);
 
 router.get("/manager/courses", courseController.index);
 router.get("/manager/courses/add", courseController.addCourse);
@@ -158,6 +192,24 @@ router.post(
   "/manager/courses/delete/:id",
   destroyCourseMiddleware,
   courseController.deleteCourse
+);
+router.get(
+  "/manager/courses/module/:id",
+  editCourseMiddleware,
+  courseController.module
+);
+router.post(
+  "/manager/courses/deleteAll",
+  courseController.deleteAll
+);
+router.post(
+  "/manager/courses/import-excel",
+  uploadFile,
+  courseController.importExcel
+);
+router.get(
+  "/manager/courses/export-excel",
+  courseController.exportExcel
 );
 
 router.get("/manager/classes", classController.index);
@@ -182,5 +234,38 @@ router.post(
   destroyClassMiddleware,
   classController.deleteClass
 );
-router.get("/manager/classes/export", classController.exportClass);
+router.get(
+  "/manager/classes/students",
+  classController.students
+);
+router.get(
+  "/manager/classes/students/add/:id",
+  classController.addStudent
+);
+router.post(
+  "/manager/classes/students/add/:id",
+  addStudentMiddleware(),
+  classController.handleAddStudent
+);
+router.get(
+  "/manager/classes/students/remove/:id",
+  classController.removeStudent
+);
+router.post(
+  "/manager/classes/students/remove/:id",
+  classController.handleRemoveStudent
+);
+router.post(
+  "/manager/classes/deleteAll",
+  classController.deleteAll
+);
+router.post(
+  "/manager/classes/import-excel",
+  uploadFile,
+  classController.importExcel
+);
+router.get(
+  "/manager/classes/export-excel",
+  classController.exportExcel
+);
 module.exports = router;
