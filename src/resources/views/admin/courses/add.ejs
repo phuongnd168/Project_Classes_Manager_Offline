@@ -24,16 +24,7 @@
       onkeypress="return isNumber(event)"
     />
   </div>
-  <div class="col-md-10">
-    <label class="form-label">Giảng Viên</label>
-
-    <select class="form-control" name="teacher">
-      <% if(teachers.length){%> <% teachers.forEach(teacher => {%>
-      <option value="<%= teacher.id %>"><%= teacher.name %></option>
-      <%}) %> <% } %>
-    </select>
-  </div>
-
+ 
   <div class="col-md-10">
     <label class="form-label">Học thử</label>
 
@@ -53,16 +44,7 @@
 
   />
   </div>
-  <div class="col-md-10">
-    <label class="form-label">Số lượng học viên</label>
-    <input
-      type="text"
-      class="form-control"
-      name="quantity"
-      placeholder="Số lượng học viên..."
-      onkeypress="return isNumber(event)"
-    />
-  </div>
+
   <div class="col-md-10">
     <label class="form-label">Thời lượng học</label>
     <input

@@ -3,6 +3,7 @@
 <% } %> <% if(success?.length){ %>
     <label id="success-toast"><%= success %></label>
 <% } %>
+<link rel="stylesheet" type="text/css" href="/assets/css/checkbox.css" />
 <form
 method="post"
 >
@@ -23,7 +24,15 @@ method="post"
               <td><%= index+1 %></td>
               <td><%= student.name %></td>
               <td>
-                <input class="students" name="student" value="<%= student.id %>" type="checkbox" />
+                <div class="checkbox-wrapper-23">
+                  <input class="students" name="student" value="<%= student.id %>" type="checkbox" id="check<%= student.id %>" />
+                  <label for="check<%= student.id %>" style="--size: 30px">
+                    <svg viewBox="0,0,50,50">
+                      <path d="M5 30 L 20 45 L 45 5"></path>
+                    </svg>
+                  </label>
+                </div>
+      
               </td> 
             </tr>
      
@@ -41,6 +50,9 @@ method="post"
     </div>
  
     </form>
+  
+    
+    
 <script>
 
    const checkbox = document.querySelectorAll(".students");

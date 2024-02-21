@@ -17,17 +17,18 @@ module.exports = (sequelize, DataTypes) => {
       });
       User.hasOne(models.user_otp, { foreignKey: "userId" });
       User.hasOne(models.token_forgot_pass, { foreignKey: "userId" });
-      User.hasMany(models.Course, { foreignKey: "teacherId" });
+      User.hasMany(models.Class, { foreignKey: "teacherId" });
       User.belongsToMany(models.Class, {
         through: "classes_teachers",
         foreignKey: "teacherId",
       });
       User.hasMany(models.teacher_calendar, { foreignKey: "teacherId" });
       User.hasMany(models.students_class, { foreignKey: "studentId" });
-      User.hasMany(models.ExerciseSubmit, { foreignKey: "studentId" });
-      User.hasMany(models.Comment, { foreignKey: "studentId" });
-      User.hasMany(models.user_column, { foreignKey: "userId" });
+      User.hasMany(models.exercises_submit, { foreignKey: "studentId" });
+      User.hasMany(models.Comment, { foreignKey: "userId" });
       User.hasMany(models.students_attendance, {foreignKey: "studentId"})
+      User.hasMany(models.questions, {foreignKey: "studentId"})
+      User.hasMany(models.answers, {foreignKey: "teacherId"})
     }
   }
   User.init(

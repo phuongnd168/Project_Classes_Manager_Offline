@@ -39,110 +39,169 @@
             <p>Tổng quan</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a
-            class="<%= req.originalUrl === '/admin/manager/users' ? 'nav-link active' : 'nav-link' %>"
-          >
-            <i class="nav-icon fas fa-user"></i>
-            <p>
-              Người dùng
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+        <% user.Roles.forEach(role => {%>
+          <% role.Permissions.forEach(permission => {%>
+           <% if(permission.value.localeCompare("Xem người dùng") === 0){%>
             <li class="nav-item">
-              <a href="/admin/manager/users" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a
+                class="<%= req.originalUrl === '/admin/manager/users' ? 'nav-link active' : 'nav-link' %>"
+              >
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Người dùng
+                  <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/manager/users" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Danh sách</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a
-            class="<%= req.originalUrl === '/admin/manager/students' ? 'nav-link active' : 'nav-link' %>"
-          >
-            <i class="nav-icon fas fa-user"></i>
-            <p>
-              Học viên
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+             <%}%>
+           <%});%>
+         <%});%>
+         <% user.Roles.forEach(role => {%>
+          <% role.Permissions.forEach(permission => {%>
+           <% if(permission.value.localeCompare("Xem học viên") === 0){%>
             <li class="nav-item">
-              <a href="/admin/manager/students" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a
+                class="<%= req.originalUrl === '/admin/manager/students' ? 'nav-link active' : 'nav-link' %>"
+              >
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Học viên
+                  <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/manager/students" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Danh sách</p>
+                  </a>
+                </li>
+              </ul>
+             
             </li>
-          </ul>
-         
-        </li>
-        <li class="nav-item">
-          <a
-            class="<%= req.originalUrl === '/admin/manager/teachers' ? 'nav-link active' : 'nav-link' %>"
-          >
-            <i class="nav-icon fas fa-user"></i>
-            <p>
-              Giảng viên
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+             <%}%>
+           <%});%>
+         <%});%>
+         <% user.Roles.forEach(role => {%>
+          <% role.Permissions.forEach(permission => {%>
+           <% if(permission.value.localeCompare("Xem giảng viên") === 0){%>
             <li class="nav-item">
-              <a href="/admin/manager/teachers" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a
+                class="<%= req.originalUrl === '/admin/manager/teachers' ? 'nav-link active' : 'nav-link' %>"
+              >
+                <i class="nav-icon fas fa-user"></i>
+                <p>
+                  Giảng viên
+                  <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/manager/teachers" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Danh sách</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            class="<%= req.originalUrl === '/admin/manager/courses' ? 'nav-link active' : 'nav-link' %>"
-          >
-            <i class="nav-icon fas fa-book"></i>
-            <p>
-              Khóa học
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+             <%}%>
+           <%});%>
+         <%});%>
+         <% user.Roles.forEach(role => {%>
+          <% role.Permissions.forEach(permission => {%>
+           <% if(permission.value.localeCompare("Xem khóa học") === 0){%>
             <li class="nav-item">
-              <a href="/admin/manager/courses" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a
+                href="#"
+                class="<%= req.originalUrl === '/admin/manager/courses' ? 'nav-link active' : 'nav-link' %>"
+              >
+                <i class="nav-icon fas fa-book"></i>
+                <p>
+                  Khóa học
+                  <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/manager/courses" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Danh sách</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-          </ul>
-        </li>
-        <li class="nav-item">
-          <a
-            href="#"
-            class="<%= req.originalUrl === '/admin/manager/classes' ? 'nav-link active' : 'nav-link' %>"
-          >
-            <i class="nav-icon fas fa fa-graduation-cap"></i>
-            <p>
-              Lớp học
-              <i class="fas fa-angle-left right"></i>
-            </p>
-          </a>
-          <ul class="nav nav-treeview">
+             <%}%>
+           <%});%>
+         <%});%>
+         <% user.Roles.forEach(role => {%>
+          <% role.Permissions.forEach(permission => {%>
+           <% if(permission.value.localeCompare("Xem lớp học") === 0){%>
             <li class="nav-item">
-              <a href="/admin/manager/classes" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Danh sách</p>
+              <a
+                href="#"
+                class="<%= req.originalUrl === '/admin/manager/classes' ? 'nav-link active' : 'nav-link' %>"
+              >
+                <i class="nav-icon fas fa fa-graduation-cap"></i>
+                <p>
+                  Lớp học
+                  <i class="fas fa-angle-left right"></i>
+                </p>
               </a>
+              <ul class="nav nav-treeview">
+                <li class="nav-item">
+                  <a href="/admin/manager/classes" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Danh sách</p>
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a href="/admin/manager/classes/students" class="nav-link">
+                    <i class="far fa-circle nav-icon"></i>
+                    <p>Học viên</p>
+                  </a>
+                </li>
+              </ul>
             </li>
-            <li class="nav-item">
-              <a href="/admin/manager/classes/students" class="nav-link">
-                <i class="far fa-circle nav-icon"></i>
-                <p>Học viên</p>
-              </a>
-            </li>
-          </ul>
-        </li>
+             <%}%>
+           <%});%>
+         <%});%>
+       
+        
+        <% user.Roles.forEach(role => {%>
+         <% role.Permissions.forEach(permission => {%>
+          <% if(permission.value.localeCompare("Phân quyền") === 0){%>
+              <li class="nav-item">
+                <a
+                  href="#"
+                  class="<%= req.originalUrl === '/admin/manager/role' ? 'nav-link active' : 'nav-link' %>"
+                >
+                  <i class="nav-icon fa fa-lock"></i>
+                  <p>
+                    Phân quyền
+                    <i class="fas fa-angle-left right"></i>
+                  </p>
+                </a>
+                <ul class="nav nav-treeview">
+                  <li class="nav-item">
+                    <a href="/admin/manager/role" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>Danh sách</p>
+                    </a>
+                  </li>
+                </ul>
+              </li>
+            <%}%>
+          <%});%>
+        <%});%>
+        
       </ul>
     </nav>
     <!-- /.sidebar-menu -->

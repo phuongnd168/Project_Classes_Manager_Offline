@@ -2,7 +2,7 @@ const { check } = require("express-validator");
 const {Op} = require("sequelize")
 const model = require("../../../models/index");
 const Class = model.Class;
-
+const StudentClass = model.students_class;
 module.exports = () => {
   return [
  
@@ -26,11 +26,19 @@ module.exports = () => {
           [Op.and]: [{id: {[Op.ne]: id}}, {name: nameValue}]
         },
       });
+      const {count: countStudent} = await StudentClass.findAndCountAll({
+        where: {
+          classId: id
+        }
+      })
       if (classInfo) {
         throw new Error("Tên lớp học đã tồn tại");
       }
       if(+quantity > 16){
         throw new Error("Số học viên 1 lớp không quá 16 người");
+      }
+      if(+countStudent > quantity){
+        throw new Error("Số học viên hiện tại đang là "+ countStudent+ ", không thể sửa");
       }
     }),
   ];

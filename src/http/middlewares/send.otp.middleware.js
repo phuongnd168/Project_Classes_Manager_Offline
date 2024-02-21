@@ -14,6 +14,7 @@ module.exports = async (req, res, next) => {
   }
   if (!req.session.sendOtp) {
     const OTP = otpGenerator.generate(6, {
+      lowerCaseAlphabets: false,
       upperCaseAlphabets: false,
       specialChars: false,
     });

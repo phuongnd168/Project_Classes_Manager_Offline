@@ -14,6 +14,7 @@ const updateStudentService = require("../../services/admin/students/updateStuden
 const addStudentService = require("../../services/admin/students/addStudent.service");
 const exportExcel = require("../../../utils/exportExcel");
 const getClassName = require("../../../utils/getClassName");
+const getUserService = require("../../services/role/getUser.service");
 let data = null
 const User = model.User;
 const Class = model.Class;
@@ -44,8 +45,9 @@ module.exports = {
     const students = await getStudentService(filters, +PER_PAGE, offset);
     const className = getClassName(students)
     data = students
-
+    const user = await getUserService(req.user.id)
     res.render("admin/students/index", {
+      user,
       req,
       routerRoleRequest,
       className,
@@ -61,8 +63,9 @@ module.exports = {
   addStudent: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-
+    const user = await getUserService(req.user.id)
     res.render("admin/students/add", {
+      user,
       error,
       success,
       req,
@@ -107,15 +110,17 @@ module.exports = {
   },
   editStudent: async (req, res) => {
     const { id } = req.params;
-    const user = await User.findOne({ where: { id } });
+    const userInfo = await User.findOne({ where: { id } });
     const success = req.flash("success");
     const error = req.flash("error");
+    const user = await getUserService(req.user.id)
     res.render("admin/students/edit", {
       error,
       success,
       req,
       routerRoleRequest,
       user,
+      userInfo
     });
   },
   handleEditStudent: async (req, res) => {

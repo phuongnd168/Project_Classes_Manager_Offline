@@ -5,7 +5,7 @@ const Class = model.Class;
 const ClassSchedule = model.classes_schedule;
 const Course = model.Course
 const User = model.User;
-module.exports = async (data, schedule, startDate, timeLearnStart) => {
+module.exports = async (data, teacherId, schedule, startDate, timeLearnStart) => {
 
 
   const course = await Course.findOne({
@@ -16,7 +16,7 @@ module.exports = async (data, schedule, startDate, timeLearnStart) => {
 
   const teacher = await User.findOne({
     where: {
-      id: course.teacherId
+      id: teacherId
     }
   })
   
@@ -26,13 +26,13 @@ module.exports = async (data, schedule, startDate, timeLearnStart) => {
   newClass.addUser(teacher);
 
   if (typeof schedule === "string") {
-    setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +schedule, newClass.id, teacher.id, timeLearnStart)
+    setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +schedule, newClass.id, teacherId, timeLearnStart)
     await ClassSchedule.create({ classId: newClass.id, schedule: +schedule });
     
   } else {
   
     schedule.forEach(async (element) => {
-      setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +element, newClass.id, teacher.id, timeLearnStart)
+      setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +element, newClass.id, teacherId, timeLearnStart)
       await ClassSchedule.create({ classId: newClass.id, schedule: +element });
     });
   }

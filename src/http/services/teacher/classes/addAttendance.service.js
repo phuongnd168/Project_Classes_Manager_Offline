@@ -20,47 +20,25 @@ module.exports = async (classId, dayId, attendance) => {
   
     if(typeof attendance === 'string'){
         students.forEach(async(student) => {
-            const data = await StudentAttendance.findOne({
-                where: {
-                    [Op.and]: [{studentId: student}, {dateLearning}]
-                }
-            })
-            if(data){
+
                 if(student === +attendance){
-                    await StudentAttendance.update({dateLearning, studentId: student, classId, status: 1}, {where: {id: data.id}});
+                    await StudentAttendance.update({status: 1}, {where: {[Op.and]: [{studentId: student}, {dateLearning}, {classId}]}});
                 }else{
-                    await StudentAttendance.update({dateLearning, studentId: student, classId, status: 0}, {where: {id: data.id}});
+                    await StudentAttendance.update({status: 0}, {where: {[Op.and]: [{studentId: student}, {dateLearning}, {classId}]}});
                 }
-            }else{
-                if(student === +attendance){
-                    await StudentAttendance.create({dateLearning, studentId: student, classId, status: 1});
-                }else{
-                    await StudentAttendance.create({dateLearning, studentId: student, classId, status: 0});
-                }
-            }
            
         });
     }
     else{
         students.forEach(async(student) => {
-            const data = await StudentAttendance.findOne({
-                where: {
-                    [Op.and]: [{studentId: student}, {dateLearning}]
-                }
-            })
-            if(data){
+          
+         
                 if(attendance.includes(student.toString())){
-                    await StudentAttendance.update({dateLearning, studentId: student, classId, status: 1}, {where: {id: data.id}});
+                    await StudentAttendance.update({status: 1}, {where: {[Op.and]: [{studentId: student}, {dateLearning}, {classId}]}});
                 }else{
-                    await StudentAttendance.update({dateLearning, studentId: student, classId, status: 0}, {where: {id: data.id}});
+                    await StudentAttendance.update({status: 0}, {where: {[Op.and]: [{studentId: student}, {dateLearning}, {classId}]}});
                 }
-            }else{
-                if(attendance.includes(student.toString())){
-                    await StudentAttendance.create({dateLearning, studentId: student, classId, status: 1});
-                }else{
-                    await StudentAttendance.create({dateLearning, studentId: student, classId, status: 0});
-                }
-            }
+            
             
         });
     }

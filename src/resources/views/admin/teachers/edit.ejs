@@ -11,7 +11,7 @@
       type="email"
       class="form-control"
       name="email"
-      value="<%= user.email %>"
+      value="<%= userInfo.email %>"
       placeholder="Email..."
     />
   </div>
@@ -21,7 +21,7 @@
       type="text"
       class="form-control"
       name="name"
-      value="<%= user.name %>"
+      value="<%= userInfo.name %>"
       placeholder="Tên..."
     />
   </div>
@@ -31,7 +31,7 @@
       type="text"
       class="form-control"
       name="phone"
-      value="<%= user.phone %>"
+      value="<%= userInfo.phone %>"
       placeholder="Số điện thoại..."
     />
   </div>
@@ -41,18 +41,18 @@
       type="text"
       class="form-control"
       name="address"
-      value="<%= user.address %>"
+      value="<%= userInfo.address %>"
       placeholder="Địa chỉ..."
     />
   </div>
   <div class="col-md-10">
     <label class="form-label">Vai trò</label>
     <select class="form-control" name="typeId">
-      <% if(user.typeId === 2){%>
-        <option value="<%= user.typeId %>" selected>Giảng viên</option>
+      <% if(userInfo.typeId === 2){%>
+        <option value="<%= userInfo.typeId %>" selected>Giảng viên</option>
         <option value="4">Trợ giảng</option>
       <%}else{%>
-        <option value="<%= user.typeId %>" selected>Trợ giảng</option>
+        <option value="<%= userInfo.typeId %>" selected>Trợ giảng</option>
         <option value="2">Giảng viên</option>
       <%} %>
     

@@ -1,11 +1,16 @@
 const model = require("../../../../models/index");
 const Course = model.Course;
-const User = model.User;
-module.exports = async (filters, limit, offset) => {
+const Class = model.Class
+module.exports = async (filters, limit, offset, teacherId) => {
   return await Course.findAll({
     where: filters,
     limit,
     offset,
-    include: User
+    include: {
+      model: Class,
+      where: {
+        teacherId
+      }
+    }
   });
 };

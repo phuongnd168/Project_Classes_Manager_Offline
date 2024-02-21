@@ -1,0 +1,70 @@
+<% if(error?.length){ %>
+<label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
+<% } %>
+<link rel="stylesheet" type="text/css" href="/assets/css/checkbox.css" />
+<h1>Phân quyền</h1>
+<form action="" method="post" novalidate>
+
+      <table class="table table-bordered">
+        <% if(roles?.length){%>
+          <thead>
+            <tr>
+              <th scope="col">STT</th> 
+              <th scope="col">Tên vai trò</th>
+              <th scope="col">Chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% roles.forEach((role, index) => {%>
+            <% let check = false %>
+            <tr>
+              <td><%= index + 1  %></td>
+ 
+              <td>
+                  <span><%= role.name %></span>
+              </td>
+              <% userInfo.Roles.forEach(element => {%>
+                <% if(element.id === role.id){%>
+                  <td>
+                    <div class="checkbox-wrapper-23">
+                        
+                      <input name="role" value="<%= role.id %>" type="checkbox" id="check<%= role.id %>" checked/>
+                      <label for="check<%= role.id %>" style="--size: 30px">
+                        <svg viewBox="0,0,50,50">
+                          <path d="M5 30 L 20 45 L 45 5"></path>
+                        </svg>
+                      </label>
+                    </div>
+                  </td>
+                  <% check = true %>
+                <%} %>
+                
+              <%}); %>
+              <% if(!check){%>
+                <td>
+                  <div class="checkbox-wrapper-23">
+                      
+                    <input name="role" value="<%= role.id %>" type="checkbox" id="check<%= role.id %>" />
+                    <label for="check<%= role.id %>" style="--size: 30px">
+                      <svg viewBox="0,0,50,50">
+                        <path d="M5 30 L 20 45 L 45 5"></path>
+                      </svg>
+                    </label>
+                  </div>
+                </td>
+              <%} %>
+           
+            </tr>
+            <% }) %>
+          </tbody>
+          <% } %>
+      </table>
+   
+
+      <div>
+        <button class="btn btn-primary" type="submit">Phân quyền</button>
+        <a href="/admin/manager/role/authorization/users" class="btn btn-danger">Quay lại</a>
+      </div>
+</form>

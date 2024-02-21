@@ -28,6 +28,38 @@ const studentController = require("../../http/controllers/admin/student.controll
 const teacherController = require("../../http/controllers/admin/teacher.controller");
 const uploadFile = require("../../utils/uploadFile");
 const addStudentMiddleware = require("../../http/middlewares/class/add.student.middleware");
+const roleController = require("../../http/controllers/admin/role.controller");
+const timetableMiddleware = require("../../http/middlewares/teacher/timetable.middleware");
+const addRoleMiddleware = require("../../http/middlewares/role/add.role.middleware");
+const editRoleMiddleware = require("../../http/middlewares/role/edit.role.middleware");
+const handleEditRoleMiddleware = require("../../http/middlewares/role/handle.edit.role.middleware");
+const roleMiddleware = require("../../http/middlewares/authorization/role.middleware");
+const userMiddleware = require("../../http/middlewares/role/user.middleware");
+
+const getUserMiddleware = require("../../http/middlewares/authorization/user/user.middleware");
+const addUserInfoMiddleware = require("../../http/middlewares/authorization/user/add.user.middleware");
+const editUserInfoMiddleware = require("../../http/middlewares/authorization/user/edit.user.middleware");
+const destroyUserInfoMiddleware = require("../../http/middlewares/authorization/user/destroy.user.middleware");
+
+const getStudentMiddleware = require("../../http/middlewares/authorization/student/student.middleware");
+const addStudentInfoMiddleware = require("../../http/middlewares/authorization/student/add.student.middleware");
+const editStudentInfoMiddleware = require("../../http/middlewares/authorization/student/edit.student.middleware");
+const destroyStudentInfoMiddleware = require("../../http/middlewares/authorization/student/destroy.student.middleware");
+
+const getTeacherMiddleware = require("../../http/middlewares/authorization/teacher/teacher.middleware");
+const addTeacherInfoMiddleware = require("../../http/middlewares/authorization/teacher/add.teacher.middleware");
+const editTeacherInfoMiddleware = require("../../http/middlewares/authorization/teacher/edit.teacher.middleware");
+const destroyTeacherInfoMiddleware = require("../../http/middlewares/authorization/teacher/destroy.teacher.middleware");
+
+const getCourseMiddleware = require("../../http/middlewares/authorization/course/course.middleware");
+const addCourseInfoMiddleware = require("../../http/middlewares/authorization/course/add.course.middleware");
+const editCourseInfoMiddleware = require("../../http/middlewares/authorization/course/edit.course.middleware");
+const destroyCourseInfoMiddleware = require("../../http/middlewares/authorization/course/destroy.course.middleware");
+
+const getClassMiddleware = require("../../http/middlewares/authorization/class/class.middleware");
+const addClassInfoMiddleware = require("../../http/middlewares/authorization/class/add.class.middleware");
+const editClassInfoMiddleware = require("../../http/middlewares/authorization/class/edit.class.middleware");
+const destroyClassInfoMiddleware = require("../../http/middlewares/authorization/class/destroy.class.middleware");
 
 router.use(sendOtpMiddleware);
 router.use(adminMiddleware);
@@ -57,8 +89,8 @@ router.post(
   DashboardController.handleChangePassword
 );
 
-router.get("/manager/users", userController.index);
-router.get("/manager/users/add", userController.addUser);
+router.get("/manager/users", getUserMiddleware, userController.index);
+router.get("/manager/users/add", addUserInfoMiddleware, userController.addUser);
 router.post(
   "/manager/users/add",
   addUserMiddleware(),
@@ -66,21 +98,25 @@ router.post(
 );
 router.get(
   "/manager/users/edit/:id",
+  editUserInfoMiddleware,
   editUserMiddleware,
   userController.editUser
 );
 router.post(
   "/manager/users/edit/:id",
+
   handleEditUserMiddleware(),
   userController.handleEditUser
 );
 router.post(
   "/manager/users/delete/:id",
+  destroyUserInfoMiddleware,
   destroyUserMiddleware,
   userController.deleteUser
 );
 router.post(
   "/manager/users/deleteAll",
+  destroyUserInfoMiddleware,
   userController.deleteAll
 );
 router.post(
@@ -93,8 +129,8 @@ router.get(
   userController.exportExcel
 );
 
-router.get("/manager/students", studentController.index);
-router.get("/manager/students/add", studentController.addStudent);
+router.get("/manager/students", getStudentMiddleware, studentController.index);
+router.get("/manager/students/add", addStudentInfoMiddleware, studentController.addStudent);
 router.post(
   "/manager/students/add",
   addUserMiddleware(),
@@ -102,6 +138,7 @@ router.post(
 );
 router.get(
   "/manager/students/edit/:id",
+  editStudentInfoMiddleware,
   editUserMiddleware,
   studentController.editStudent
 );
@@ -112,12 +149,14 @@ router.post(
 );
 router.post(
   "/manager/students/delete/:id",
+  destroyStudentInfoMiddleware,
   destroyUserMiddleware,
   studentController.deleteStudent
 );
 
 router.post(
   "/manager/students/deleteAll",
+  destroyStudentInfoMiddleware,
   studentController.deleteAll
 );
 router.post(
@@ -131,8 +170,8 @@ router.get(
 );
 
 
-router.get("/manager/teachers", teacherController.index);
-router.get("/manager/teachers/add", teacherController.addTeacher);
+router.get("/manager/teachers", getTeacherMiddleware, teacherController.index);
+router.get("/manager/teachers/add", addTeacherInfoMiddleware, teacherController.addTeacher);
 router.post(
   "/manager/teachers/add",
   addUserMiddleware(),
@@ -140,6 +179,7 @@ router.post(
 );
 router.get(
   "/manager/teachers/edit/:id",
+  editTeacherInfoMiddleware,
   editUserMiddleware,
   teacherController.editTeacher
 );
@@ -150,15 +190,19 @@ router.post(
 );
 router.post(
   "/manager/teachers/delete/:id",
+  destroyTeacherInfoMiddleware,
   destroyUserMiddleware,
   teacherController.deleteTeacher
 );
 router.get(
   "/manager/teachers/timetable/:id",
+  getTeacherMiddleware,
+  timetableMiddleware,
   teacherController.timetable
 );
 router.post(
   "/manager/teachers/deleteAll",
+  destroyTeacherInfoMiddleware,
   teacherController.deleteAll
 );
 router.post(
@@ -171,8 +215,8 @@ router.get(
   teacherController.exportExcel
 );
 
-router.get("/manager/courses", courseController.index);
-router.get("/manager/courses/add", courseController.addCourse);
+router.get("/manager/courses", getCourseMiddleware, courseController.index);
+router.get("/manager/courses/add", addCourseInfoMiddleware, courseController.addCourse);
 router.post(
   "/manager/courses/add",
   addCourseMiddleware(),
@@ -180,6 +224,7 @@ router.post(
 );
 router.get(
   "/manager/courses/edit/:id",
+  editCourseInfoMiddleware,
   editCourseMiddleware,
   courseController.editCourse
 );
@@ -190,16 +235,19 @@ router.post(
 );
 router.post(
   "/manager/courses/delete/:id",
+  destroyCourseInfoMiddleware,
   destroyCourseMiddleware,
   courseController.deleteCourse
 );
 router.get(
   "/manager/courses/module/:id",
+  getCourseMiddleware,
   editCourseMiddleware,
   courseController.module
 );
 router.post(
   "/manager/courses/deleteAll",
+  destroyCourseInfoMiddleware,
   courseController.deleteAll
 );
 router.post(
@@ -212,8 +260,8 @@ router.get(
   courseController.exportExcel
 );
 
-router.get("/manager/classes", classController.index);
-router.get("/manager/classes/add", classController.addClass);
+router.get("/manager/classes", getClassMiddleware, classController.index);
+router.get("/manager/classes/add", addClassInfoMiddleware, classController.addClass);
 router.post(
   "/manager/classes/add",
   addClassMiddleware(),
@@ -221,6 +269,7 @@ router.post(
 );
 router.get(
   "/manager/classes/edit/:id",
+  editClassInfoMiddleware,
   editClassMiddleware,
   classController.editClass
 );
@@ -240,6 +289,7 @@ router.get(
 );
 router.get(
   "/manager/classes/students/add/:id",
+  addClassInfoMiddleware,
   classController.addStudent
 );
 router.post(
@@ -249,14 +299,17 @@ router.post(
 );
 router.get(
   "/manager/classes/students/remove/:id",
+  addClassInfoMiddleware,
   classController.removeStudent
 );
 router.post(
   "/manager/classes/students/remove/:id",
+  
   classController.handleRemoveStudent
 );
 router.post(
   "/manager/classes/deleteAll",
+  destroyClassInfoMiddleware,
   classController.deleteAll
 );
 router.post(
@@ -268,4 +321,53 @@ router.get(
   "/manager/classes/export-excel",
   classController.exportExcel
 );
+
+
+router.use(roleMiddleware)
+router.get(
+  "/manager/role",
+  roleController.index
+);
+router.get(
+  "/manager/role/add",
+  roleController.addRole
+);
+router.post(
+  "/manager/role/add",
+  addRoleMiddleware(),
+  roleController.handleAddRole
+);
+router.get(
+  "/manager/role/edit/:id",
+  editRoleMiddleware,
+  roleController.editRole
+);
+router.post(
+  "/manager/role/edit/:id",
+  handleEditRoleMiddleware(),
+  roleController.handleEditRole
+);
+router.get(
+  "/manager/role/authorization",
+  roleController.authorization
+);
+router.get(
+  "/manager/role/authorization",
+  roleController.authorization
+);
+router.get(
+  "/manager/role/authorization/users",
+  roleController.users
+);
+
+router.get(
+  "/manager/role/authorization/users/:id",
+  userMiddleware,
+  roleController.addUserRole
+);
+router.post(
+  "/manager/role/authorization/users/:id",
+  roleController.handleAddUserRole
+);
+
 module.exports = router;

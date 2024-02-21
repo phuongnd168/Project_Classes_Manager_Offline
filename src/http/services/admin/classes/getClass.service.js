@@ -6,7 +6,7 @@ const User = model.User;
 module.exports = async (filters, limit, offset) => {
   return await Class.findAll({
     where: filters,
-    include: [{ model: ClassSchedule }, {model: Course, include: {model: User}}],
+    include: [{ model: ClassSchedule }, {model: User}, {model: Course}],
     limit,
     offset,
    

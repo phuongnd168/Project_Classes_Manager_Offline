@@ -6,6 +6,6 @@ module.exports = async (filters, limit, offset) => {
     where: filters,
     limit,
     offset,
-    include: User
+
   });
 };

@@ -6,23 +6,22 @@ const StudentClass = model.students_class;
 module.exports = async (keyword, id) => {
 
 
-  const user = await User.findOne({
+  const classes = await Class.findAll({
     where: {
-      id
+      teacherId: id
     },
-    include: Class,
   });
 
-    const classes = user.Classes.map(async(c) => {
+    const data = classes.map((c) => {
       return c.id
     });
   
-    const data = await StudentClass.findAll({
+    const studentsClass = await StudentClass.findAll({
       where: {
-        classId: {[Op.in]: await Promise.all(classes)}
+        classId: {[Op.in]: data}
       }
     })
-    const students = data.map(student => {
+    const students = studentsClass.map(student => {
       return student.studentId
     });
   

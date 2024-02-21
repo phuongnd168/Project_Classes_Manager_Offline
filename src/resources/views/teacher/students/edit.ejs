@@ -16,7 +16,7 @@
       <tbody>
         <% studentClasses.forEach(element => {%>
         <tr>
-          <% if(classes.includes(element.Class["name"])) {%>
+
           <td>  <%= element.Class["name"]  %></td>
      
           <td>
@@ -31,7 +31,7 @@
             </a
             >
           </td>
-          <% }%>
+          
         </tr>
         <% }) %>
       </tbody>

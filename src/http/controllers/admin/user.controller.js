@@ -11,6 +11,7 @@ const addUserService = require("../../services/admin/users/addUser.service");
 const updateUserService = require("../../services/admin/users/updateUser.service");
 const destroyUserService = require("../../services/admin/users/destroyUser.service");
 const getUserService = require("../../services/admin/users/getUser.service");
+const getUserInfoService = require("../../services/role/getUser.service");
 const filterUserService = require("../../services/admin/users/filterUser.service");
 const exportExcel = require("../../../utils/exportExcel");
 
@@ -40,7 +41,10 @@ module.exports = {
     const offset = (page - 1) * PER_PAGE;
     const users = await getUserService(filters, +PER_PAGE, offset);
     data = users
+    const user = await getUserInfoService(req.user.id)
+    
     res.render("admin/users/index", {
+      user,
       req,
       routerRoleRequest,
       users,
@@ -55,9 +59,10 @@ module.exports = {
   addUser: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-
+    const user = await getUserInfoService(req.user.id)
     res.render("admin/users/add", {
       error,
+      user,
       success,
       req,
       routerRoleRequest,
@@ -101,7 +106,8 @@ module.exports = {
   },
   editUser: async (req, res) => {
     const { id } = req.params;
-    const user = await User.findOne({ where: { id } });
+    const userInfo = await User.findOne({ where: { id } });
+    const user = await getUserInfoService(req.user.id)
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("admin/users/edit", {
@@ -110,6 +116,7 @@ module.exports = {
       req,
       routerRoleRequest,
       user,
+      userInfo
     });
   },
   handleEditUser: async (req, res) => {

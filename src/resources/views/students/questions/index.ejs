@@ -1,0 +1,22 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+    <label id="success-toast"><%= success %></label>
+<% } %>
+
+<form id="form" action="" method="post">
+
+        <label class="form-label">Câu hỏi của bạn</label>
+        <textarea
+          name="question"
+          placeholder="Viết câu hỏi của bạn..."
+        ></textarea>    
+
+    <div class="col-md-6">
+        <button type="submit" class="btn btn-success mt-2 mr-2">Đặt câu hỏi</button>
+        <a  href="/classes/<%= classId %>/all-question" class="btn btn-primary mt-2 mr-2">Tất cả câu hỏi</a>
+        <a href="/classes" class="btn btn-danger mt-2">Quay lại</a>
+    </div>
+
+</form>
+<script src="/assets/js/wysiwyg.js"></script>

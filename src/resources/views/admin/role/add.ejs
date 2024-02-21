@@ -1,0 +1,112 @@
+<% if(error?.length){ %>
+    <label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+<label id="success-toast"><%= success %></label>
+<% } %>
+<h1>Thêm vai trò</h1>
+<form action="" method="post" novalidate>
+      <div class="col-8">
+        <label class="form-label">Tên vai trò</label>
+        <input
+          type="text"
+          class="form-control"
+          name="role"
+          placeholder="Tên vai trò..."
+        />
+      </div>
+   
+
+      
+      <table class="table table-bordered">
+        <% if(permissions?.length){%>
+          <thead>
+            <tr>
+              <th scope="col">STT</th> 
+              <th scope="col">Quyền</th>
+             
+              <th scope="col">Chọn</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% permissions.forEach((permission, index) => {%>
+              
+            <tr>
+              <td><%= index + 1  %></td>
+ 
+              <td>
+                  <span><%= permission.value %></span>
+              </td>
+              <td>
+                <div class="checkbox-wrapper-23">
+                    
+                  <input name="permission" value="<%= permission.id %>" type="checkbox" id="check<%= permission.id %>" />
+                  <label for="check<%= permission.id %>" style="--size: 30px">
+                    <svg viewBox="0,0,50,50">
+                      <path d="M5 30 L 20 45 L 45 5"></path>
+                    </svg>
+                  </label>
+                </div>
+              </td>
+            </tr>
+            <% }) %>
+          </tbody>
+          <% } %>
+      </table>
+
+
+      <div class="col-10 mt-2">
+        <button class="btn btn-success col-1" type="submit">Thêm</button>
+        <a href="/admin/manager/role" class="btn btn-danger">Quay lại</a>
+      </div>
+</form>
+<style>
+      .checkbox-wrapper-23 *,
+      .checkbox-wrapper-23 *:after,
+      .checkbox-wrapper-23 *:before {
+        box-sizing: border-box;
+      }
+    
+      .checkbox-wrapper-23 input {
+        position: absolute;
+        opacity: 0;
+      }
+        
+      .checkbox-wrapper-23 input:checked + label svg path {
+        stroke-dashoffset: 0;
+      }
+        
+      .checkbox-wrapper-23 input:focus + label {
+        transform: scale(1.03);
+      }
+    
+      .checkbox-wrapper-23 input + label {
+        display: block;
+        border: 2px solid #333;
+        width: var(--size);
+        height: var(--size);
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all .2s ease;
+      }
+        
+      .checkbox-wrapper-23 input + label:active {
+        transform: scale(1.05);
+        border-radius: 12px;
+      }
+        
+      .checkbox-wrapper-23 input + label svg {
+        pointer-events: none;
+        padding: 5%;
+      }
+    
+      .checkbox-wrapper-23 input + label svg path {      
+        fill: none;     
+        stroke: #333;
+        stroke-width: 4px;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        stroke-dasharray: 100;
+        stroke-dashoffset: 101;
+        transition: all 250ms cubic-bezier(1,0,.37,.91);
+      }
+</style>

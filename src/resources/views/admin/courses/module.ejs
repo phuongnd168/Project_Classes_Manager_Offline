@@ -1,23 +1,36 @@
+
+
 <% if(error?.length){ %>
-    <label id="error-toast"><%= error %></label>
+  <label id="error-toast"><%= error %></label>
 <% } %> <% if(success?.length){ %>
-    <label id="success-toast"><%= success %></label>
+  <label id="success-toast"><%= success %></label>
 <% } %>
+<link rel="stylesheet" type="text/css" href="/assets/css/accordion.css" />
+<% if(modules.length){%>
+    <% modules.forEach((e, i) => {%>
+      <details>
+        <summary><%= i+1 + ". "  %><%= e.name  %></summary>
+        <% if(e.module_documents.length){%>
+        <% e.module_documents.forEach((element, index) => {%>
+            <div class="ctn">
+              <h3><%= element.title  %></h3>
+              <div class="ml-4">
+                <%- documents[element.id]  %>
+              </div>
+            </div>
+        <%}); %>
+        <%}else{%>
+            <div class="ctn">
+              <h3>Chưa có tài liệu</h3>
+            </div>
+        <%} %>
+          </details>
+    <%}); %>  
+    <%}else{%>
+        <h1>Chưa có tài liệu</h1>
+    <%} %>    
 
+    <div class="col-10 mt-2">
 
-<% if(modules?.length){%>
-  <% modules.forEach((e, i) => {%>
-    <h2><%= i+1 + ". "  %><%= e.name  %></h2>
-    <% if(e.module_documents.length){%>
-      <% e.module_documents.forEach((element, index) => {%>
-        <p class="mx-4"><%= i+1 + "."+ ++index + ". "   %><%= element.pathName %></p>
-      <%}); %>
-    <% } %>
-  <%}); %>
-
-<%}else{%>
-  <h3>Chưa có tài liệu</h3>
-<%} %>
-<div class="col-10 mt-2">
-  <a href="/admin/manager/courses" class="btn btn-danger">Quay lại</a>
-</div>
+      <a href="/admin/manager/courses" class="btn btn-danger">Quay lại</a>
+    </div>

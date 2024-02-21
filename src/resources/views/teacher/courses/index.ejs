@@ -29,11 +29,9 @@
       <th scope="col">STT</th> 
       <th scope="col">Tên khóa học</th>
       <th scope="col">Giá (VNĐ)</th>
-      <th width="10%" scope="col">Giảng viên</th>
-      <th width="5%" scope="col">Học thử (buổi)</th>
-      <th width="10%" scope="col">Số lượng học viên (người)</th>
-      <th width="10%" scope="col">Thời lượng khóa học (buổi)</th>
-      <th width="5%" scope="col">Tài liệu</th>
+      <th scope="col">Học thử (buổi)</th>
+      <th scope="col">Thời lượng khóa học (buổi)</th>
+      <th scope="col">Tài liệu</th>
     </tr>
   </thead>
   <tbody>
@@ -46,14 +44,8 @@
 
       <td><%= course.name %></td>
       <td><%= course.price%></td>
-      <% if(course?.User){%>
-        <td><%= course.User.name%></td>
-      <%}else{%>
-        <td>Chưa có giảng viên</td>
-      <%} %>
       <% let tryLearn = 0 %>
       <td><%= course.tryLearn ? tryLearn + course.tryLearn : 0 %></td>
-      <td><%= course.quantity %></td>
       <td><%= course.duration%></td>
 
       <td>

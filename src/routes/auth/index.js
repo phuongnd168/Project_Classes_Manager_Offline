@@ -8,6 +8,7 @@ const forgotPasswordMiddleware = require("../../http/middlewares/forgot.password
 const handleRecoverPasswordMiddleware = require("../../http/middlewares/handle.recover.password.middleware");
 const recoverPasswordMiddleware = require("../../http/middlewares/recover.password.middleware");
 const handleOtpMiddleware = require("../../http/middlewares/handle.otp.middleware");
+const otpMiddleware = require("../../http/middlewares/otp.middleware");
 
 router.get("/login", roleMiddleware, authController.login);
 router.post(

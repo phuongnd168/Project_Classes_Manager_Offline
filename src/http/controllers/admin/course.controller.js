@@ -10,6 +10,8 @@ const destroyCourseService = require("../../services/admin/courses/destroyCourse
 const updateCourseService = require("../../services/admin/courses/updateCourse.service");
 const filterCourseService = require("../../services/admin/courses/filterCourse.service");
 const exportExcel = require("../../../utils/exportExcel");
+const getDocument = require("../../../utils/getDocument");
+const getUserService = require("../../services/role/getUser.service");
 let data = null
 const Course = model.Course;
 const User = model.User;
@@ -40,8 +42,10 @@ module.exports = {
     const offset = (page - 1) * PER_PAGE;
     const courses = await getCourseService(filters, +PER_PAGE, offset);
     data = courses
+    const user = await getUserService(req.user.id)
     
     res.render("admin/courses/index", {
+      user,
       req,
       getPaginateUrl,
       page,
@@ -56,29 +60,23 @@ module.exports = {
   addCourse: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-    const teachers = await User.findAll({
-      where: {
-        typeId: 2,
-      },
-    });
+    const user = await getUserService(req.user.id)
     res.render("admin/courses/add", {
+      user,
       error,
       success,
-      teachers,
       req,
       routerRoleRequest,
     });
   },
   handleAddCourse: async (req, res) => {
     const errors = validationResult(req);
-    const { name, price, teacher, quantity, duration, numberOfSessions } = req.body;
+    const { name, price, duration, numberOfSessions } = req.body;
     if (errors.isEmpty()) {
       addCourseService({
         name,
         price,
-        teacherId: teacher,
         tryLearn: numberOfSessions ? numberOfSessions : 0,
-        quantity,
         duration,
       });
 
@@ -90,40 +88,28 @@ module.exports = {
   },
   editCourse: async (req, res) => {
     const { id } = req.params;
-    const course = await Course.findOne({ where: { id }, include: User });
-
-    const teachers = await User.findAll({
-      where: {
-        [Op.and]: [
-          { typeId: 2 },
-          {
-            id: {
-              [Op.ne]: course.User.id,
-            },
-          },
-        ],
-      },
-    });
-
+    const course = await Course.findOne({ where: { id }});
     const success = req.flash("success");
     const error = req.flash("error");
+    const user = await getUserService(req.user.id)
     res.render("admin/courses/edit", {
+      user,
       error,
       success,
       req,
       routerRoleRequest,
       course,
-      teachers,
+ 
     });
   },
   handleEditCourse: async (req, res) => {
     const errors = validationResult(req);
     const { id } = req.params;
-    const { name, price, teacher, tryLearn, numberOfSessions, quantity, duration } = req.body;
+    const { name, price, tryLearn, numberOfSessions, duration } = req.body;
     
     if (errors.isEmpty()) {
       updateCourseService(
-        { name, price, teacherId: teacher, tryLearn: +tryLearn ? numberOfSessions : 0, quantity, duration },
+        { name, price, tryLearn: +tryLearn ? numberOfSessions : 0, duration },
         id
       );
 
@@ -144,15 +130,33 @@ module.exports = {
   module: async(req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+    let documents = {}
+    const documentId = []
     const {id} = req.params
     const modules = await CourseModule.findAll({where: {
         courseId: id
       },
         include: ModuleDocument
     })
-
+    modules.forEach(element => {
+      if(element.module_documents.length){
+          
+          element.module_documents.forEach(e => {
+              const data = getDocument(e.pathName)
+              const idDocument = e.id
+              documents[idDocument] = data
+              documentId.push(idDocument)
+          });
+      }
+      
+    
+    });
+    const user = await getUserService(req.user.id)
     res.render("admin/courses/module", {
+      user,
       modules,
+      documents,
+      documentId,
       error,
       success,
       req,
@@ -199,14 +203,10 @@ module.exports = {
   },
   exportExcel: async(req, res) => {
     const columns = 
-    ["Tên khóa học", "Giá(VNĐ)", "Giảng viên", "Học thử(buổi)", "Số lượng học viên(người)", "Thời lượng khóa học(buổi)"]
-    const values = ["name", "price", "teacher", "try_learn", "quantity", "duration"]
+    ["Tên khóa học", "Giá(VNĐ)", "Học thử(buổi)", "Thời lượng khóa học(buổi)"]
+    const values = ["name", "price", "try_learn", "duration"]
     data.forEach(course => {
-       if(course?.User){
-          course.dataValues.teacher = course.User.name
-      }else{
-          course.dataValues.teacher = "Chưa có giảng viên"
-      } 
+
        let tryLearn = 0 
        course.dataValues.try_learn =  course.tryLearn ? tryLearn + course.tryLearn : 0 
     });

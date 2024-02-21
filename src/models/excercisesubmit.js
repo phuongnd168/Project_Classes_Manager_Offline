@@ -3,18 +3,18 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class ExerciseSubmit extends Model {
+  class exercises_submit extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      ExerciseSubmit.belongsTo(models.Exercise)
-      ExerciseSubmit.belongsTo(models.User)
+      exercises_submit.belongsTo(models.Exercise, {foreignKey: "exercisesId"})
+      exercises_submit.belongsTo(models.User, {foreignKey: "studentId"})
     }
   }
-  ExerciseSubmit.init({
+  exercises_submit.init({
     id: {
       type: DataTypes.INTEGER,
       autoIncrement: true,
@@ -26,7 +26,8 @@ module.exports = (sequelize, DataTypes) => {
     attachment: DataTypes.STRING
   }, {
     sequelize,
-    modelName: 'ExerciseSubmit',
+    freezeTableName: true,
+    modelName: 'exercises_submit',
   });
-  return ExerciseSubmit;
+  return exercises_submit;
 };

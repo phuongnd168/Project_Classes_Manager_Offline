@@ -3,6 +3,7 @@
 <% } %> <% if(success?.length){ %>
 <label id="success-toast"><%= success %></label>
 <% } %>
+<link rel="stylesheet" type="text/css" href="/assets/css/checkbox.css" />
 <h1>Thêm Lớp Học</h1>
 <form action="" method="post" novalidate>
   <div class="col-md-10">
@@ -24,6 +25,15 @@
       onkeypress="return isNumber(event)"
     />
   </div>
+  <div class="col-md-10">
+    <label class="form-label">Giảng Viên</label>
+
+    <select class="form-control" name="teacher">
+      <% if(teachers.length){%> <% teachers.forEach(teacher => {%>
+      <option value="<%= teacher.id %>"><%= teacher.name %></option>
+      <%}) %> <% } %>
+    </select>
+  </div>
 
   <div class="col-md-10">
     <label class="form-label">Khoá học</label>
@@ -38,13 +48,20 @@
     <input type="date" class="form-control" name="startDate" />
   </div>
 
-  <div class="col-md-10">
+  <div class="checkbox-wrapper-23">
     <label class="form-label">Lịch học</label>
-    <div>
+    <div class="d-flex justify-content-start">
       <% for(let i = 0; i<=6;i++){%>
-      <input value="<%= i %>" type="checkbox" name="schedule" />
-      <span class="mr-4"><%= getDay(i) %></span>
-
+      
+      <div class="checkbox-wrapper-23">
+        <input value="<%= i %>" type="checkbox" name="schedule" id="check<%= i %>" />
+        <label for="check<%= i %>" style="--size: 30px">
+          <svg viewBox="0,0,50,50">
+            <path d="M5 30 L 20 45 L 45 5"></path>
+          </svg>
+        </label>  
+      </div>
+      <span class="mr-4 ml-1"><%= getDay(i)  %></span>
       <%} %>
     </div>
   </div>

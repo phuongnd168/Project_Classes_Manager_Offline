@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Course.belongsTo(models.User, { foreignKey: "teacherId" });
+   
       Course.hasMany(models.course_module, { foreignKey: "courseId" });
       Course.hasMany(models.Class, { foreignKey: "courseId" });
     }
@@ -22,9 +22,7 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: DataTypes.STRING,
       price: DataTypes.INTEGER,
-      teacherId: DataTypes.INTEGER,
       tryLearn: DataTypes.BOOLEAN,
-      quantity: DataTypes.INTEGER,
       duration: DataTypes.INTEGER,
     },
     {

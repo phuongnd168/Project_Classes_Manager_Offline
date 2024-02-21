@@ -7,6 +7,7 @@ var logger = require("morgan");
 var expressLayouts = require("express-ejs-layouts");
 var session = require("express-session");
 var flash = require("connect-flash");
+
 const passport = require("passport");
 const model = require("./models/index");
 const localPassport = require("./passport/localPassport");

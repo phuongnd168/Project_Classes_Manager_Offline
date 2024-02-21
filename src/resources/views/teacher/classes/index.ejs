@@ -29,16 +29,16 @@
       <thead>
         <tr>
           <th scope="col">STT</th>
-          <th width="12%" scope="col">Tên lớp</th>
+          <th scope="col">Tên lớp</th>
           <th scope="col">Sĩ số</th>
-          <th width="10%" scope="col">Ngày khai giảng</th>
-          <th width="10%" scope="col">Ngày bế giảng</th>
-          <th width="15%" scope="col">Lịch học</th>
-          <th width="10%" scope="col">Thời gian học</th>
-          <th width="10%" scope="col">Giảng viên</th>
+          <th scope="col">Ngày khai giảng</th>
+          <th scope="col">Ngày bế giảng</th>
+          <th scope="col">Lịch học</th>
+          <th scope="col">Thời gian học</th>
           <th scope="col">Khóa học</th>
-          <th>Điểm danh</th>
-      
+          <th scope="col">Điểm danh</th>
+          <th scope="col">Bài tập</th>
+          <th scope="col">Câu hỏi</th>
         </tr>
       </thead>
       <tbody>
@@ -69,9 +69,7 @@
     
           <td><%= c.timeLearn %></td>
          
-          <td>
-            <%= c?.Course?.User?.name ?? "Chưa có giảng viên" %>
-          </td>
+
           <td><%= c?.Course?.name ?? "Chưa có khóa học" %></td>
    
             
@@ -87,7 +85,28 @@
             </a
             >
           </td>
-    
+           
+          <td>
+            <a
+              href="/teacher/manager/classes/<%= c.id %>/exercises"
+              class="btn btn-primary"
+              >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-bookmark" viewBox="0 0 16 16">
+                <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1z"/>
+              </svg>
+            </a
+            >
+          </td>
+          <td>
+            <a
+            href="/teacher/manager/classes/<%= c.id %>/questions"
+            class="btn btn-secondary"
+            >
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-question-circle-fill" viewBox="0 0 16 16">
+              <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0M5.496 6.033h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286a.237.237 0 0 0 .241.247m2.325 6.443c.61 0 1.029-.394 1.029-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94 0 .533.425.927 1.01.927z"/>
+            </svg>
+            </a>
+          </td>
         </tr>
         <% }) %>
       </tbody>

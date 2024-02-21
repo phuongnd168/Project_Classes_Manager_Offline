@@ -28,13 +28,13 @@
   <thead>
     <tr>
     
-      <th scope="col" width="2%">STT</th>
-      <th scope="col" width="10%">Email</th>
-      <th scope="col" width="10%">Tên</th>
-      <th scope="col" width="10%">Số điện thoại</th>
-      <th scope="col" width="10%">Địa chỉ</th>
-      <th scope="col" width="20%">Lớp học</th>
-      <th scope="col" width="20%">Khoá học</th>
+      <th scope="col">STT</th>
+      <th scope="col">Email</th>
+      <th scope="col">Tên</th>
+      <th scope="col">Số điện thoại</th>
+      <th scope="col">Địa chỉ</th>
+      <th scope="col">Lớp học</th>
+      <th scope="col">Khoá học</th>
       <th scope="col">Sửa</th>
 
     </tr>
@@ -52,7 +52,7 @@
           <td width="20%"><%= className[student.id] %></td>
           <% let course = "" %>
           <% student.students_classes.forEach((element, index) =>{ %>
-            <% if(element?.Class?.Course?.teacherId !== id){%>
+            <% if(element?.Class?.teacherId !== id){%>
                 <% course.includes(",") ?  course = course.slice(0, course.length-2) : course %>
               <% return %>
             <%} %>

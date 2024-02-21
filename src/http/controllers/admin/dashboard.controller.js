@@ -6,6 +6,7 @@ const model = require("../../../models");
 const bcrypt = require("bcrypt");
 const getDataChartUser = require("../../../utils/getDataChartUser");
 const getDataChartClass = require("../../../utils/getDataChartClass");
+const getUserService = require("../../services/role/getUser.service");
 const User = model.User;
 const Course = model.Course;
 const Class = model.Class;
@@ -32,7 +33,10 @@ module.exports = {
     const {count: countClass} = await Class.findAndCountAll()
     const dataUser = await getDataChartUser()
     const dataClass = await getDataChartClass()
+    const user = await getUserService(req.user.id)
+    
     res.render("admin/dashboard/index", {
+      user,
       dataUser,
       dataClass,
       countStudent,
@@ -47,7 +51,7 @@ module.exports = {
     });
   },
   account: async (req, res) => {
-    const user = req.user;
+
     const success = req.flash("success");
     const error = req.flash("error");
     const userConnect = {};
@@ -61,7 +65,7 @@ module.exports = {
         ));
       })
     );
-   
+    const user = await getUserService(req.user.id)
     res.render("admin/account/index", {
       req,
       error,
@@ -98,7 +102,9 @@ module.exports = {
   changePassword: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+    const user = await getUserService(req.user.id)
     res.render("admin/account/change-password", {
+      user,
       req,
       routerRoleRequest,
       error,
@@ -129,10 +135,12 @@ module.exports = {
     }
     res.redirect("/admin/account/change-password");
   },
-  resetPassword: (req, res) => {
+  resetPassword: async(req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+    const user = await getUserService(req.user.id)
     res.render("admin/account/reset-password", {
+      user,
       req,
       routerRoleRequest,
       error,
@@ -144,7 +152,7 @@ module.exports = {
     const { newPassword } = req.body;
     const { id } = req.user;
    
-    password = bcrypt.hashSync(newPassword, 10);
+    const password = bcrypt.hashSync(newPassword, 10);
     if (errors.isEmpty()) {
       await User.update(
         {

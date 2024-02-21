@@ -28,7 +28,7 @@ module.exports = {
       parentId: {
         type: Sequelize.INTEGER,
       },
-      studentId: {
+      userId: {
         type: Sequelize.INTEGER,
         references: {
           model: {
@@ -38,6 +38,7 @@ module.exports = {
         },
         onDelete: "CASCADE",
       },
+     
       attachment: {
         type: Sequelize.STRING(200),
       },

@@ -14,6 +14,7 @@ const destroyTeacherService = require("../../services/admin/teachers/destroyTeac
 const getTimetableService = require("../../services/admin/teachers/getTimetable.service");
 const filterTeacherService = require("../../services/admin/teachers/filterTeacher.service");
 const exportExcel = require("../../../utils/exportExcel");
+const getUserService = require("../../services/role/getUser.service");
 let data = null
 const User = model.User;
 const Class = model.Class;
@@ -43,10 +44,11 @@ module.exports = {
     
     const teachers = await getTeacherService(filters, +PER_PAGE, offset);
     data = teachers
+    const user = await getUserService(req.user.id)
     res.render("admin/teachers/index", {
       req,
       routerRoleRequest,
-
+      user,
       teachers,
       getPaginateUrl,
       success,
@@ -59,8 +61,9 @@ module.exports = {
   addTeacher: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
-
+    const user = await getUserService(req.user.id)
     res.render("admin/teachers/add", {
+      user,
       error,
       success,
       req,
@@ -105,10 +108,12 @@ module.exports = {
   },
   editTeacher: async (req, res) => {
     const { id } = req.params;
-    const user = await User.findOne({ where: { id } });
+    const userInfo = await User.findOne({ where: { id } });
     const success = req.flash("success");
     const error = req.flash("error");
+    const user = await getUserService(req.user.id)
     res.render("admin/teachers/edit", {
+      userInfo,
       error,
       success,
       req,
@@ -139,12 +144,13 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     const { id } = req.params;
-  
+    const user = await getUserService(req.user.id)
     const timetable = await getTimetableService(+id)
 
     
     res.render("admin/teachers/timetable", 
-    { error,
+    { user,
+      error,
       success,
       timetable,
       req,

@@ -13,6 +13,7 @@ const filterClassService = require("../../services/admin/classes/filterClass.ser
 const addStudentService = require("../../services/admin/classes/addStudent.service");
 const exportExcel = require("../../../utils/exportExcel");
 const removeStudentService = require("../../services/admin/classes/removeStudent.service");
+const getUserService = require("../../services/role/getUser.service");
 let data = null;
 const Class = model.Class;
 const StudentClass = model.students_class;
@@ -39,11 +40,12 @@ module.exports = {
     if (!page || page < 1 || page > totalPage) {
       page = 1;
     }
-
+    const user = await getUserService(req.user.id)
     const offset = (page - 1) * PER_PAGE;
     const classes = await getClassService(filters, +PER_PAGE, offset);
     data = classes
     res.render("admin/classes/index", {
+      user,
       req,
       routerRoleRequest,
       classes,
@@ -60,10 +62,18 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     const courses = await Course.findAll()
+    const teachers = await User.findAll({
+      where: {
+        typeId: 2,
+      },
+    });
+    const user = await getUserService(req.user.id)
     res.render("admin/classes/add", {
+      user,
       courses,
       error,
       success,
+      teachers,
       req,
       routerRoleRequest,
       getDay,
@@ -73,6 +83,7 @@ module.exports = {
     const errors = validationResult(req);
     const {
       name,
+      teacher,
       quantity,
       startDate,
       schedule,
@@ -89,8 +100,10 @@ module.exports = {
           quantity,
           startDate,
           timeLearn,
-          courseId: course
+          courseId: course,
+          teacherId: teacher
         },
+        teacher,
         schedule,
         startDate,
         timeLearnStart
@@ -103,20 +116,39 @@ module.exports = {
     res.redirect("/admin/manager/classes/add");
   },
   editClass: async (req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
     const { id } = req.params;
-    const classInfo = await Class.findOne({ where: { id },  include: [ { model: ClassSchedule }, {model: Course}]});
-    const course = await Course.findAll({
+    
+    const classInfo = await Class.findOne({ where: { id },  include: [ { model: ClassSchedule }, {model: Course}, {model: User}]});
+    const courses = await Course.findAll({
       where: {
          id: { [Op.ne]: classInfo?.Course?.id ?? "" } 
     },})
    
-    const success = req.flash("success");
-    const error = req.flash("error");
+    const teachers = await User.findAll({
+      where: { 
+        [Op.and]: [{typeId: 2}, {id: {[Op.ne]: classInfo?.User?.id ?? ""}}]
+      },
+        
+ 
+    });
+ 
+    let schedule = {} 
+    if(classInfo.classes_schedules?.length){
+      classInfo.classes_schedules.forEach((e) => {
+         schedule[e.schedule] = e.schedule 
+      }) 
+    }
+    const user = await getUserService(req.user.id)
     res.render("admin/classes/edit", {
       error,
+      user,
+      schedule,
       success,
       req,
-      course,
+      courses,
+      teachers,
       routerRoleRequest,
       classInfo,
       getDay,
@@ -130,6 +162,7 @@ module.exports = {
       quantity,
       startDate,
       schedule,
+      teacher,
       course,
       timeLearnStart,
       timeLearnEnd,
@@ -143,9 +176,11 @@ module.exports = {
           quantity,
           startDate,
           timeLearn,
-          courseId: course
+          courseId: course,
+          teacherId: teacher,
         },
         id,
+        teacher,
         schedule,
         startDate,
         timeLearnStart
@@ -178,7 +213,9 @@ module.exports = {
 
     const offset = (page - 1) * PER_PAGE;
     const classes = await getClassService(filters, +PER_PAGE, offset);
+    const user = await getUserService(req.user.id)
     res.render("admin/classes/student", {
+      user,
       req,
       routerRoleRequest,
       getPaginateUrl,
@@ -203,7 +240,9 @@ module.exports = {
  
       }
     })
+    const user = await getUserService(req.user.id)
     res.render("admin/classes/student/add", { 
+      user,
       students,
       success,
       error,
@@ -224,7 +263,7 @@ module.exports = {
     }
 
 
-    res.redirect("/admin/manager/classes/students")
+    res.redirect("/admin/manager/classes/students/add/" +id)
   },
   removeStudent: async (req, res) => {
     const success = req.flash("success");
@@ -239,7 +278,9 @@ module.exports = {
  
       }
     })
+    const user = await getUserService(req.user.id)
     res.render("admin/classes/student/remove", { 
+      user,
       students,
       success,
       error,
@@ -253,7 +294,7 @@ module.exports = {
     const {student} = req.body
     removeStudentService(student, id)
     req.flash("success", "Xóa thành công");
-    res.redirect("/admin/manager/classes/students")
+    res.redirect("/admin/manager/classes/students/remove/" +id)
   },
   deleteClass: async (req, res) => {
     const { id } = req.params;
@@ -323,7 +364,7 @@ module.exports = {
             element.dataValues.schedule = getDay(element.schedule) 
           }
 
-        element.dataValues.teacher = element?.Course?.User?.name ?? "Chưa có giảng viên" 
+        element.dataValues.teacher = element?.User?.name ?? "Chưa có giảng viên" 
         element.dataValues.course = element?.Course?.name ?? "Chưa có khóa học"
    
     });

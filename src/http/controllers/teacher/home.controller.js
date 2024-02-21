@@ -115,7 +115,7 @@ module.exports = {
     const { newPassword } = req.body;
     const { id } = req.user;
 
-    password = bcrypt.hashSync(newPassword, 10);
+    const password = bcrypt.hashSync(newPassword, 10);
     if (errors.isEmpty()) {
       await User.update(
         {

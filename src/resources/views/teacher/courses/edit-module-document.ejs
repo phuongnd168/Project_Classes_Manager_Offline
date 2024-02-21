@@ -3,22 +3,30 @@
   <% } %> <% if(success?.length){ %>
   <label id="success-toast"><%= success %></label>
   <% } %>
-<form action="" method="post" novalidate>
-        <label class="form-label">Đường dẫn tài liệu</label>
-            <div class="col-md-10">
-                <input
-                  type="text"
-                  class="form-control mb-2"
-                  name="link"
-                  placeholder="Đường dẫn tài liệu..."
-                  value=<%= moduleDocument.pathName  %>
-                />
-            </div>
-   
-    
+  
+
+  <form action="" method="post" novalidate>
+    <label class="form-label">Tiêu đề tài liệu</label>
+    <div class="col-8">
+  
+      <input
+        type="text"
+        class="form-control"
+        name="title"
+        placeholder="Tiêu đề tài liệu..."
+        value="<%= moduleDocument.title %>"
+      />
+    </div>
+  
+      <label for="floatingTextarea2">Nội dung tài liệu</label>
+        <textarea name="document" class="form-control mt-2" placeholder="Nội dung tài liệu..." id="floatingTextarea2" style="height: 50vh"><%= data  %>
+        </textarea>
+
+
+      
     <div class="col-10 mt-2">
-      <button class="btn btn-warning mr-2" type="submit">Sửa</button>
+      <button class="btn btn-success mr-2" type="submit">Sửa</button>
       <a href="/teacher/manager/courses/<%= id  %>/module" class="btn btn-danger">Quay lại</a>
     </div>
   </form>
-  
+  <script src="/assets/js/wysiwyg.js"></script>

@@ -2,10 +2,17 @@ const checkConnectSocial = require("../../../utils/checkConnectSocial");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const model = require("../../../models");
 const bcrypt = require("bcrypt");
+const { validationResult } = require("express-validator");
+const getTimetableService = require("../../services/student/timetable/getTimetable.service");
 const User = model.User;
 module.exports = {
   index: async (req, res) => {
-    res.render("students/home/index", { req, routerRoleRequest });
+    const success = req.flash("success");
+    const error = req.flash("error");
+    res.render("students/home/index", {
+      layout: "layouts/student.layout.ejs",
+      req, routerRoleRequest, error, success 
+    });
   },
   account: async (req, res) => {
     const user = req.user;
@@ -22,6 +29,7 @@ module.exports = {
       })
     );
     res.render("students/account/index", {
+      layout: "layouts/student.layout.ejs",
       userConnect,
       error,
       success,
@@ -31,8 +39,10 @@ module.exports = {
     });
   },
   updateInfo: async (req, res) => {
+    const errors = validationResult(req);
     const { name, phone, address } = req.body;
     const { id } = req.user;
+    if (errors.isEmpty()) {
     await User.update(
       {
         name,
@@ -46,12 +56,17 @@ module.exports = {
       }
     );
     req.flash("success", "Cập nhật thành công");
+    } else {
+    req.flash("error", errors.array());
+   }
+  
     res.redirect("/account");
   },
   changePassword: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("students/account/change-password", {
+      layout: "layouts/student.layout.ejs",
       req,
       routerRoleRequest,
       error,
@@ -59,37 +74,26 @@ module.exports = {
     });
   },
   handleChangePassword: async (req, res) => {
-    let password = req.user.password;
-    const { id } = req.user;
-    const { oldPassword, newPassword, confirmNewPassword } = req.body;
-    if (!oldPassword || !newPassword || !confirmNewPassword) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/account/change-password");
-      return;
-    }
-    const pass = bcrypt.compareSync(oldPassword, password);
-    if (!pass) {
-      req.flash("error", "Sai mật khẩu cũ");
-      res.redirect("/account/change-password");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      req.flash("error", "Mật khẩu nhập lại không trùng khớp");
-      res.redirect("/account/change-password");
-      return;
-    }
+    const errors = validationResult(req);
+    let { id, password } = req.user;
+    
+    const { newPassword } = req.body;
     password = bcrypt.hashSync(newPassword, 10);
-    await User.update(
-      {
-        password,
-      },
-      {
-        where: {
-          id,
+    if (errors.isEmpty()) {
+      await User.update(
+        {
+          password,
         },
-      }
-    );
-    req.flash("success", "Đổi mật khẩu thành công");
+        {
+          where: {
+            id,
+          },
+        }
+      );
+      req.flash("success", "Đổi mật khẩu thành công");
+    } else {
+      req.flash("error", errors.array());
+    }
     res.redirect("/account/change-password");
     return;
   },
@@ -97,6 +101,7 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("students/account/reset-password", {
+      layout: "layouts/student.layout.ejs",
       req,
       routerRoleRequest,
       error,
@@ -104,19 +109,11 @@ module.exports = {
     });
   },
   handleResetPassword: async (req, res) => {
-    const { newPassword, confirmNewPassword } = req.body;
+    const errors = validationResult(req);
+    const { newPassword } = req.body;
     const { id } = req.user;
-    if (!newPassword || !confirmNewPassword) {
-      req.flash("error", "Vui lòng nhập đầy đủ thông tin");
-      res.redirect("/account/reset-password");
-      return;
-    }
-    if (newPassword !== confirmNewPassword) {
-      req.flash("error", "Mật khẩu nhập lại không trùng khớp");
-      res.redirect("/account/reset-password");
-      return;
-    }
-    password = bcrypt.hashSync(newPassword, 10);
+    const password = bcrypt.hashSync(newPassword, 10);
+    if (errors.isEmpty()) {
     await User.update(
       {
         password,
@@ -130,7 +127,20 @@ module.exports = {
     );
     req.session.firstLogin = 1;
     req.flash("success", "Đổi mật khẩu thành công");
+    } else {
+    req.flash("error", errors.array());
+    }
     res.redirect("/account/reset-password");
     return;
   },
+  timetable: async(req, res) => {
+    const success = req.flash("success");
+    const error = req.flash("error");
+    const {id} = req.user
+    const timetable = await getTimetableService(id)
+    res.render("students/home/timetable", {
+      layout: "layouts/student.layout.ejs",
+      req, routerRoleRequest, error, success, timetable
+    });
+  }
 };

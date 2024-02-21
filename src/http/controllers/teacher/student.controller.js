@@ -65,21 +65,26 @@ module.exports = {
       const error = req.flash("error");
       const teacherId = req.user.id
       const {id} = req.params
+      const classAll = await Class.findAll({
+        where: {
+          teacherId
+        },
+      });
+    
+        const data = classAll.map((c) => {
+          return c.id
+      });
+      
       const studentClasses = await StudentClass.findAll({
         where: {
-          studentId: id
+          [Op.and]: [{studentId: id}, {classId: {[Op.in]: data}}]
         },
         include: [{model: Class}, {model: User}]
       })
     
-      let classes = await getClassService(null, null, null, teacherId)
-        classes = classes.map(element => {
-          return element.name
-        });
-     
+
       res.render("teacher/students/edit", {
         layout: "layouts/teacher.layout.ejs",
-        classes,
         id,
         studentClasses,
         req,
@@ -143,7 +148,7 @@ module.exports = {
               student.dataValues.classes = className[student.id].toString()
                let course = "" 
                student.students_classes.forEach((element, index) =>{ 
-                 if(element?.Class?.Course?.teacherId !== req.user.id){
+                 if(element?.Class?.teacherId !== req.user.id){
                      course.includes(",") ?  course = course.slice(0, course.length-2) : course 
                    return 
                 } 

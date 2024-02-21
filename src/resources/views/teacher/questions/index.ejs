@@ -1,0 +1,64 @@
+<% if(error?.length){ %>
+  <label id="error-toast"><%= error[0].msg %></label>
+<% } %> <% if(success?.length){ %>
+  <label id="success-toast"><%= success %></label>
+<% } %>
+
+
+<% if(questions.length){%>
+  <% questions.forEach(question => {%>
+      <div class="d-flex justify-content-start mb-4">
+          <label class="text-primary"><%= question.User["name"] %><%= getType(question.User["typeId"])  %>:</label>
+          <div class="ml-2" id="<%= question.id  %>">
+              <%- question.content  %>
+              <label style="cursor: pointer;" class="text-success p-0">Trả lời</label>
+              <form style="display: none;" id="form<%= question.id  %>" method="post">
+                <input name="question" value="<%= question.id  %>" hidden/>
+                <textarea name="answer"></textarea>
+                <div class="col-md-6">
+                  <button type="submit" class="btn btn-success mt-2 mr-2">Trả lời</button>
+                </div>
+              </form>
+              <% if(question.answers.length){%>
+                <% question.answers.forEach(element => {%>
+                  <div class="d-flex justify-content-start">
+                  <label class="text-primary"><%= element.User["name"] %><%= getType(element.User["typeId"])  %>:</label>
+                  <div class="ml-2">
+                    <%- element.content  %>
+                  </div>
+        
+                  </div>
+                <%}); %>
+        
+              <%} %>
+          </div>
+      
+        
+      </div>
+    
+  <%}); %>
+<%}else{%>
+  <h1>Chưa có câu hỏi</h1>
+<%} %>
+
+
+<a href="/teacher/manager/classes" class="btn btn-danger mt-2">Quay lại</a>
+<script>
+  const reply = document.getElementsByClassName("text-success p-0")
+
+  let check = false
+  for (let element of reply) {
+    element.addEventListener("click", (e) => {
+      check = !check
+      if(!check){
+        document.getElementById("form"+element.parentElement.id).style.display = "none"
+      }
+      else{
+        document.getElementById("form"+element.parentElement.id).style.display = "block"
+      }
+     
+    })
+  }
+
+</script>
+<script src="/assets/js/wysiwyg.js"></script>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang='en'>
+  <head>
+    <meta charset='utf-8' />
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+    <script>
+  let timetable = '<%- JSON.stringify(timetable) %>';
+  
+  
+  timetable = JSON.parse(timetable)
+  let events = timetable.map(element => {  
+      return {
+        title: element.Class.name,
+        start: element.dateLearning.slice(0,19),
+        allDay: false
+      }
+    }); 
+  
+      document.addEventListener('DOMContentLoaded', function() {
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+          eventTimeFormat: { 
+          hour: '2-digit',
+          minute: '2-digit',
+          hour12: false
+          },
+          initialView: 'dayGridMonth',
+          events: events,
+          
+        });
+        calendar.render();
+      });
+
+    </script>
+  </head>
+  <body>
+    <div id='calendar'></div>
+  </body>
+</html>
