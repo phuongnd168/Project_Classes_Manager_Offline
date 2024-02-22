@@ -27,6 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     freezeTableName: true,
     modelName: 'token_forgot_pass',
+    tableName: "token_forgot_pass"
   });
   return token_forgot_pass;
 };

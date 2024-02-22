@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
     sequelize,
     freezeTableName: true,
     modelName: 'exercises_submit',
+    tableName: "exercises_submit"
   });
   return exercises_submit;
 };
