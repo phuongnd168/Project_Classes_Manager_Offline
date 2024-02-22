@@ -7,12 +7,14 @@
 <h1><%= exerciseDetail.title  %></h1>
 
 <%- exerciseDetail.content %>
-
+<script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
 <form id="form" action="" method="post">
 
     <textarea
       name="exercisesSubmit"
       placeholder="Viết câu trả lời của bạn..."
+      style="height: 50vh"
+      id="area"
     ></textarea>    
 
 <div class="col-md-6">

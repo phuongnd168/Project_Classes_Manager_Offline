@@ -4,7 +4,7 @@
   <label id="success-toast"><%= success %></label>
   <% } %>
   
-
+  <script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
   <form action="" method="post" novalidate>
     <label class="form-label">Tiêu đề tài liệu</label>
     <div class="col-8">
@@ -19,7 +19,7 @@
     </div>
   
       <label for="floatingTextarea2">Nội dung tài liệu</label>
-        <textarea name="document" class="form-control mt-2" placeholder="Nội dung tài liệu..." id="floatingTextarea2" style="height: 50vh"><%= data  %>
+        <textarea id="area" name="document" class="form-control mt-2" placeholder="Nội dung tài liệu..." id="floatingTextarea2" style="height: 50vh"><%= data  %>
         </textarea>
 
 
