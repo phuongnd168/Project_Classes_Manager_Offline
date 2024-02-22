@@ -104,7 +104,7 @@
     const nameSocial = ["google", "facebook", "github"];
     if (nameSocial.includes(nameCheckboxSocial)) {
       if (e.target.checked) {
-        window.location.href = `/auth/${nameCheckboxSocial}/callback`;
+        window.location.href = `/auth/${nameCheckboxSocial}/redirect`;
       } else {
         window.location.href = `/auth/cancel-connect?social=${nameCheckboxSocial}`;
       }
