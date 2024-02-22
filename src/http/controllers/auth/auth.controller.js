@@ -5,7 +5,7 @@ const { Op } = require("sequelize");
 const bcrypt = require("bcrypt");
 const routerRoleRequest = require("../../../utils/routerRoleRequest");
 const sendMail = require("../../../utils/sendMail");
-
+const otpGenerator = require("otp-generator");
 var TokenGenerator = require("token-generator")({
   salt: "F8-Project-Classes-Manager",
   timestampMap: "F8-Backend",
@@ -141,4 +141,28 @@ module.exports = {
     req.flash("success", "Hủy liên kết thành công");
     res.redirect(redirect);
   },
-};
+  resendOtp: async(req, res) => {
+    const OTP = otpGenerator.generate(6, {
+      lowerCaseAlphabets: false,
+      upperCaseAlphabets: false,
+      specialChars: false,
+    });
+    const { email, id } = req.user;
+    const subject = "Xác minh 2 bước";
+    const html = "Mã OTP của bạn là " + OTP + ". Mã sẽ hết hiệu lực sau 1 phút";
+    const info = sendMail(email, subject, html);
+
+    if (info) {
+      await UserOTP.create({
+        otp: OTP,
+        userId: id,
+        expire: new Date(new Date().getTime() + 60000),
+      });
+      req.flash(
+        "success",
+        "Mã OTP đã được gửi về email, vui lòng kiểm tra để tiếp tục đăng nhập"
+      );
+    }
+    res.redirect("/auth/otp")
+  }
+}

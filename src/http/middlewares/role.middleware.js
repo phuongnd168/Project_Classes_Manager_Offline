@@ -23,7 +23,7 @@ module.exports = async (req, res, next) => {
     return;
   }
 
-  if (req.user) {
+  if (req.user && !req.session.sendOtp) {
     switch (req.user?.typeId) {
       case 1:
         res.redirect("/admin");
@@ -41,5 +41,6 @@ module.exports = async (req, res, next) => {
 
     return;
   }
+
   next();
 };

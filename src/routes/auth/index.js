@@ -71,11 +71,12 @@ router.post(
   handleRecoverPasswordMiddleware(),
   authController.handleRecoverPassword
 );
-router.get("/otp", authMiddleware, authController.otp);
+router.get("/otp", otpMiddleware, authController.otp);
 router.post(
   "/otp",
   authMiddleware,
   handleOtpMiddleware(),
   authController.handleOtp
 );
+router.get("/resend-otp", otpMiddleware, authController.resendOtp);
 module.exports = router;
