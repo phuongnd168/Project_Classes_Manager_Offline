@@ -11,13 +11,13 @@ module.exports = {
         updatedAt: new Date(),
       },
       {
-        teacherId: 1,
+        teacherId: 2,
         classId: 2,
         createdAt: new Date(),
         updatedAt: new Date(),
       },
       {
-        teacherId: 3,
+        teacherId: 2,
         classId: 3,
         createdAt: new Date(),
         updatedAt: new Date(),
