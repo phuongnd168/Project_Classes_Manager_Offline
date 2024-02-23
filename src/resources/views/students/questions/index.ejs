@@ -3,16 +3,14 @@
 <% } %> <% if(success?.length){ %>
     <label id="success-toast"><%= success %></label>
 <% } %>
-<script type="text/javascript" src="http://js.nicedit.com/nicEdit-latest.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/41.1.0/classic/ckeditor.js"></script>
 <form id="form" action="" method="post">
-
+    
         <label class="form-label">Câu hỏi của bạn</label>
         <textarea
-          id="area"
+          id="editor"
           name="question"
-          style="height: 50vh"
           placeholder="Viết câu hỏi của bạn..."
-          class="form-control mt-2"
         ></textarea>    
 
     <div class="col-md-6">

@@ -1,3 +1,5 @@
-bkLib.onDomLoaded(function() {
-  new nicEditor().panelInstance('area');
-});
+ClassicEditor
+.create( document.querySelector( '#editor' ) )
+.catch( error => {
+    console.error( error );
+} );
