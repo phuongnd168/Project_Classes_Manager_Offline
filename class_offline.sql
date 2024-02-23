@@ -15,11 +15,11 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 
--- Dumping database structure for f8_project_final
-CREATE DATABASE IF NOT EXISTS `f8_project_final` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
-USE `f8_project_final`;
+-- Dumping database structure for class_offline
+CREATE DATABASE IF NOT EXISTS `class_offline` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci */;
+USE `class_offline`;
 
--- Dumping structure for table f8_project_final.answers
+-- Dumping structure for table class_offline.answers
 CREATE TABLE IF NOT EXISTS `answers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `questionId` int(11) DEFAULT NULL,
@@ -35,9 +35,9 @@ CREATE TABLE IF NOT EXISTS `answers` (
   CONSTRAINT `answers_ibfk_2` FOREIGN KEY (`teacherId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.answers: ~0 rows (approximately)
+-- Dumping data for table class_offline.answers: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.classes
+-- Dumping structure for table class_offline.classes
 CREATE TABLE IF NOT EXISTS `classes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) DEFAULT NULL,
@@ -57,13 +57,13 @@ CREATE TABLE IF NOT EXISTS `classes` (
   CONSTRAINT `classes_ibfk_2` FOREIGN KEY (`courseId`) REFERENCES `courses` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.classes: ~3 rows (approximately)
+-- Dumping data for table class_offline.classes: ~3 rows (approximately)
 INSERT INTO `classes` (`id`, `name`, `quantity`, `startDate`, `endDate`, `timeLearn`, `teacherId`, `courseId`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Back-end K1', 16, '2024-02-22', '2024-06-05', '20:00-22:00', 2, 1, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(2, 'Front-end K1', 16, '2024-02-22', '2024-05-24', '07:00-09:00', 2, 2, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(3, 'Fullstack K1', 16, '2024-02-22', '2024-04-20', '14:00-16:00', 2, 3, '2024-02-22 06:13:59', '2024-02-22 06:13:59');
 
--- Dumping structure for table f8_project_final.classes_schedule
+-- Dumping structure for table class_offline.classes_schedule
 CREATE TABLE IF NOT EXISTS `classes_schedule` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `classId` int(11) DEFAULT NULL,
@@ -75,9 +75,9 @@ CREATE TABLE IF NOT EXISTS `classes_schedule` (
   CONSTRAINT `classes_schedule_ibfk_1` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.classes_schedule: ~0 rows (approximately)
+-- Dumping data for table class_offline.classes_schedule: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.classes_teachers
+-- Dumping structure for table class_offline.classes_teachers
 CREATE TABLE IF NOT EXISTS `classes_teachers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `teacherId` int(11) DEFAULT NULL,
@@ -91,13 +91,13 @@ CREATE TABLE IF NOT EXISTS `classes_teachers` (
   CONSTRAINT `classes_teachers_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.classes_teachers: ~3 rows (approximately)
+-- Dumping data for table class_offline.classes_teachers: ~3 rows (approximately)
 INSERT INTO `classes_teachers` (`id`, `teacherId`, `classId`, `createdAt`, `updatedAt`) VALUES
 	(1, 2, 1, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(2, 2, 2, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(3, 2, 3, '2024-02-22 06:13:59', '2024-02-22 06:13:59');
 
--- Dumping structure for table f8_project_final.comments
+-- Dumping structure for table class_offline.comments
 CREATE TABLE IF NOT EXISTS `comments` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `classId` int(11) DEFAULT NULL,
@@ -115,9 +115,9 @@ CREATE TABLE IF NOT EXISTS `comments` (
   CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.comments: ~0 rows (approximately)
+-- Dumping data for table class_offline.comments: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.courses
+-- Dumping structure for table class_offline.courses
 CREATE TABLE IF NOT EXISTS `courses` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) DEFAULT NULL,
@@ -129,13 +129,13 @@ CREATE TABLE IF NOT EXISTS `courses` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.courses: ~3 rows (approximately)
+-- Dumping data for table class_offline.courses: ~3 rows (approximately)
 INSERT INTO `courses` (`id`, `name`, `price`, `tryLearn`, `duration`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Lập trình cơ bản với Javascript', 2000000, 3, 32, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(2, 'Lập trình nâng cao với Javascript', 3000000, 2, 24, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(3, 'Lập trình cơ bản với HTML/CSS', 1000000, 1, 40, '2024-02-22 06:13:59', '2024-02-22 06:13:59');
 
--- Dumping structure for table f8_project_final.course_modules
+-- Dumping structure for table class_offline.course_modules
 CREATE TABLE IF NOT EXISTS `course_modules` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(200) DEFAULT NULL,
@@ -147,9 +147,9 @@ CREATE TABLE IF NOT EXISTS `course_modules` (
   CONSTRAINT `course_modules_ibfk_1` FOREIGN KEY (`courseId`) REFERENCES `courses` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.course_modules: ~0 rows (approximately)
+-- Dumping data for table class_offline.course_modules: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.exercises
+-- Dumping structure for table class_offline.exercises
 CREATE TABLE IF NOT EXISTS `exercises` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `classId` int(11) DEFAULT NULL,
@@ -163,9 +163,9 @@ CREATE TABLE IF NOT EXISTS `exercises` (
   CONSTRAINT `exercises_ibfk_1` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.exercises: ~0 rows (approximately)
+-- Dumping data for table class_offline.exercises: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.exercises_submit
+-- Dumping structure for table class_offline.exercises_submit
 CREATE TABLE IF NOT EXISTS `exercises_submit` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `exercisesId` int(11) DEFAULT NULL,
@@ -181,9 +181,9 @@ CREATE TABLE IF NOT EXISTS `exercises_submit` (
   CONSTRAINT `exercises_submit_ibfk_2` FOREIGN KEY (`studentId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.exercises_submit: ~0 rows (approximately)
+-- Dumping data for table class_offline.exercises_submit: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.learning_status
+-- Dumping structure for table class_offline.learning_status
 CREATE TABLE IF NOT EXISTS `learning_status` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -192,14 +192,14 @@ CREATE TABLE IF NOT EXISTS `learning_status` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.learning_status: ~4 rows (approximately)
+-- Dumping data for table class_offline.learning_status: ~4 rows (approximately)
 INSERT INTO `learning_status` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Đang học', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(2, 'Bảo lưu', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(3, 'Thôi học', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(4, 'Hoàn thành', '2024-02-22 06:14:00', '2024-02-22 06:14:00');
 
--- Dumping structure for table f8_project_final.login_tokens
+-- Dumping structure for table class_offline.login_tokens
 CREATE TABLE IF NOT EXISTS `login_tokens` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -211,9 +211,9 @@ CREATE TABLE IF NOT EXISTS `login_tokens` (
   CONSTRAINT `login_tokens_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.login_tokens: ~0 rows (approximately)
+-- Dumping data for table class_offline.login_tokens: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.module_document
+-- Dumping structure for table class_offline.module_document
 CREATE TABLE IF NOT EXISTS `module_document` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(50) DEFAULT NULL,
@@ -226,9 +226,9 @@ CREATE TABLE IF NOT EXISTS `module_document` (
   CONSTRAINT `module_document_ibfk_1` FOREIGN KEY (`moduleId`) REFERENCES `course_modules` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.module_document: ~0 rows (approximately)
+-- Dumping data for table class_offline.module_document: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.permissions
+-- Dumping structure for table class_offline.permissions
 CREATE TABLE IF NOT EXISTS `permissions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `value` varchar(150) DEFAULT NULL,
@@ -237,7 +237,7 @@ CREATE TABLE IF NOT EXISTS `permissions` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.permissions: ~21 rows (approximately)
+-- Dumping data for table class_offline.permissions: ~21 rows (approximately)
 INSERT INTO `permissions` (`id`, `value`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Phân quyền', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(2, 'Thêm người dùng', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
@@ -261,7 +261,7 @@ INSERT INTO `permissions` (`id`, `value`, `createdAt`, `updatedAt`) VALUES
 	(20, 'Xóa lớp học', '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(21, 'Xem lớp học', '2024-02-22 06:14:00', '2024-02-22 06:14:00');
 
--- Dumping structure for table f8_project_final.questions
+-- Dumping structure for table class_offline.questions
 CREATE TABLE IF NOT EXISTS `questions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `content` text DEFAULT NULL,
@@ -277,9 +277,9 @@ CREATE TABLE IF NOT EXISTS `questions` (
   CONSTRAINT `questions_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.questions: ~0 rows (approximately)
+-- Dumping data for table class_offline.questions: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.roles
+-- Dumping structure for table class_offline.roles
 CREATE TABLE IF NOT EXISTS `roles` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -288,11 +288,11 @@ CREATE TABLE IF NOT EXISTS `roles` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.roles: ~1 rows (approximately)
+-- Dumping data for table class_offline.roles: ~1 rows (approximately)
 INSERT INTO `roles` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Super Admin', '2024-02-22 06:14:00', '2024-02-22 06:14:00');
 
--- Dumping structure for table f8_project_final.role_permission
+-- Dumping structure for table class_offline.role_permission
 CREATE TABLE IF NOT EXISTS `role_permission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `roleId` int(11) DEFAULT NULL,
@@ -306,7 +306,7 @@ CREATE TABLE IF NOT EXISTS `role_permission` (
   CONSTRAINT `role_permission_ibfk_2` FOREIGN KEY (`permissionId`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.role_permission: ~21 rows (approximately)
+-- Dumping data for table class_offline.role_permission: ~21 rows (approximately)
 INSERT INTO `role_permission` (`id`, `roleId`, `permissionId`, `createdAt`, `updatedAt`) VALUES
 	(1, 1, 1, '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(2, 1, 2, '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
@@ -330,14 +330,14 @@ INSERT INTO `role_permission` (`id`, `roleId`, `permissionId`, `createdAt`, `upd
 	(20, 1, 20, '2024-02-22 06:14:00', '2024-02-22 06:14:00'),
 	(21, 1, 21, '2024-02-22 06:14:00', '2024-02-22 06:14:00');
 
--- Dumping structure for table f8_project_final.sequelizemeta
+-- Dumping structure for table class_offline.sequelizemeta
 CREATE TABLE IF NOT EXISTS `sequelizemeta` (
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`name`),
   UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb3 COLLATE=utf8mb3_unicode_ci;
 
--- Dumping data for table f8_project_final.sequelizemeta: ~28 rows (approximately)
+-- Dumping data for table class_offline.sequelizemeta: ~28 rows (approximately)
 INSERT INTO `sequelizemeta` (`name`) VALUES
 	('20231122151111-create-type.js'),
 	('20231122152650-create-user.js'),
@@ -368,7 +368,7 @@ INSERT INTO `sequelizemeta` (`name`) VALUES
 	('20240207093527-create-question.js'),
 	('20240209093934-create-answer.js');
 
--- Dumping structure for table f8_project_final.settings
+-- Dumping structure for table class_offline.settings
 CREATE TABLE IF NOT EXISTS `settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `optKey` varchar(200) DEFAULT NULL,
@@ -378,9 +378,9 @@ CREATE TABLE IF NOT EXISTS `settings` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.settings: ~0 rows (approximately)
+-- Dumping data for table class_offline.settings: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.students_attendance
+-- Dumping structure for table class_offline.students_attendance
 CREATE TABLE IF NOT EXISTS `students_attendance` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `dateLearning` datetime DEFAULT NULL,
@@ -396,9 +396,9 @@ CREATE TABLE IF NOT EXISTS `students_attendance` (
   CONSTRAINT `students_attendance_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.students_attendance: ~0 rows (approximately)
+-- Dumping data for table class_offline.students_attendance: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.students_classes
+-- Dumping structure for table class_offline.students_classes
 CREATE TABLE IF NOT EXISTS `students_classes` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `studentId` int(11) DEFAULT NULL,
@@ -419,9 +419,9 @@ CREATE TABLE IF NOT EXISTS `students_classes` (
   CONSTRAINT `students_classes_ibfk_3` FOREIGN KEY (`statusId`) REFERENCES `learning_status` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.students_classes: ~0 rows (approximately)
+-- Dumping data for table class_offline.students_classes: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.teacher_calendar
+-- Dumping structure for table class_offline.teacher_calendar
 CREATE TABLE IF NOT EXISTS `teacher_calendar` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `teacherId` int(11) DEFAULT NULL,
@@ -436,9 +436,9 @@ CREATE TABLE IF NOT EXISTS `teacher_calendar` (
   CONSTRAINT `teacher_calendar_ibfk_2` FOREIGN KEY (`classId`) REFERENCES `classes` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.teacher_calendar: ~0 rows (approximately)
+-- Dumping data for table class_offline.teacher_calendar: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.token_forgot_pass
+-- Dumping structure for table class_offline.token_forgot_pass
 CREATE TABLE IF NOT EXISTS `token_forgot_pass` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `token` varchar(30) DEFAULT NULL,
@@ -452,9 +452,9 @@ CREATE TABLE IF NOT EXISTS `token_forgot_pass` (
   CONSTRAINT `token_forgot_pass_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.token_forgot_pass: ~0 rows (approximately)
+-- Dumping data for table class_offline.token_forgot_pass: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.types
+-- Dumping structure for table class_offline.types
 CREATE TABLE IF NOT EXISTS `types` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(100) DEFAULT NULL,
@@ -463,14 +463,14 @@ CREATE TABLE IF NOT EXISTS `types` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.types: ~4 rows (approximately)
+-- Dumping data for table class_offline.types: ~4 rows (approximately)
 INSERT INTO `types` (`id`, `name`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Admin', '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(2, 'Teacher', '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(3, 'Student', '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(4, 'Tutor', '2024-02-22 06:13:59', '2024-02-22 06:13:59');
 
--- Dumping structure for table f8_project_final.users
+-- Dumping structure for table class_offline.users
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) DEFAULT NULL,
@@ -488,14 +488,14 @@ CREATE TABLE IF NOT EXISTS `users` (
   CONSTRAINT `users_ibfk_1` FOREIGN KEY (`typeId`) REFERENCES `types` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.users: ~4 rows (approximately)
+-- Dumping data for table class_offline.users: ~4 rows (approximately)
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `phone`, `address`, `typeId`, `firstLogin`, `createdAt`, `updatedAt`) VALUES
 	(1, 'Phương', 'phuong@gmail.com', '$2b$10$j25aL8Re92e60nUFgPWZeuaslUut97dKP20A7MgR8FjtK5S6wotly', '0123456789', 'Hà Nội', 1, 0, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(2, 'Phương1', 'phuong1@gmail.com', '$2b$10$j25aL8Re92e60nUFgPWZeuaslUut97dKP20A7MgR8FjtK5S6wotly', '0123456789', 'Hà Nội', 2, 0, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(3, 'Phương2', 'phuong2@gmail.com', '$2b$10$j25aL8Re92e60nUFgPWZeuaslUut97dKP20A7MgR8FjtK5S6wotly', '0123456789', 'Hà Nội', 3, 0, '2024-02-22 06:13:59', '2024-02-22 06:13:59'),
 	(4, 'Phương3', 'phuong3@gmail.com', '$2b$10$j25aL8Re92e60nUFgPWZeuaslUut97dKP20A7MgR8FjtK5S6wotly', '0123456789', 'Hà Nội', 4, 0, '2024-02-22 06:13:59', '2024-02-22 06:13:59');
 
--- Dumping structure for table f8_project_final.user_columns
+-- Dumping structure for table class_offline.user_columns
 CREATE TABLE IF NOT EXISTS `user_columns` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -509,9 +509,9 @@ CREATE TABLE IF NOT EXISTS `user_columns` (
   CONSTRAINT `user_columns_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.user_columns: ~0 rows (approximately)
+-- Dumping data for table class_offline.user_columns: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.user_otp
+-- Dumping structure for table class_offline.user_otp
 CREATE TABLE IF NOT EXISTS `user_otp` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `otp` varchar(10) DEFAULT NULL,
@@ -525,9 +525,9 @@ CREATE TABLE IF NOT EXISTS `user_otp` (
   CONSTRAINT `user_otp_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.user_otp: ~0 rows (approximately)
+-- Dumping data for table class_offline.user_otp: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.user_permission
+-- Dumping structure for table class_offline.user_permission
 CREATE TABLE IF NOT EXISTS `user_permission` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -541,9 +541,9 @@ CREATE TABLE IF NOT EXISTS `user_permission` (
   CONSTRAINT `user_permission_ibfk_2` FOREIGN KEY (`permissionId`) REFERENCES `permissions` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.user_permission: ~0 rows (approximately)
+-- Dumping data for table class_offline.user_permission: ~0 rows (approximately)
 
--- Dumping structure for table f8_project_final.user_role
+-- Dumping structure for table class_offline.user_role
 CREATE TABLE IF NOT EXISTS `user_role` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -557,11 +557,11 @@ CREATE TABLE IF NOT EXISTS `user_role` (
   CONSTRAINT `user_role_ibfk_2` FOREIGN KEY (`roleId`) REFERENCES `roles` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.user_role: ~1 rows (approximately)
+-- Dumping data for table class_offline.user_role: ~1 rows (approximately)
 INSERT INTO `user_role` (`id`, `userId`, `roleId`, `createdAt`, `updatedAt`) VALUES
 	(1, 1, 1, '2024-02-22 06:14:00', '2024-02-22 06:14:00');
 
--- Dumping structure for table f8_project_final.user_socials
+-- Dumping structure for table class_offline.user_socials
 CREATE TABLE IF NOT EXISTS `user_socials` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `userId` int(11) DEFAULT NULL,
@@ -574,7 +574,7 @@ CREATE TABLE IF NOT EXISTS `user_socials` (
   CONSTRAINT `user_socials_ibfk_1` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- Dumping data for table f8_project_final.user_socials: ~0 rows (approximately)
+-- Dumping data for table class_offline.user_socials: ~0 rows (approximately)
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
