@@ -14,6 +14,7 @@ const addStudentService = require("../../services/admin/classes/addStudent.servi
 const exportExcel = require("../../../utils/exportExcel");
 const removeStudentService = require("../../services/admin/classes/removeStudent.service");
 const getUserService = require("../../services/role/getUser.service");
+const addClassExcelService = require("../../services/admin/classes/addClassExcel.service");
 let data = null;
 const Class = model.Class;
 const StudentClass = model.students_class;
@@ -313,36 +314,35 @@ module.exports = {
     res.redirect("/admin/manager/classes");
   },
   importExcel: async(req, res) => {
-  
     const workbook = new Excel.Workbook();
-    const files = req.files['myFiles']
-
-    files.forEach(file => {
+    let error = ""
+    const file = req.file
       workbook.xlsx.readFile('./public/uploads/' + file.filename )
       .then(function() {
         ws = workbook.getWorksheet(1)
+        const rowsCount = ws.actualRowCount
         ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
           if(rowNumber !== 1){
-            const [empty, name, quantity, startDate, schedule, timeLearn, courseId] = row.values;
-            const data = { name, quantity, startDate, schedule, timeLearn, courseId};
-  
-            try {
-          
-                addClassService(data, schedule.toString(), startDate, timeLearn.slice(0, 5))
-                req.flash("success", "Thành công")
-              
-              
-
-            } catch (error) { 
-              req.flash("error", "Thất bại")
+            const [empty, name, quantity, startDate, schedule, timeLearn, teacher, course] = row.values;
+            const data = { name, quantity, startDate, schedule, timeLearn, teacher, course};
+            const result = await addClassExcelService(data)
+            if(result){
+              error = result
             }
+            if(rowNumber === rowsCount){
+              if(error){
+                req.flash("error", error)
+              }else{
+                req.flash("success", "Thành công")
+              }
+                res.redirect("/admin/manager/classes")
+            }     
           }
         
         });
         
       });
-    });
-    res.redirect("/admin/manager/classes")
+    
   },
   exportExcel: async(req, res) => {
     const columns = 

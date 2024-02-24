@@ -12,6 +12,7 @@ const filterCourseService = require("../../services/admin/courses/filterCourse.s
 const exportExcel = require("../../../utils/exportExcel");
 const getDocument = require("../../../utils/getDocument");
 const getUserService = require("../../services/role/getUser.service");
+const addCourseExcelService = require("../../services/admin/courses/addCourseExcel.service");
 let data = null
 const Course = model.Course;
 const User = model.User;
@@ -173,33 +174,35 @@ module.exports = {
     res.redirect("/admin/manager/courses");
   },
   importExcel: async(req, res) => {
-  
     const workbook = new Excel.Workbook();
-    const files = req.files['myFiles']
+    let error = ""
+    const file = req.file
 
-    files.forEach(file => {
       workbook.xlsx.readFile('./public/uploads/' + file.filename )
       .then(function() {
         ws = workbook.getWorksheet(1)
+        const rowsCount = ws.actualRowCount
         ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
           if(rowNumber !== 1){
-            const [empty, name, price, teacherId, tryLearn, quantity, duration] = row.values;
-            const data = { name, price, teacherId, tryLearn, quantity, duration };
-    
-            try {
-                addCourseService(data)
-                req.flash("success", "Thành công")          
-          
-            } catch (error) { 
-              req.flash("error", "Thất bại")
+            const [empty, name, price, tryLearn, duration] = row.values;
+            const data = { name, price, tryLearn, duration }
+            const result = await addCourseExcelService(data)
+            if(result){
+              error = result
             }
+            if(rowNumber === rowsCount){
+              if(error){
+                req.flash("error", error)
+              }else{
+                req.flash("success", "Thành công")
+              }
+              res.redirect("/admin/manager/courses")
+            }          
           }
         
         });
         
       });
-    });
-    res.redirect("/admin/manager/courses")
   },
   exportExcel: async(req, res) => {
     const columns = 

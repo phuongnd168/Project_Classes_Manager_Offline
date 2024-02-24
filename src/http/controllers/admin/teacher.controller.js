@@ -15,6 +15,7 @@ const getTimetableService = require("../../services/admin/teachers/getTimetable.
 const filterTeacherService = require("../../services/admin/teachers/filterTeacher.service");
 const exportExcel = require("../../../utils/exportExcel");
 const getUserService = require("../../services/role/getUser.service");
+const addTeacherExcelService = require("../../services/admin/teachers/addTeacherExcel.service");
 let data = null
 const User = model.User;
 const Class = model.Class;
@@ -169,18 +170,20 @@ module.exports = {
   importExcel: async(req, res) => {
   
     const workbook = new Excel.Workbook();
-    const files = req.files['myFiles']
+    let error = ""
+    const file = req.file
 
-    files.forEach(file => {
+
       workbook.xlsx.readFile('./public/uploads/' + file.filename )
       .then(function() {
         ws = workbook.getWorksheet(1)
+        const rowsCount = ws.actualRowCount
         ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
           if(rowNumber !== 1){
             const [empty, email, name, phone, address, typeId] = row.values;
-            const data = { email: email.text, name, phone, address, typeId };
+            const data = { email: email.text ?? email, name, phone, address, typeId };
     
-            try {
+
               const password = generator.generate({
                 length: 10,
                 numbers: true,
@@ -192,22 +195,30 @@ module.exports = {
         
               const info = sendMail(data.email, subject, html);
               data.password = hash
-              if(info){
-                addTeacherService(data)
-                req.flash("success", "Thành công")
+              data.typeId = typeId
+              if (info) {
+                const result = await addTeacherExcelService(data)
+                if(result){
+                  error = result
+                }
               }
-              
-           
-            } catch (error) { 
-              req.flash("error", "Thất bại")
-            }
+
+              if(rowNumber === rowsCount){
+                if(error){
+                  req.flash("error", error)
+                }else{
+                  req.flash("success", "Thành công")
+                }
+                res.redirect("/admin/manager/teachers")
+              }
+          
           }
         
         });
         
       });
-    });
-    res.redirect("/admin/manager/teachers")
+
+ 
   },
   exportExcel: async(req, res) => {
     const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ", "Lớp học đang dạy", "Vai trò"]

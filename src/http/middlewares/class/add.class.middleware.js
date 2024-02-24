@@ -26,7 +26,7 @@ module.exports = () => {
         throw new Error("Tên lớp học đã tồn tại");
       }
       if(+quantity > 16){
-        throw new Error("Số học viên 1 lớp không quá 16 người");
+        throw new Error("Số học viên không được quá 16 người");
       }
     }),
   ];

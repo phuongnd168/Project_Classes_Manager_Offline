@@ -13,7 +13,7 @@ module.exports = async (data, teacherId, schedule, startDate, timeLearnStart) =>
       id: data.courseId
     }
   })
-
+  
   const teacher = await User.findOne({
     where: {
       id: teacherId
@@ -21,6 +21,7 @@ module.exports = async (data, teacherId, schedule, startDate, timeLearnStart) =>
   })
   
   const endDate = await getEndDate(startDate, course.id, schedule)
+
   data.endDate = endDate.setDate(endDate.getDate() - 1)
   const newClass = await Class.create(data);
   newClass.addUser(teacher);

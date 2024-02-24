@@ -14,6 +14,7 @@ const getUserService = require("../../services/admin/users/getUser.service");
 const getUserInfoService = require("../../services/role/getUser.service");
 const filterUserService = require("../../services/admin/users/filterUser.service");
 const exportExcel = require("../../../utils/exportExcel");
+const addUserExcelService = require("../../services/admin/users/addUserExcel.service");
 
 const User = model.User;
 let data = null
@@ -149,48 +150,50 @@ module.exports = {
     res.redirect("/admin/manager/users");
   },
   importExcel: async(req, res) => {
-  
     const workbook = new Excel.Workbook();
-    const files = req.files['myFiles']
-
-    files.forEach(file => {
-      workbook.xlsx.readFile('./public/uploads/' + file.filename )
+    let error = ""
+    const file = req.file
+    workbook.xlsx.readFile('./public/uploads/' + file.filename)
       .then(function() {
         ws = workbook.getWorksheet(1)
+        const rowsCount = ws.actualRowCount
         ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
           if(rowNumber !== 1){
             const [empty, email, name, phone, address] = row.values;
-            const data = { email: email.text, name, phone, address };
-    
-            try {
-              const password = generator.generate({
-                length: 10,
-                numbers: true,
-              });
+           
+            const data = { email: email.text ?? email , name, phone, address };
+            const password = generator.generate({
+              length: 10,
+              numbers: true,
+            });
         
-              const hash = bcrypt.hashSync(password, 10);
-              const subject = "Mật khẩu người dùng";
-              const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
-        
-              const info = sendMail(data.email, subject, html);
-              data.password = hash
-              data.typeId = 1
-              if(info){
-                addUserService(data)
+            const hash = bcrypt.hashSync(password, 10);
+            const subject = "Mật khẩu người dùng";
+            const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
+            const info = sendMail(data.email, subject, html);
+            data.password = hash
+            data.typeId = 1
+            if (info) {
+              const result = await addUserExcelService(data)
+              if(result){
+                error = result
+              }
+            }
+            if(rowNumber === rowsCount){
+              if(error){
+                req.flash("error", error)
+              }else{
                 req.flash("success", "Thành công")
               }
-              
-           
-            } catch (error) { 
-              req.flash("error", "Thất bại")
+              res.redirect("/admin/manager/users")
             }
           }
-        
+
         });
-        
+  
       });
-    });
-    res.redirect("/admin/manager/users")
+ 
+ 
   },
   exportExcel: async(req, res) => {
     const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ"]

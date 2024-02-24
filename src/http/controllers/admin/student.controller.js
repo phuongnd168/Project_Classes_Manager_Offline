@@ -15,6 +15,7 @@ const addStudentService = require("../../services/admin/students/addStudent.serv
 const exportExcel = require("../../../utils/exportExcel");
 const getClassName = require("../../../utils/getClassName");
 const getUserService = require("../../services/role/getUser.service");
+const addStudentExcelService = require("../../services/admin/students/addStudentExcel.service");
 let data = null
 const User = model.User;
 const Class = model.Class;
@@ -153,20 +154,18 @@ module.exports = {
     res.redirect("/admin/manager/students");
   },
   importExcel: async(req, res) => {
-  
     const workbook = new Excel.Workbook();
-    const files = req.files['myFiles']
-
-    files.forEach(file => {
+    let error = ""
+    const file = req.file
       workbook.xlsx.readFile('./public/uploads/' + file.filename )
       .then(function() {
         ws = workbook.getWorksheet(1)
+        const rowsCount = ws.actualRowCount
         ws.eachRow({ includeEmpty: false }, async function(row, rowNumber) {
           if(rowNumber !== 1){
             const [empty, email, name, phone, address] = row.values;
-            const data = { email: email.text, name, phone, address };
+            const data = { email: email.text ?? email, name, phone, address };
     
-            try {
               const password = generator.generate({
                 length: 10,
                 numbers: true,
@@ -179,22 +178,27 @@ module.exports = {
               const info = sendMail(data.email, subject, html);
               data.password = hash
               data.typeId = 3
-              if(info){
-                addStudentService(data)
-                req.flash("success", "Thành công")
+              if (info) {
+                const result = await addStudentExcelService(data)
+                if(result){
+                  error = result
+                }
               }
-              
-           
-            } catch (error) { 
-              req.flash("error", "Thất bại")
-            }
+              if(rowNumber === rowsCount){
+                if(error){
+                  req.flash("error", error)
+                }else{
+                  req.flash("success", "Thành công")
+                }
+                res.redirect("/admin/manager/students")
+              }
           }
         
         });
         
       });
-    });
-    res.redirect("/admin/manager/students")
+
+
   },
   exportExcel: async(req, res) => {
     const columns = ["Email", "Tên", "Số điện thoại", "Địa chỉ", "Lớp học", "Khóa học"]

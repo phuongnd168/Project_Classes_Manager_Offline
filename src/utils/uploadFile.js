@@ -16,7 +16,7 @@ module.exports = (req, res, next) => {
         }
     })
     
-    const upload = multer({ storage: storage }).fields([{ name: 'myFiles', maxCount: 8 }])
+    const upload = multer({ storage: storage }).single('myFiles')
     upload(req, res, function (err) {
   
         if (err instanceof multer.MulterError) {
