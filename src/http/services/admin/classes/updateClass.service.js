@@ -55,14 +55,14 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
       || classInfo.courseId !==data.courseId)
       {
       await StudentAttendance.destroy({where: { classId }})
-      students.forEach(student => {
-        setAttendanceStudent(startDate, endDate, classes_schedules, classId, student.studentId, timeLearnStart)
-      });
+      for (const student of students) {
+        await setAttendanceStudent(startDate, endDate, classes_schedules, classId, student.studentId, timeLearnStart)
+      }
       
     }
   } else {
-    let check 
-    schedule.forEach(async (element) => {
+    let check = true
+    for (const element of schedule) {
       const data = await setCalendar(startDate, endDate, +element, classId, teacherId, timeLearnStart)
       if(!data){
         check = false
@@ -73,7 +73,7 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
       }
       
       
-    });
+    };
     if(!check){
       return 1
     }
@@ -83,9 +83,9 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
       || classInfo.courseId !==data.courseId)
       {
       await StudentAttendance.destroy({where: { classId }})
-      students.forEach(student => {
-        setAttendanceStudent(startDate, endDate, schedule, classId, student.studentId, timeLearnStart)
-      });
+      for (const student of students) {
+        await setAttendanceStudent(startDate, endDate, schedule, classId, student.studentId, timeLearnStart)
+      }
       
     }
   }

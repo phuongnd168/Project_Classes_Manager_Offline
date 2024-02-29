@@ -87,7 +87,7 @@ module.exports = {
       const info = sendMail(email, subject, html);
 
       if (info) {
-        addTeacherService({
+        await addTeacherService({
           name,
           email,
           phone,
@@ -127,7 +127,7 @@ module.exports = {
     const { name, email, phone, address, typeId } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      updateTeacherService({ name, email, phone, address, typeId }, id);
+      await updateTeacherService({ name, email, phone, address, typeId }, id);
 
       req.flash("success", "Sửa thành công");
     } else {
@@ -137,7 +137,7 @@ module.exports = {
   },
   deleteTeacher: async (req, res) => {
     const { id } = req.params;
-    destroyTeacherService(id);
+    await destroyTeacherService(id);
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/teachers");
   },
@@ -161,9 +161,9 @@ module.exports = {
   deleteAll: async(req, res) => {
     const {id} = req.body
     const data = id.split(",")
-    data.forEach((id) => {
-      destroyTeacherService(id)
-    });
+    for (const id of data) {
+      await destroyTeacherService(id)
+    }
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/teachers");
   },

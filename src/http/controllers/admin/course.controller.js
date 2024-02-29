@@ -74,7 +74,7 @@ module.exports = {
     const errors = validationResult(req);
     const { name, price, duration, numberOfSessions } = req.body;
     if (errors.isEmpty()) {
-      addCourseService({
+      await addCourseService({
         name,
         price,
         tryLearn: numberOfSessions ? numberOfSessions : 0,
@@ -109,7 +109,7 @@ module.exports = {
     const { name, price, tryLearn, numberOfSessions, duration } = req.body;
     
     if (errors.isEmpty()) {
-      updateCourseService(
+      await updateCourseService(
         { name, price, tryLearn: +tryLearn ? numberOfSessions : 0, duration },
         id
       );
@@ -123,7 +123,7 @@ module.exports = {
 
   deleteCourse: async (req, res) => {
     const { id } = req.params;
-    destroyCourseService(id);
+    await destroyCourseService(id);
 
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/courses");
@@ -167,9 +167,9 @@ module.exports = {
   deleteAll: async(req, res) => {
     const {id} = req.body
     const data = id.split(",")
-    data.forEach((id) => {
-      destroyCourseService(id)
-    });
+    for (const id of data) {
+      await destroyCourseService(id)
+    }
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/courses");
   },

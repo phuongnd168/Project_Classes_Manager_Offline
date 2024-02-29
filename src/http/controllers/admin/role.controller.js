@@ -48,7 +48,7 @@ module.exports = {
         const { role, permission } = req.body;
         
         if (errors.isEmpty()) {
-          addRoleService(role, permission);
+          await addRoleService(role, permission);
     
           req.flash("success", "Thêm thành công");
         } else {
@@ -78,7 +78,7 @@ module.exports = {
         const { role, permission } = req.body;
         const {id} = req.params
         if (errors.isEmpty()) {
-          updateRoleService(role, permission, id);
+          await updateRoleService(role, permission, id);
     
           req.flash("success", "Sửa thành công");
         } else {
@@ -161,7 +161,7 @@ module.exports = {
         const { role } = req.body;
         const {id} = req.params
         if (errors.isEmpty()) {
-          updateUserRoleService(role, id);
+          await updateUserRoleService(role, id);
     
           req.flash("success", "Phân quyền thành công");
         } else {

@@ -39,14 +39,14 @@ module.exports = async (data, teacherId, schedule, startDate, timeLearnStart) =>
     await ClassSchedule.create({ classId: newClass.id, schedule: +schedule });
     
   } else {
-    let check 
-    schedule.forEach(async (element) => {
+    let check = true
+    for (const element of schedule) {
       const data = await setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +element, newClass.id, teacherId, timeLearnStart)
       if(!data){
         check = false
       }
       await ClassSchedule.create({ classId: newClass.id, schedule: +element });
-    });
+    }
     if(!check){
       await Class.destroy({
         where: {

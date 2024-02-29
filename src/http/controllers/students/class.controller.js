@@ -96,7 +96,7 @@ module.exports = {
 
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        addExerciseSubmitService(id, req.user.id, exercisesSubmit, classId)
+        await addExerciseSubmitService(id, req.user.id, exercisesSubmit, classId)
         req.flash("success", "Nộp bài tập thành công")
       }else {
         req.flash("error", errors.array());
@@ -123,7 +123,7 @@ module.exports = {
       const {id} = req.user
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        addQuestionService(question, id, classId)
+        await addQuestionService(question, id, classId)
         req.flash("success", "Đặt câu hỏi thành công")
       }else {
         req.flash("error", errors.array());

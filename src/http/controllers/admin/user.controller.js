@@ -85,7 +85,7 @@ module.exports = {
       const info = sendMail(email, subject, html);
 
       if (info) {
-        addUserService({
+        await addUserService({
           name,
           email,
           phone,
@@ -125,7 +125,7 @@ module.exports = {
     const { name, email, phone, address } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      updateUserService({ name, email, phone, address }, id);
+      await updateUserService({ name, email, phone, address }, id);
 
       req.flash("success", "Sửa thành công");
     } else {
@@ -135,7 +135,7 @@ module.exports = {
   },
   deleteUser: async (req, res) => {
     const { id } = req.params;
-    destroyUserService(id);
+    await destroyUserService(id);
 
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/users");
@@ -143,9 +143,9 @@ module.exports = {
   deleteAll: async(req, res) => {
     const {id} = req.body
     const data = id.split(",")
-    data.forEach((id) => {
-      destroyUserService(id)
-    });
+    for (const id of data) {
+      await destroyUserService(id)
+    }
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/users");
   },

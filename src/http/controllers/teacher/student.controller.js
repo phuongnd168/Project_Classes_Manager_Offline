@@ -127,7 +127,7 @@ module.exports = {
       const {status, time, reason} = req.body
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        updateStudentService(id, classId, status, time, reason)
+        await updateStudentService(id, classId, status, time, reason)
         req.flash("success", "Sửa thành công")
       }else{
         req.flash("error", errors.array());

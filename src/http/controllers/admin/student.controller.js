@@ -89,7 +89,7 @@ module.exports = {
       const info = sendMail(email, subject, html);
 
       if (info) {
-        addStudentService({
+        await addStudentService({
           name,
           email,
           phone,
@@ -129,7 +129,7 @@ module.exports = {
     const { name, email, phone, address } = req.body;
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      updateStudentService({ name, email, phone, address }, id);
+      await updateStudentService({ name, email, phone, address }, id);
 
       req.flash("success", "Sửa thành công");
     } else {
@@ -139,7 +139,7 @@ module.exports = {
   },
   deleteStudent: async (req, res) => {
     const { id } = req.params;
-    destroyStudentService(id);
+    await destroyStudentService(id);
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/students");
   },
@@ -147,9 +147,9 @@ module.exports = {
   deleteAll: async(req, res) => {
     const {id} = req.body
     const data = id.split(",")
-    data.forEach((id) => {
-      destroyStudentService(id)
-    });
+    for (const id of data) {
+      await destroyStudentService(id)
+    }
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/students");
   },

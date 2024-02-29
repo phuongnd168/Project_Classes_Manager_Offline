@@ -166,7 +166,7 @@ module.exports = {
       const {attendance} = req.body
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-        addAttendanceService(classId, dayId, attendance)
+        await addAttendanceService(classId, dayId, attendance)
         req.flash("success", "Lưu điểm danh thành công")
       }else{
         req.flash("error", errors.array())
@@ -277,7 +277,7 @@ module.exports = {
       const {id} = req.user
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-          addAnswerService(question, id, answer)
+          await addAnswerService(question, id, answer)
           req.flash("success", "Trả lời thành công")
       }else{
           req.flash("error", errors.array());
@@ -290,7 +290,7 @@ module.exports = {
   
       const errors = validationResult(req);
       if (errors.isEmpty()) {
-          addCommentService(exercise, comment, req.user.id)
+          await addCommentService(exercise, comment, req.user.id)
           req.flash("success", "Trả lời thành công")
       }else{
           req.flash("error", errors.array());

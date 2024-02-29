@@ -111,7 +111,7 @@ module.exports = {
         timeLearnStart
       );
       if(check === 1){
-        req.flash("error", "Trùng lịch dạy, vui lòng chọn giảng viên khác");
+        req.flash("error", "Trùng lịch dạy, vui lòng chọn lịch học khác");
       }else{
         req.flash("success", "Thêm thành công");
       }
@@ -192,7 +192,7 @@ module.exports = {
         timeLearnStart
       );
       if(check === 1){
-        req.flash("error", "Trùng lịch dạy, vui lòng chọn giảng viên khác");
+        req.flash("error", "Trùng lịch dạy, vui lòng chọn lịch học khác");
       }else{
         req.flash("success", "Sửa thành công");
       }
@@ -267,8 +267,15 @@ module.exports = {
     const {student} = req.body
     const errors = validationResult(req);
     if (errors.isEmpty()) {
-      addStudentService(student, id)
-      req.flash("success", "Thêm thành công");
+      const check = await addStudentService(student, id)
+ 
+      if(check === 1){
+        req.flash("error", "Trùng lịch học, vui lòng chọn lớp khác");
+      }
+      else{
+        req.flash("success", "Thêm thành công");
+      }
+      
     }else{
       req.flash("error", errors.array());
     }
@@ -303,13 +310,13 @@ module.exports = {
   handleRemoveStudent: async (req, res) => {
     const {id} = req.params
     const {student} = req.body
-    removeStudentService(student, id)
+    await removeStudentService(student, id)
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/classes/students/remove/" +id)
   },
   deleteClass: async (req, res) => {
     const { id } = req.params;
-    destroyClassService(id);
+    await destroyClassService(id);
 
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/classes");
@@ -317,9 +324,9 @@ module.exports = {
   deleteAll: async(req, res) => {
     const {id} = req.body
     const data = id.split(",")
-    data.forEach((id) => {
-      destroyClassService(id)
-    });
+    for (const id of data) {
+      await destroyClassService(id)
+    };
     req.flash("success", "Xóa thành công");
     res.redirect("/admin/manager/classes");
   },
