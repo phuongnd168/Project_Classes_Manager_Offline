@@ -103,7 +103,7 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("teacher/account/reset-password", {
-      layout: "layouts/teacher.layout.ejs",
+      layout: false,
       req,
       routerRoleRequest,
       error,

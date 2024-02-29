@@ -140,6 +140,7 @@ module.exports = {
     const error = req.flash("error");
     const user = await getUserService(req.user.id)
     res.render("admin/account/reset-password", {
+      layout: false,
       user,
       req,
       routerRoleRequest,

@@ -1,5 +1,6 @@
+<title>Sửa lớp học</title>
 <% if(error?.length){ %>
-<label id="error-toast"><%= error[0].msg %></label>
+<label id="error-toast"><%= error[0].msg ?? error %></label>
 <% } %> <% if(success?.length){ %>
 <label id="success-toast"><%= success %></label>
 <% } %>
@@ -109,13 +110,6 @@
       class="form-control"
       name="timeLearnStart"
       value="<%= classInfo.timeLearn.slice(0,5) %>"
-    />
-    <span class="form-label">Kết thúc</span>
-    <input
-      type="time"
-      class="form-control"
-      name="timeLearnEnd"
-      value="<%= classInfo.timeLearn.slice(6,11) %>"
     />
   </div>
 

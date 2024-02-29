@@ -1,10 +1,11 @@
+<title>Tài liệu</title>
 <% if(error?.length){ %>
     <label id="error-toast"><%= error %></label>
 <% } %> <% if(success?.length){ %>
     <label id="success-toast"><%= success %></label>
 <% } %>
 <link rel="stylesheet" type="text/css" href="/assets/css/accordion.css" />
-<a href="/teacher/manager/courses/<%= id  %>/module/add" class="btn btn-success mb-2">Thêm</a>
+<a href="/teacher/manager/courses/<%= id  %>/module/add" class="btn btn-success mb-2 ml-2">Thêm</a>
 
 <% if(modules.length){%>
   <% modules.forEach((e, i) => {%>

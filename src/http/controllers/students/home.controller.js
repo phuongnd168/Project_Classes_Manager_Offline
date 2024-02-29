@@ -101,7 +101,7 @@ module.exports = {
     const success = req.flash("success");
     const error = req.flash("error");
     res.render("students/account/reset-password", {
-      layout: "layouts/student.layout.ejs",
+      layout: false,
       req,
       routerRoleRequest,
       error,

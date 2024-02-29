@@ -24,17 +24,38 @@ module.exports = async (data, teacherId, schedule, startDate, timeLearnStart) =>
 
   data.endDate = endDate.setDate(endDate.getDate() - 1)
   const newClass = await Class.create(data);
-  newClass.addUser(teacher);
+
 
   if (typeof schedule === "string") {
-    setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +schedule, newClass.id, teacherId, timeLearnStart)
+    const check = await setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +schedule, newClass.id, teacherId, timeLearnStart)
+    if(!check){
+      await Class.destroy({
+        where: {
+          id: newClass.id
+        }
+      })
+      return 1
+    }
     await ClassSchedule.create({ classId: newClass.id, schedule: +schedule });
     
   } else {
-  
+    let check 
     schedule.forEach(async (element) => {
-      setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +element, newClass.id, teacherId, timeLearnStart)
+      const data = await setCalendar(startDate, endDate.setDate(endDate.getDate() - 1), +element, newClass.id, teacherId, timeLearnStart)
+      if(!data){
+        check = false
+      }
       await ClassSchedule.create({ classId: newClass.id, schedule: +element });
     });
+    if(!check){
+      await Class.destroy({
+        where: {
+          id: newClass.id
+        }
+      })
+      return 1
+    }
   }
+  
+  newClass.addUser(teacher);
 };

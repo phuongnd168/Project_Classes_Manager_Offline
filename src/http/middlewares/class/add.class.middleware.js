@@ -11,10 +11,6 @@ module.exports = () => {
       "timeLearnStart",
       "Thời gian bắt đầu học bắt buộc phải chọn"
     ).notEmpty(),
-    check(
-      "timeLearnEnd",
-      "Thời gian kết thúc học bắt buộc phải chọn"
-    ).notEmpty(),
     check("name").custom(async (nameValue, { req }) => {
       const {quantity} = req.body
       const classInfo = await Class.findOne({

@@ -25,6 +25,7 @@ module.exports = {
   index: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+  
     const { keyword } = req.query;
     const { PER_PAGE } = process.env;
     const filters = await filterClassService(keyword)
@@ -62,6 +63,7 @@ module.exports = {
   addClass: async (req, res) => {
     const success = req.flash("success");
     const error = req.flash("error");
+
     const courses = await Course.findAll()
     const teachers = await User.findAll({
       where: {
@@ -89,13 +91,12 @@ module.exports = {
       startDate,
       schedule,
       timeLearnStart,
-      timeLearnEnd,
       course
     } = req.body;
-  
-    const timeLearn = timeLearnStart + "-" + timeLearnEnd;
+    const timeLearnEnd = +timeLearnStart.slice(0, 2) + 3 + ":00"
+    const timeLearn = timeLearnStart + "-" + timeLearnEnd
     if (errors.isEmpty()) {
-      addClassService(
+      const check = await addClassService(
         {
           name,
           quantity,
@@ -109,8 +110,12 @@ module.exports = {
         startDate,
         timeLearnStart
       );
+      if(check === 1){
+        req.flash("error", "Trùng lịch dạy, vui lòng chọn giảng viên khác");
+      }else{
+        req.flash("success", "Thêm thành công");
+      }
 
-      req.flash("success", "Thêm thành công");
     } else {
       req.flash("error", errors.array());
     }
@@ -166,12 +171,12 @@ module.exports = {
       teacher,
       course,
       timeLearnStart,
-      timeLearnEnd,
-    } = req.body;
 
-    const timeLearn = timeLearnStart + "-" + timeLearnEnd;
+    } = req.body;
+    const timeLearnEnd = +timeLearnStart.slice(0, 2) + 3 + ":00"
+    const timeLearn = timeLearnStart + "-" + timeLearnEnd
     if (errors.isEmpty()) {
-      updateClassService(
+      const check = await updateClassService(
         {
           name,
           quantity,
@@ -186,7 +191,12 @@ module.exports = {
         startDate,
         timeLearnStart
       );
-      req.flash("success", "Sửa thành công");
+      if(check === 1){
+        req.flash("error", "Trùng lịch dạy, vui lòng chọn giảng viên khác");
+      }else{
+        req.flash("success", "Sửa thành công");
+      }
+
     } else {
       req.flash("error", errors.array());
     }

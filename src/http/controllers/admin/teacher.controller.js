@@ -193,14 +193,16 @@ module.exports = {
               const subject = "Mật khẩu người dùng";
               const html = `<p>Mật khẩu của bạn là ${password}. Vui lòng đăng nhập để đổi mật khẩu</p>`;
         
-              const info = sendMail(data.email, subject, html);
+       
               data.password = hash
               data.typeId = typeId
-              if (info) {
-                const result = await addTeacherExcelService(data)
-                if(result){
-                  error = result
-                }
+  
+              const result = await addTeacherExcelService(data)
+              if(result){
+                error = result
+              }
+              if(!result){
+                sendMail(data.email, subject, html);
               }
 
               if(rowNumber === rowsCount){

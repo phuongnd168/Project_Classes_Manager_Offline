@@ -1,3 +1,4 @@
+<title>Danh sách khóa học</title>
 <% if(error?.length){ %>
 <label id="error-toast"><%= error %></label>
 <% } %> <% if(success?.length){ %>
@@ -20,23 +21,24 @@
   </div>
 </form>
 <table class="table table-bordered">
-  <% if(courses?.length){%>
-    <% user.Roles.forEach(role => {%>
-      <% role.Permissions.forEach(permission => {%>
-       <% if(permission.value.localeCompare("Thêm khóa học") === 0){%>
-        <a href="/admin/manager/courses/add" class="btn btn-success mb-2 mr-2">Thêm</a>
-         <%}%>
-       <%});%>
+  <% user.Roles.forEach(role => {%>
+    <% role.Permissions.forEach(permission => {%>
+     <% if(permission.value.localeCompare("Thêm khóa học") === 0){%>
+      <a href="/admin/manager/courses/add" class="btn btn-success mb-2 mr-2">Thêm</a>
+       <%}%>
      <%});%>
-  
-  <form action="/admin/manager/courses/import-excel" enctype="multipart/form-data"  method="POST" id="form">
-      
-    <input type="file" name="myFiles" id="files" hidden multiple/>
-    <label for="files" class="btn btn-secondary">Import Excel</label>
+   <%});%>
 
-  </form>
-  <a href="/admin/manager/courses/export-excel" class="btn btn-secondary mb-2 ml-2"
-  ><b>Export Excel</b></a>
+<form action="/admin/manager/courses/import-excel" enctype="multipart/form-data"  method="POST" id="form">
+    
+  <input type="file" name="myFiles" id="files" hidden multiple/>
+  <label for="files" class="btn btn-secondary">Import Excel</label>
+
+</form>
+<a href="/admin/manager/courses/export-excel" class="btn btn-secondary mb-2 ml-2"
+><b>Export Excel</b></a>
+  <% if(courses?.length){%>
+    
   <thead>
     <tr>
       <% user.Roles.forEach(role => {%>
@@ -180,7 +182,8 @@
 
 <script>
   const btnDelete = document.querySelectorAll(".btn.btn-danger.delete");
-  btnDelete.forEach((btn) => {
+  if(btnDelete.length){
+    btnDelete.forEach((btn) => {
     btn.addEventListener("click", (e) => {
       const value = confirm("Bạn có chắc chắn muốn xóa khóa học này?");
       if (!value) {
@@ -259,6 +262,8 @@
       document.querySelector("#deleteButton").style.display = "none"
     }
   })
+  }
+  
   document.getElementById("files").onchange = function() {
     document.getElementById("form").submit();
   };

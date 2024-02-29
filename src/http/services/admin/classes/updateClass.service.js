@@ -36,11 +36,14 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
   const endDate = await getEndDate(startDate, course.id, schedule)
  
   data.endDate =  endDate.setDate(endDate.getDate() - 1)
-  classInfo.setUsers(teacher);
+  
   await Class.update(data, { where: { id: classId } });
 
   if (typeof schedule === "string") {
-    setCalendar(startDate, endDate, +schedule, classId, teacherId, timeLearnStart)
+    const check = await setCalendar(startDate, endDate, +schedule, classId, teacherId, timeLearnStart)
+    if(!check){
+      return 1
+    }
     await ClassSchedule.destroy({where:{classId}})
     await ClassSchedule.create({ classId, schedule: +schedule });
     let classes_schedules = []
@@ -58,12 +61,22 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
       
     }
   } else {
+    let check 
     schedule.forEach(async (element) => {
-      setCalendar(startDate, endDate, +element, classId, teacherId, timeLearnStart)
-      await ClassSchedule.destroy({where:{classId}})
-      await ClassSchedule.create({ classId, schedule: +element });
+      const data = await setCalendar(startDate, endDate, +element, classId, teacherId, timeLearnStart)
+      if(!data){
+        check = false
+      }
+      else{
+        await ClassSchedule.destroy({where:{classId}})
+        await ClassSchedule.create({ classId, schedule: +element });
+      }
+      
       
     });
+    if(!check){
+      return 1
+    }
     if(classInfo.startDate !== startDate  
       || classSchedule.toString() !== schedule.toString() 
       || classInfo.timeLearn.localeCompare(data.timeLearn)!==0 
@@ -76,4 +89,5 @@ module.exports = async (data, classId, teacherId, schedule, startDate, timeLearn
       
     }
   }
+  classInfo.setUsers(teacher);
 };
