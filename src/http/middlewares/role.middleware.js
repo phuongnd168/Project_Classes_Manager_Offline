@@ -1,4 +1,5 @@
 module.exports = async (req, res, next) => {
+ 
   if (req.session.status) {
     switch (req.user?.typeId) {
       case 1:
@@ -24,6 +25,7 @@ module.exports = async (req, res, next) => {
   }
 
   if (req.user && !req.session.sendOtp) {
+
     switch (req.user?.typeId) {
       case 1:
         res.redirect("/admin");

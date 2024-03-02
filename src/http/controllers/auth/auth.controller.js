@@ -26,6 +26,7 @@ module.exports = {
 
     res.render("auth/login", {
       layout: "layouts/auth.layout.ejs",
+      req,
       error,
       success,
     });
@@ -48,7 +49,7 @@ module.exports = {
       const token = TokenGenerator.generate();
       const subject = "Quên mật khẩu";
       const html =
-        '<p>Click vào <a href="http://localhost:3000/auth/verify/' +
+        '<p>Click vào <a href="https://class.ndng.net/auth/verify/' +
         token +
         '">link</a> để đặt lại mật khẩu. Link sẽ hết hạn sau 1 phút</p>';
 

@@ -154,7 +154,9 @@
     <% }) %>
   </tbody>
 
-  <% } %>
+  <% }else{%>
+     <%- include('../../layouts/template.not.data.ejs') %>
+  <%} %>
 </table>
 <div class="d-flex justify-content-between">
 

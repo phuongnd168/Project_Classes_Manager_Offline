@@ -38,7 +38,7 @@
 </form>
 <a href="/admin/manager/students/export-excel" class="btn btn-secondary mb-2 ml-2"
 ><b>Export Excel</b></a>
-  <% if(students?.length){%>
+<% if(students?.length){%>
     
   <thead>
     <tr>
@@ -165,7 +165,10 @@
     <% }) %>
   </tbody>
 
-  <% } %>
+  <%}else{%>
+    <%- include('../../layouts/template.not.data.ejs') %>
+  <%} %>
+
 </table>
 
 <div class="d-flex justify-content-between">

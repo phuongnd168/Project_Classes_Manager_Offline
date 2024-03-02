@@ -29,6 +29,6 @@
        
     <%}); %>
 <%}else{%>
-    <h1>Chưa có câu hỏi</h1>
+    <%- include('../../layouts/template.not.data.ejs') %>
 <%} %>
 <a href="/classes/<%= classId  %>/questions" class="btn btn-danger mt-2">Quay lại</a>

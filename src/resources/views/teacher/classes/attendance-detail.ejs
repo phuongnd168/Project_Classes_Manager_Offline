@@ -5,6 +5,7 @@
     <label id="success-toast"><%= success %></label>
     <% } %>
 <form action="" method="post" novalidate>
+  <% if(students?.length){%>
   <table class="table">
       <thead>
         <tr>
@@ -51,9 +52,15 @@
   <%}); %>
   </tbody>
   </table>
-  
+
+  <%}else{%>
+    <%- include('../../layouts/template.not.data.ejs') %>
+  <%} %>
 <div class="col-10 mt-2">
-    <button class="btn btn-success mr-2" type="submit">Lưu điểm danh</button>
+    <% if(students.length){%>
+      <button class="btn btn-success mr-2" type="submit">Lưu điểm danh</button>
+    <%} %>
+
     <a href="/teacher/manager/classes/<%= classId %>/attendance" class="btn btn-danger">Quay lại</a>
 </div>
 </form>

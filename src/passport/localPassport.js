@@ -2,16 +2,19 @@ const LocalStrategy = require("passport-local").Strategy;
 const model = require("../models/index");
 const bcrypt = require("bcrypt");
 const emailValidate = require("../utils/emailValidate");
-const sendOtpMiddleware = require("../http/middlewares/send.otp.middleware");
+
 
 const User = model.User;
 module.exports = new LocalStrategy(
   {
     usernameField: "email",
     passwordField: "password",
+    passReqToCallback:true
   },
-  async function (email, password, done) {
+  async function (req, email, password, done) {
+    
     if (!emailValidate(email)) {
+      req.flash("email", email)
       done(null, false, {
         message: "Email không đúng định dạng",
       });
@@ -23,19 +26,25 @@ module.exports = new LocalStrategy(
       },
     });
     if (!user) {
+      req.flash("email", email)
       done(null, false, { message: "Sai email hoặc mật khẩu" });
       return;
     }
     if (!user.password) {
+      req.flash("email", email)
       done(null, false, { message: "Sai email hoặc mật khẩu" });
       return;
     }
     const pass = bcrypt.compareSync(password, user.password);
     if (!pass) {
+      req.flash("email", email)
       done(null, false, { message: "Sai email hoặc mật khẩu" });
       return;
     }
-
+    if(user.typeId === 4){
+      done(null, false, { message: "Chức năng trợ giảng sẽ sớm ra mắt" });
+      return;
+    }
     done(null, user);
   }
 );

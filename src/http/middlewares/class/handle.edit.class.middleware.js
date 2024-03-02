@@ -15,7 +15,12 @@ module.exports = () => {
       "Thời gian bắt đầu học bắt buộc phải chọn"
     ).notEmpty(),
     check("name").custom(async (nameValue, { req }) => {
-      const {quantity} = req.body
+      const {quantity, timeLearnStart, startDate} = req.body
+      const hourStart = +timeLearnStart.slice(0, 2) * 60 * 60 * 1000
+      const minuteStart = +timeLearnStart.slice(3, 5) * 60 * 1000
+      const timeStart = hourStart + minuteStart
+      const time = new Date(timeStart).getUTCHours()
+      const start = new Date(startDate).getUTCFullYear()
       const {id} = req.params
       const classInfo = await Class.findOne({
         where: {
@@ -35,6 +40,12 @@ module.exports = () => {
       }
       if(+countStudent > quantity){
         throw new Error("Số học viên hiện tại đang là "+ countStudent+ ", không thể sửa");
+      }
+      if(time < 7 || time > 19){
+        throw new Error("Thời gian bắt đầu học chỉ trong khoảng 7h sáng tới 7h tối");
+      }
+      if(start < new Date().getUTCFullYear() || start > 2030){
+        throw new Error("Năm học không nhỏ hơn  hoặc quá xa hiện tại");
       }
     }),
   ];
